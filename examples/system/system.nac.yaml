@@ -7,4 +7,4 @@ iosxr:
         banner:
           login: "#Hello user ! Welcome to IOS-XR device.#"
           motd: "#System maintained by NAC Infrastructure as Code#"
-
+          exec: "#You are now in EXEC mode#"
