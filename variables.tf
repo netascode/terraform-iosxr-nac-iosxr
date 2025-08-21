@@ -7,7 +7,8 @@ variable "yaml_directories" {
 variable "yaml_files" {
   description = "List of paths to YAML files."
   type        = list(string)
-  default     = ["examples/system/system.nac.yaml"]
+  default     = []
+  #default     = ["examples/system/system.nac.yaml"]
 }
 
 variable "model" {
