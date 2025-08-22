@@ -1,5 +1,5 @@
 resource "iosxr_service_timestamps" "service_timestamps" {
-  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].service_timestamps.debug_datetime_localtime, null) != null || try(local.defaults.iosxr.configuration.service_timestamps.debug_datetime_localtime, null) != null }
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].service_timestamps, null) != null || try(local.defaults.iosxr.configuration.service_timestamps, null) != null }
   device   = each.value.name
 
   debug_datetime_localtime     = try(local.device_config[each.value.name].service_timestamps.debug_datetime_localtime, local.defaults.iosxr.configuration.service_timestamps.debug_datetime_localtime, null)
