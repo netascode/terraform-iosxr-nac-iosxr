@@ -1,26 +1,22 @@
-# Login Banner Resources
-resource "iosxr_banner" "login_banner" {
-  for_each = { for device in local.devices : "${device.name}-login" => device if try(local.device_config[device.name].banner.login, local.defaults.iosxr.configuration.banner.login, null) != null }
-  device   = each.value.name
-
-  banner_type = "login"
-  line = try(local.device_config[each.value.name].banner.login, local.defaults.iosxr.configuration.banner.login)
+# Banner Resources - handles list format with banner_type and line
+locals {
+  # Flatten banner configuration from list format
+  device_banners = flatten([
+    for device in local.devices : [
+      for banner in try(local.device_config[device.name].banner, []) : {
+        device_name  = device.name
+        banner_type  = banner.banner_type
+        line         = banner.line
+        key          = "${device.name}-${banner.banner_type}"
+      }
+    ]
+  ])
 }
 
-# MOTD Banner Resources
-resource "iosxr_banner" "motd_banner" {
-  for_each = { for device in local.devices : "${device.name}-motd" => device if try(local.device_config[device.name].banner.motd, local.defaults.iosxr.configuration.banner.motd, null) != null }
-  device   = each.value.name
-
-  banner_type = "motd"
-  line = try(local.device_config[each.value.name].banner.motd, local.defaults.iosxr.configuration.banner.motd)
-}
-
-# EXEC Banner Resources
-resource "iosxr_banner" "exec_banner" {
-  for_each = { for device in local.devices : "${device.name}-exec" => device if try(local.device_config[device.name].banner.exec, local.defaults.iosxr.configuration.banner.exec, null) != null }
-  device   = each.value.name
-
-  banner_type = "exec"
-  line = try(local.device_config[each.value.name].banner.exec, local.defaults.iosxr.configuration.banner.exec)
+resource "iosxr_banner" "banner" {
+  for_each = { for banner in local.device_banners : banner.key => banner }
+  
+  device      = each.value.device_name
+  banner_type = each.value.banner_type
+  line        = each.value.line
 }

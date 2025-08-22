@@ -5,6 +5,9 @@ iosxr:
       configuration:
         hostname: Node1
         banner:
-          login: "#Hello user ! Welcome to IOS-XR device.#"
-          motd: "#System maintained by NAC Infrastructure as Code#"
-          exec: "#You are now in EXEC mode#"
+          - banner_type: "login"
+            line: "#Hello user ! Welcome to IOS-XR device.#"
+          - banner_type: "motd"
+            line: "#System maintained by NAC Infrastructure as Code#"
+          - banner_type: "exec"
+            line: "#Exec Banner#"
