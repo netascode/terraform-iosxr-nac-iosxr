@@ -7,6 +7,12 @@ iosxr:
         banner:
           type: login
           line: "#Authorized access only!#"
+        cdp:
+          enable: true
+          holdtime: 10
+          timer: 34
+          advertise_v1: true
+          log_adjacency_changes: true
 
 
 
