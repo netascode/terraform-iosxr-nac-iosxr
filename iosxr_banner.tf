@@ -1,20 +1,23 @@
-# Banner Resources - handles list format with banner_type and line
+# Banner Resources - handles single object format with banner_type and line
 locals {
-  # Flatten banner configuration from list format
+  # Process banner configuration from single object format
   device_banners = flatten([
     for device in local.devices : [
-      for banner in try(local.device_config[device.name].banner, []) : {
+      try(local.device_config[device.name].banner, null) != null ? {
         device_name  = device.name
-        banner_type  = banner.banner_type
-        line         = banner.line
-        key          = "${device.name}-${banner.banner_type}"
-      }
+        banner_type  = local.device_config[device.name].banner.banner_type
+        line         = local.device_config[device.name].banner.line
+        key          = "${device.name}-${local.device_config[device.name].banner.banner_type}"
+      } : null
     ]
   ])
 }
 
 resource "iosxr_banner" "banner" {
-  for_each = { for banner in local.device_banners : banner.key => banner }
+  for_each = {
+    for banner in local.device_banners : banner.key => banner
+    if banner != null
+  }
   
   device      = each.value.device_name
   banner_type = each.value.banner_type
