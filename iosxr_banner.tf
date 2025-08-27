@@ -5,9 +5,9 @@ locals {
     for device in local.devices : [
       for banner in try(local.device_config[device.name].banner, []) : {
         device_name  = device.name
-        banner_type  = banner.banner_type
-        line         = banner.line
-        key          = "${device.name}-${banner.banner_type}"
+        banner_type  = try(banner.banner_type, local.defaults.iosxr.configuration.banner_type, null)
+        line         = try(banner.line, local.defaults.iosxr.configuration.banner_line, null)
+        key          = try("${device.name}-${banner.banner_type}", null)
       }
     ]
   ])
