@@ -1,19 +1,6 @@
 iosxr:
   devices:
-    - name: Node1
-      host: 10.122.20.77:2623
+    - name: router-1
+      host: 1.2.3.4
       configuration:
-        hostname: Node1
-        banner:
-          - banner_type: "login"
-            line: "#Hello user ! Welcome to IOS-XR device.#"
-          - banner_type: "motd"
-            line: "#System maintained by NAC Infrastructure as Code#"
-          - banner_type: "exec"
-            line: "#Exec Banner#"
-          - banner_type: "incoming"
-            line: "#Incoming connection banner#"
-          - banner_type: "prompt-timeout"
-            line: "#Session timeout warning#"
-          - banner_type: "slip-ppp"
-            line: "#SLIP/PPP connection banner#"
+        hostname: router-1
