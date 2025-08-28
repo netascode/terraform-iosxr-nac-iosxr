@@ -1,18 +1,10 @@
 iosxr:
   devices:
-    - name: Node1
-      host: 10.122.20.77:2623
+    - name: router-1
+      host: 1.2.3.4
       configuration:
-        hostname: router-test-2
-        banner:
-          type: login
-          line: "#Authorized access only!#"
-        cdp:
-          enable: true
-          holdtime: 10
-          timer: 34
-          advertise_v1: true
-          log_adjacency_changes: true
+        hostname: router-1
+        
 
 
 
