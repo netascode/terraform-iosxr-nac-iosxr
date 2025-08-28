@@ -15,7 +15,7 @@ locals {
 
 resource "iosxr_banner" "banner" {
   for_each = { for banner in local.device_banners : banner.key => banner }
-  
+
   device      = each.value.device_name
   banner_type = each.value.banner_type
   line        = each.value.line
