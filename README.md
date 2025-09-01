@@ -20,7 +20,12 @@ iosxr:
       host: 1.2.3.4
       configuration:
         hostname: router-1
-
+      cdp:
+        enable: true
+        holdtime: 20
+        timer: 34
+        advertise_v1: true
+        log_adjacency_changes: true
 ```
 
 #### `main.tf`
@@ -60,6 +65,7 @@ module "iosxr" {
 
 | Name | Type |
 |------|------|
+| [iosxr_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/cdp) | resource |
 | [iosxr_hostname.hostname](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/hostname) | resource |
 | [iosxr_service_timestamps.service_timestamps](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/service_timestamps) | resource |
 | [local_sensitive_file.defaults](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
