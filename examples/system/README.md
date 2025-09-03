@@ -20,6 +20,7 @@ iosxr:
       host: 1.2.3.4
       configuration:
         hostname: router-1
+
 ```
 
 #### `main.tf`
