@@ -20,12 +20,6 @@ iosxr:
       host: 1.2.3.4
       configuration:
         hostname: router-1
-      cdp:
-        enable: true
-        holdtime: 20
-        timer: 34
-        advertise_v1: true
-        log_adjacency_changes: true
 ```
 
 #### `main.tf`

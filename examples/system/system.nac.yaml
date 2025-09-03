@@ -1,0 +1,6 @@
+iosxr:
+  devices:
+    - name: router-1
+      host: 1.2.3.4
+      configuration:
+        hostname: router-1
