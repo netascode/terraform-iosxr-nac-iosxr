@@ -63,6 +63,7 @@ module "iosxr" {
 | [iosxr_banner.banner](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/banner) | resource |
 | [iosxr_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/cdp) | resource |
 | [iosxr_hostname.hostname](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/hostname) | resource |
+| [iosxr_mpls_oam.mpls_oam](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/mpls_oam) | resource |
 | [iosxr_service_timestamps.service_timestamps](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/service_timestamps) | resource |
 | [local_sensitive_file.defaults](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
 | [terraform_data.validation](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
