@@ -1,6 +1,4 @@
-# Banner Resources - handles list format with banner_type and line
 locals {
-  # Flatten banner configuration from list format
   device_banners = flatten([
     for device in local.devices : [
       for banner in try(local.device_config[device.name].banner, []) : {
@@ -9,6 +7,8 @@ locals {
         line        = try(banner.line, local.defaults.iosxr.configuration.banner_line, null)
         key         = try("${device.name}-${banner.banner_type}", null)
       }
+      if try(banner.banner_type, local.defaults.iosxr.configuration.banner_type, null) != null &&
+      try(banner.line, local.defaults.iosxr.configuration.banner_line, null) != null
     ]
   ])
 }
