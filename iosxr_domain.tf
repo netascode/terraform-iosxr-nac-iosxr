@@ -11,5 +11,4 @@ resource "iosxr_domain" "domain" {
   ipv6_hosts              = try(local.device_config[each.value.name].domain.ipv6_hosts, local.defaults.iosxr.configuration.domain.ipv6_hosts, null)
   multicast               = try(local.device_config[each.value.name].domain.multicast, local.defaults.iosxr.configuration.domain.multicast, null)
   default_flows_disable   = try(local.device_config[each.value.name].domain.default_flows_disable, local.defaults.iosxr.configuration.domain.default_flows_disable, null)
-  delete_mode             = try(local.device_config[each.value.name].domain.delete_mode, local.defaults.iosxr.configuration.domain.delete_mode, null)
 }
