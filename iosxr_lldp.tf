@@ -8,6 +8,7 @@ resource "iosxr_lldp" "lldp" {
   subinterfaces_enable                   = try(local.device_config[each.value.name].lldp.subinterfaces_enable, local.defaults.iosxr.configuration.lldp.subinterfaces_enable, null)
   priorityaddr_enable                    = try(local.device_config[each.value.name].lldp.priorityaddr_enable, local.defaults.iosxr.configuration.lldp.priorityaddr_enable, null)
   extended_show_width_enable             = try(local.device_config[each.value.name].lldp.extended_show_width_enable, local.defaults.iosxr.configuration.lldp.extended_show_width_enable, null)
+  management_enable                      = try(local.device_config[each.value.name].lldp.management_enable, local.defaults.iosxr.configuration.lldp.management_enable, null)
   tlv_select_management_address_disable  = try(local.device_config[each.value.name].lldp.tlv_select_management_address_disable, local.defaults.iosxr.configuration.lldp.tlv_select_management_address_disable, null)
   tlv_select_port_description_disable    = try(local.device_config[each.value.name].lldp.tlv_select_port_description_disable, local.defaults.iosxr.configuration.lldp.tlv_select_port_description_disable, null)
   tlv_select_system_capabilities_disable = try(local.device_config[each.value.name].lldp.tlv_select_system_capabilities_disable, local.defaults.iosxr.configuration.lldp.tlv_select_system_capabilities_disable, null)
