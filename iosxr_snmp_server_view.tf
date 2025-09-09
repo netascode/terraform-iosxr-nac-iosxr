@@ -3,7 +3,7 @@ locals {
     for device in local.devices : [
       for view in try(local.device_config[device.name].snmp_server_views, local.defaults.iosxr.configuration.snmp_server_views, []) : {
         device_name = device.name
-        key         = "${device.name}-snmp-server-view-${view.view_name}"
+        key         = "${device.name}-snmp-server-view-${try(view.view_name, "default")}"
 
         view_name = try(view.view_name, null)
 
