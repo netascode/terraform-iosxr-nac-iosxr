@@ -1,12 +1,12 @@
 locals {
   device_key_chains = flatten([
     for device in local.devices : [
-      {
+      for key_chain in try(local.device_config[device.name].key_chain, local.defaults.iosxr.configuration.key_chain, []) : {
         device_name = device.name
-        name        = try(local.device_config[device.name].key_chain.name, local.defaults.iosxr.configuration.key_chain.name, null)
-        key         = "${device.name}-key_chain"
+        name        = try(key_chain.name, local.defaults.iosxr.configuration.key_chain_name, null)
+        key         = "${device.name}-keychain-${key_chain.name}"
         keys = [
-          for key in try(local.device_config[device.name].key_chain.keys, local.defaults.iosxr.configuration.key_chain.keys, []) : {
+          for key in try(key_chain.keys, local.defaults.iosxr.configuration.key_chain_keys, []) : {
             key_name                                = try(key.key_name, local.defaults.iosxr.configuration.key_chain_key_name, null)
             key_string_password                     = try(key.key_string_password, local.defaults.iosxr.configuration.key_chain_key_string_password, null)
             cryptographic_algorithm                 = try(key.cryptographic_algorithm, local.defaults.iosxr.configuration.key_chain_cryptographic_algorithm, null)

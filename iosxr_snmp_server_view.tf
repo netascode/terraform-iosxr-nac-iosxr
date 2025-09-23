@@ -13,7 +13,8 @@ locals {
           }
         ]
       }
-    ] if try(local.device_config[device.name].snmp_server_views, local.defaults.iosxr.configuration.snmp_server_views, null) != null
+    ]
+    if try(local.device_config[device.name].snmp_server_views, null) != null || try(local.defaults.iosxr.configuration.snmp_server_views, null) != null
   ])
 }
 
