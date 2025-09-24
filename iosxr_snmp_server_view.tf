@@ -7,9 +7,9 @@ locals {
         view_name   = try(view.view_name, local.defaults.iosxr.configuration.snmp_server_view_name, null)
         mib_view_families = [
           for family in try(view.mib_view_families, local.defaults.iosxr.configuration.snmp_server_view_mib_view_families, []) : {
-            name     = try(family.name, local.defaults.iosxr.configuration.snmp_server_view_mib_view_family_name, null)
-            excluded = try(family.excluded, local.defaults.iosxr.configuration.snmp_server_view_mib_view_family_excluded, null)
-            included = try(family.included, local.defaults.iosxr.configuration.snmp_server_view_mib_view_family_included, null)
+            name     = try(family.name, local.defaults.iosxr.configuration.snmp_server_view_mib_view_families.name, null)
+            excluded = try(family.excluded, local.defaults.iosxr.configuration.snmp_server_view_mib_view_families.excluded, null)
+            included = try(family.included, local.defaults.iosxr.configuration.snmp_server_view_mib_view_families.included, null)
           }
         ]
       }
