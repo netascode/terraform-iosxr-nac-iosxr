@@ -3,7 +3,7 @@ locals {
     for device in local.devices : [
       for key_chain in try(local.device_config[device.name].key_chain, []) : {
         device_name = device.name
-        name        = try(key_chain.name, local.defaults.iosxr.configuration.key_chain_name, null)
+        name        = try(key_chain.name, null)
         key         = "${device.name}-keychain-${key_chain.name}"
         keys = [
           for key in try(key_chain.keys, []) : {
