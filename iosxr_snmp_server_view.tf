@@ -4,12 +4,12 @@ locals {
       for view in try(local.device_config[device.name].snmp_server_view, local.defaults.iosxr.configuration.snmp_server_view, []) : {
         device_name = device.name
         key         = try("${device.name}-snmp-server-view-${view.view_name}", null)
-        view_name   = try(view.view_name, local.defaults.iosxr.configuration.snmp_server_view_name, null)
+        view_name   = try(view.view_name, local.defaults.iosxr.configuration.snmp_server_view.view_name, null)
         mib_view_families = [
-          for family in try(view.mib_view_families, local.defaults.iosxr.configuration.snmp_server_view_mib_view_families, []) : {
-            name     = try(family.name, local.defaults.iosxr.configuration.snmp_server_view_mib_view_families.name, null)
-            excluded = try(family.excluded, local.defaults.iosxr.configuration.snmp_server_view_mib_view_families.excluded, null)
-            included = try(family.included, local.defaults.iosxr.configuration.snmp_server_view_mib_view_families.included, null)
+          for family in try(view.mib_view_families, local.defaults.iosxr.configuration.snmp_server_view.mib_view_families, []) : {
+            name     = try(family.name, local.defaults.iosxr.configuration.snmp_server_view.mib_view_families.name, null)
+            excluded = try(family.excluded, local.defaults.iosxr.configuration.snmp_server_view.mib_view_families.excluded, null)
+            included = try(family.included, local.defaults.iosxr.configuration.snmp_server_view.mib_view_families.included, null)
           }
         ]
       }
