@@ -75,6 +75,7 @@ module "iosxr" {
 | [iosxr_logging_source_interface.logging_source_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/logging_source_interface) | resource |
 | [iosxr_mpls_oam.mpls_oam](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/mpls_oam) | resource |
 | [iosxr_ntp.ntp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/ntp) | resource |
+| [iosxr_router_ospf_vrf_area_interface.router_ospf_vrf_area_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_ospf_vrf_area_interface) | resource |
 | [iosxr_segment_routing.segment_routing](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/segment_routing) | resource |
 | [iosxr_service_timestamps.service_timestamps](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/service_timestamps) | resource |
 | [iosxr_snmp_server_mib.snmp_server_mib](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/snmp_server_mib) | resource |
