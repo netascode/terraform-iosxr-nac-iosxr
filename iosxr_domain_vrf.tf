@@ -3,7 +3,7 @@ locals {
     for device in local.devices : [
       for domain_vrf in try(local.device_config[device.name].domain_vrf, local.defaults.iosxr.configuration.domain_vrf, []) : {
         device_name = device.name
-        vrf_name    = domain_vrf.vrf_name
+        vrf_name    = try(domain_vrf.vrf_name, null)
         key         = "${device.name}_${domain_vrf.vrf_name}"
 
         name                    = try(domain_vrf.name, local.defaults.iosxr.configuration.domain_vrf.name, null)
