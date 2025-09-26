@@ -1,24 +1,33 @@
-resource "iosxr_class_map_qos" "class_map_qos" {
-  for_each = {
-    for item in flatten([
-      for device_name, device in { for d in local.devices : d.name => d } : [
-        for class_map_name, class_map in try(local.device_config[device.name].class_map_qos, {}) : {
-          device_key     = device.name
-          class_map_name = class_map_name
-          config         = class_map
-        }
-      ]
-    ]) : "${item.device_key}:${item.class_map_name}" => item
-  }
+locals {
+  device_class_map_qos = flatten([
+    for device in local.devices : [
+      for class_map_name, class_map in try(local.device_config[device.name].class_map_qos, {}) : {
+        device_name                     = device.name
+        class_map_name                  = class_map_name
+        key                             = "${device.name}-${class_map_name}"
+        description                     = try(class_map.description, local.defaults.iosxr.configuration.class_map_qos_description, null)
+        match_any                       = try(class_map.match_any, local.defaults.iosxr.configuration.class_map_qos_match_any, null)
+        match_dscp                      = try(class_map.match_dscp, local.defaults.iosxr.configuration.class_map_qos_match_dscp, null)
+        match_mpls_experimental_topmost = try(class_map.match_mpls_experimental_topmost, local.defaults.iosxr.configuration.class_map_qos_match_mpls_experimental_topmost, null)
+        match_qos_group                 = try(class_map.match_qos_group, local.defaults.iosxr.configuration.class_map_qos_match_qos_group, null)
+        match_traffic_class             = try(class_map.match_traffic_class, local.defaults.iosxr.configuration.class_map_qos_match_traffic_class, null)
+      }
+    ]
+    if try(local.device_config[device.name].class_map_qos, null) != null || try(local.defaults.iosxr.configuration.class_map_qos, null) != null
+  ])
+}
 
-  device         = each.value.device_key
+resource "iosxr_class_map_qos" "class_map_qos" {
+  for_each = { for class_map in local.device_class_map_qos : class_map.key => class_map }
+
+  device         = each.value.device_name
   class_map_name = each.value.class_map_name
 
   # Optional attributes
-  description                     = try(each.value.config.description, null)
-  match_any                       = try(each.value.config.match_any, null)
-  match_dscp                      = try(each.value.config.match_dscp, null)
-  match_mpls_experimental_topmost = try(each.value.config.match_mpls_experimental_topmost, null)
-  match_qos_group                 = try(each.value.config.match_qos_group, null)
-  match_traffic_class             = try(each.value.config.match_traffic_class, null)
+  description                     = each.value.description
+  match_any                       = each.value.match_any
+  match_dscp                      = each.value.match_dscp
+  match_mpls_experimental_topmost = each.value.match_mpls_experimental_topmost
+  match_qos_group                 = each.value.match_qos_group
+  match_traffic_class             = each.value.match_traffic_class
 }
