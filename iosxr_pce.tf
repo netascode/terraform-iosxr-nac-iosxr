@@ -30,4 +30,5 @@ resource "iosxr_pce" "pce" {
   delete_mode                   = each.value.delete_mode
   api_users                     = each.value.api_users
   state_sync_ipv4s              = each.value.state_sync_ipv4s
+  #salam Bahlul
 }
