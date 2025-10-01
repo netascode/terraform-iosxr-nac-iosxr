@@ -11,3 +11,5 @@ requirements.txt
 pyproject.toml
 uv.lock
 .yamllint
+.DS_Store
+
