@@ -13,4 +13,5 @@ uv.lock
 .yamllint
 .DS_Store
 examples/system/main.tf
+examples/system/system.nac.yaml
 
