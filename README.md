@@ -17,9 +17,21 @@ Configuring an IOS-XR hostname configuration using YAML:
 iosxr:
   devices:
     - name: router-1
-      host: 1.2.3.4
+      host: 10.122.20.77:2623
       configuration:
-        hostname: router-1
+        #hostname: router-1
+        pce:
+          address_ipv4: 77.77.77.1
+          api_authentication_digest: true
+          api_sibling_ipv4: 100.100.100.2
+          peer_filter_ipv4_access_list: Accesslist1
+          delete_mode: all
+          api_users:
+            - user_name: rest-user
+              password_encrypted: 00141215174C04140B
+          state_sync_ipv4s:
+            - address: 100.100.100.11
+              password_encrypted: 00141215174C04140B
 
 ```
 
@@ -27,9 +39,9 @@ iosxr:
 
 ```hcl
 module "iosxr" {
-  source  = "netascode/nac-iosxr/iosxr"
-  version = ">= 0.1.0"
-
+  #source  = "netascode/nac-iosxr/iosxr"
+  #version = ">= 0.1.0"
+  source     = "../.."
   yaml_files = ["system.nac.yaml"]
 }
 ```
@@ -78,6 +90,7 @@ module "iosxr" {
 | [iosxr_logging_source_interface.logging_source_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/logging_source_interface) | resource |
 | [iosxr_mpls_oam.mpls_oam](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/mpls_oam) | resource |
 | [iosxr_ntp.ntp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/ntp) | resource |
+| [iosxr_pce.pce](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/pce) | resource |
 | [iosxr_router_static_ipv4_unicast.router_static_ipv4_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_static_ipv4_unicast) | resource |
 | [iosxr_segment_routing.segment_routing](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/segment_routing) | resource |
 | [iosxr_service_timestamps.service_timestamps](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/service_timestamps) | resource |
