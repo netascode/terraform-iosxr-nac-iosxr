@@ -5,8 +5,8 @@ iosxr:
       configuration:
         hostname: rasim
         tag_set:
-          set_name: "TEST-SET"
+          set_name: "TEST"
           rpl_tag_set: |
-            tag-set TEST-SET
+            tag-set TEST
               4297, 5000, 6000
             end-set
