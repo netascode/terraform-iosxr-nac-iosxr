@@ -9,8 +9,6 @@ This module supports an inventory driven approach, where a complete IOS-XR confi
 
 ## Examples
 
-### Basic Hostname Configuration
-
 Configuring an IOS-XR hostname configuration using YAML:
 
 #### `system.nac.yaml`
@@ -19,27 +17,13 @@ Configuring an IOS-XR hostname configuration using YAML:
 iosxr:
   devices:
     - name: router-1
-      host: 1.2.3.4
+      host: 10.122.20.77:2623
       configuration:
-        hostname: router-1
-```
-
-### Tag Set Configuration
-
-Configuring an IOS-XR tag set using YAML:
-
-#### `system.nac.yaml`
-
-```yaml
-iosxr:
-  devices:
-    - name: router-1
-      host: 1.2.3.4
-      configuration:
+        hostname: rasim
         tag_set:
-          set_name: "TEST-SET"
+          set_name: "TEST"
           rpl_tag_set: |
-            tag-set TEST-SET
+            tag-set TEST
               4297, 5000, 6000
             end-set
 ```
@@ -48,8 +32,9 @@ iosxr:
 
 ```hcl
 module "iosxr" {
-  source     = "netascode/nac-iosxr/iosxr"
-  version    = ">= 0.1.0"
+  #source     = "netascode/nac-iosxr/iosxr"
+  #version    = ">= 0.1.0"
+  source     = "../.."
   yaml_files = ["system.nac.yaml"]
 }
 ```
@@ -104,6 +89,7 @@ module "iosxr" {
 | [iosxr_service_timestamps.service_timestamps](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/service_timestamps) | resource |
 | [iosxr_snmp_server_mib.snmp_server_mib](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/snmp_server_mib) | resource |
 | [iosxr_snmp_server_view.snmp_server_view](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/snmp_server_view) | resource |
+| [iosxr_tag_set.tag_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/tag_set) | resource |
 | [iosxr_telnet.telnet](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/telnet) | resource |
 | [local_sensitive_file.defaults](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
 | [terraform_data.validation](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
