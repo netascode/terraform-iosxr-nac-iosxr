@@ -9,6 +9,8 @@ This module supports an inventory driven approach, where a complete IOS-XR confi
 
 ## Examples
 
+### Basic Hostname Configuration
+
 Configuring an IOS-XR hostname configuration using YAML:
 
 #### `system.nac.yaml`
@@ -20,6 +22,26 @@ iosxr:
       host: 1.2.3.4
       configuration:
         hostname: router-1
+```
+
+### Tag Set Configuration
+
+Configuring an IOS-XR tag set using YAML:
+
+#### `system.nac.yaml`
+
+```yaml
+iosxr:
+  devices:
+    - name: router-1
+      host: 1.2.3.4
+      configuration:
+        tag_set:
+          set_name: "TEST-SET"
+          rpl_tag_set: |
+            tag-set TEST-SET
+              4297, 5000, 6000
+            end-set
 ```
 
 #### `main.tf`
