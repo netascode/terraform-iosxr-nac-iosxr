@@ -16,20 +16,17 @@ Note that this example will create resources. Resources can be destroyed with `t
 ```yaml
 iosxr:
   devices:
-    - name: router-1
-      host: 1.2.3.4
+    - name: xr-1
+      host: 10.1.1.1
       configuration:
-        hostname: router-1
-
+        hostname: xr-1
 ```
 
 #### `main.tf`
 
 ```hcl
 module "iosxr" {
-  source  = "netascode/nac-iosxr/iosxr"
-  version = ">= 0.1.0"
-
+  source     = "../../"
   yaml_files = ["system.nac.yaml"]
 }
 ```
