@@ -16,17 +16,18 @@ Configuring an IOS-XR hostname configuration using YAML:
 ```yaml
 iosxr:
   devices:
-    - name: xr-1
-      host: 10.1.1.1
+    - name: router-1
+      host: 1.2.3.4
       configuration:
-        hostname: xr-1
+        hostname: router-1
 ```
 
 #### `main.tf`
 
 ```hcl
 module "iosxr" {
-  source     = "./terraform-iosxr-nac-iosxr"
+  source     = "netascode/nac-iosxr/iosxr"
+  version    = ">= 0.1.0"
   yaml_files = ["system.nac.yaml"]
 }
 ```
