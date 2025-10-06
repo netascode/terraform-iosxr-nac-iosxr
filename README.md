@@ -17,9 +17,12 @@ Configuring an IOS-XR hostname configuration using YAML:
 iosxr:
   devices:
     - name: router-1
-      host: 1.2.3.4
+      host: 10.122.20.77:2623
       configuration:
         hostname: router-1
+        esi_sets:
+          - set_name: "POLICYSET"
+            rpl: "esi-set POLICYSET\n  1234.1234.1234.1234.1234\nend-set\n"
 
 ```
 
@@ -27,9 +30,9 @@ iosxr:
 
 ```hcl
 module "iosxr" {
-  source  = "netascode/nac-iosxr/iosxr"
-  version = ">= 0.1.0"
-
+  #source  = "netascode/nac-iosxr/iosxr"
+  #version = ">= 0.1.0"
+  source     = "../.."
   yaml_files = ["system.nac.yaml"]
 }
 ```
@@ -64,6 +67,7 @@ module "iosxr" {
 | [iosxr_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/cdp) | resource |
 | [iosxr_domain.domain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/domain) | resource |
 | [iosxr_domain_vrf.domain_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/domain_vrf) | resource |
+| [iosxr_esi_set.esi_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/esi_set) | resource |
 | [iosxr_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/evpn) | resource |
 | [iosxr_hostname.hostname](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/hostname) | resource |
 | [iosxr_interface.interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface) | resource |
