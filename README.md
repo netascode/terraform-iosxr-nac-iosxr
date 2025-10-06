@@ -17,12 +17,9 @@ Configuring an IOS-XR hostname configuration using YAML:
 iosxr:
   devices:
     - name: router-1
-      host: 10.122.20.77:2623
+      host: 1.2.3.4
       configuration:
         hostname: router-1
-        esi_sets:
-          - set_name: "POLICYSET"
-            rpl: "esi-set POLICYSET\n  1234.1234.1234.1234.1234\nend-set\n"
 
 ```
 
@@ -30,9 +27,9 @@ iosxr:
 
 ```hcl
 module "iosxr" {
-  #source  = "netascode/nac-iosxr/iosxr"
-  #version = ">= 0.1.0"
-  source     = "../.."
+  source  = "netascode/nac-iosxr/iosxr"
+  version = ">= 0.1.0"
+
   yaml_files = ["system.nac.yaml"]
 }
 ```
