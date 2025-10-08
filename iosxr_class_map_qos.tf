@@ -1,16 +1,16 @@
 locals {
   device_class_map_qos = flatten([
     for device in local.devices : [
-      for class_map_name, class_map in try(local.device_config[device.name].class_map_qos, {}) : {
+      for class_map_qos in try(local.device_config[device.name].class_map_qos, []) : {
         device_name                     = device.name
-        class_map_name                  = class_map_name
-        key                             = "${device.name}-${class_map_name}"
-        description                     = try(class_map.description, local.defaults.iosxr.configuration.class_map_qos_description, null)
-        match_any                       = try(class_map.match_any, local.defaults.iosxr.configuration.class_map_qos_match_any, null)
-        match_dscp                      = try(class_map.match_dscp, local.defaults.iosxr.configuration.class_map_qos_match_dscp, null)
-        match_mpls_experimental_topmost = try(class_map.match_mpls_experimental_topmost, local.defaults.iosxr.configuration.class_map_qos_match_mpls_experimental_topmost, null)
-        match_qos_group                 = try(class_map.match_qos_group, local.defaults.iosxr.configuration.class_map_qos_match_qos_group, null)
-        match_traffic_class             = try(class_map.match_traffic_class, local.defaults.iosxr.configuration.class_map_qos_match_traffic_class, null)
+        class_map_name                  = try(class_map_qos.class_map_name, null)
+        key                             = "${device.name}-${try(class_map_qos.class_map_name, "")}"
+        description                     = try(class_map_qos.description, local.defaults.iosxr.configuration.class_map_qos.description, null)
+        match_any                       = try(class_map_qos.match_any, local.defaults.iosxr.configuration.class_map_qos.match_any, null)
+        match_dscp                      = try(class_map_qos.match_dscp, local.defaults.iosxr.configuration.class_map_qos.match_dscp, null)
+        match_mpls_experimental_topmost = try(class_map_qos.match_mpls_experimental_topmost, local.defaults.iosxr.configuration.class_map_qos.match_mpls_experimental_topmost, null)
+        match_qos_group                 = try(class_map_qos.match_qos_group, local.defaults.iosxr.configuration.class_map_qos.match_qos_group, null)
+        match_traffic_class             = try(class_map_qos.match_traffic_class, local.defaults.iosxr.configuration.class_map_qos.match_traffic_class, null)
       }
     ]
     if try(local.device_config[device.name].class_map_qos, null) != null || try(local.defaults.iosxr.configuration.class_map_qos, null) != null
@@ -23,7 +23,6 @@ resource "iosxr_class_map_qos" "class_map_qos" {
   device         = each.value.device_name
   class_map_name = each.value.class_map_name
 
-  # Optional attributes
   description                     = each.value.description
   match_any                       = each.value.match_any
   match_dscp                      = each.value.match_dscp
