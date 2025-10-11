@@ -1,7 +1,7 @@
 locals {
   device_esi_sets = flatten([
     for device in local.devices : [
-      for esi_set in try(local.device_config[device.name].esi_sets, local.defaults.iosxr.configuration.esi_sets, []) : {
+      for esi_set in try(local.device_config[device.name].esi_sets, []) : {
         device_name = device.name
         key         = "${device.name}-${esi_set.set_name}"
         set_name    = try(esi_set.set_name, local.defaults.iosxr.configuration.esi_set_name, null)
