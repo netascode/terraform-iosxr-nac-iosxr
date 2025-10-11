@@ -14,7 +14,6 @@ locals {
 
 resource "iosxr_esi_set" "esi_set" {
   for_each = { for esi_set in local.device_esi_sets : esi_set.key => esi_set }
-
   device   = each.value.device_name
   set_name = each.value.set_name
   rpl      = each.value.rpl
