@@ -66,6 +66,7 @@ module "iosxr" {
 | [iosxr_domain.domain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/domain) | resource |
 | [iosxr_domain_vrf.domain_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/domain_vrf) | resource |
 | [iosxr_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/evpn) | resource |
+| [iosxr_flow_sampler_map.flow_sampler_map](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/flow_sampler_map) | resource |
 | [iosxr_hostname.hostname](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/hostname) | resource |
 | [iosxr_interface.main_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface) | resource |
 | [iosxr_interface.sub_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface) | resource |
@@ -87,9 +88,11 @@ module "iosxr" {
 | [iosxr_router_ospf.router_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_ospf) | resource |
 | [iosxr_router_static_ipv4_unicast.router_static_ipv4_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_static_ipv4_unicast) | resource |
 | [iosxr_segment_routing.segment_routing](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/segment_routing) | resource |
+| [iosxr_segment_routing_te.segment_routing_te](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/segment_routing_te) | resource |
 | [iosxr_service_timestamps.service_timestamps](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/service_timestamps) | resource |
 | [iosxr_snmp_server_mib.snmp_server_mib](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/snmp_server_mib) | resource |
 | [iosxr_snmp_server_view.snmp_server_view](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/snmp_server_view) | resource |
+| [iosxr_tag_set.tag_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/tag_set) | resource |
 | [iosxr_telnet.telnet](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/telnet) | resource |
 | [local_sensitive_file.defaults](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
 | [terraform_data.validation](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
