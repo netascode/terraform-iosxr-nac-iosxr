@@ -67,7 +67,8 @@ module "iosxr" {
 | [iosxr_domain_vrf.domain_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/domain_vrf) | resource |
 | [iosxr_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/evpn) | resource |
 | [iosxr_hostname.hostname](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/hostname) | resource |
-| [iosxr_interface.interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface) | resource |
+| [iosxr_interface.main_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface) | resource |
+| [iosxr_interface.sub_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface) | resource |
 | [iosxr_ipv4_prefix_list.ipv4_prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/ipv4_prefix_list) | resource |
 | [iosxr_ipv6_access_list_options.ipv6_access_list_options](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/ipv6_access_list_options) | resource |
 | [iosxr_key_chain.key_chain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/key_chain) | resource |
