@@ -17,31 +17,9 @@ Configuring an IOS-XR hostname configuration using YAML:
 iosxr:
   devices:
     - name: router-1
-      host: 10.122.20.77:2623
+      host: 1.2.3.4
       configuration:
         hostname: router-1
-        # tag_sets:
-        #   - set_name: TEST_TAGS
-        #     rpl: |
-        #       tag-set TEST_TAGS
-        #         4297,
-        #         5000,
-        #         6543
-        #       end-set
-        pce:
-          address_ipv4: "192.168.1.100"
-          address_ipv6: "2001:db8::100"
-          api_authentication_digest: true
-          api_sibling_ipv4: "192.168.1.101"
-          peer_filter_ipv4_access_list: "PCE_PEER_FILTER"
-          api_users:
-            - user_name: "pce-admin"
-              password_encrypted: "094F471A1A0A464058"
-            - user_name: "pce-monitor"
-              password_encrypted: "12345678901234567890"
-          state_sync_ipv4s:
-            - address: "192.168.1.102"
-            - address: "192.168.1.103"
 
 ```
 
@@ -49,9 +27,9 @@ iosxr:
 
 ```hcl
 module "iosxr" {
-  #source  = "netascode/nac-iosxr/iosxr"
-  #version = ">= 0.1.0"
-  source     = "../.."
+  source  = "netascode/nac-iosxr/iosxr"
+  version = ">= 0.1.0"
+
   yaml_files = ["system.nac.yaml"]
 }
 ```

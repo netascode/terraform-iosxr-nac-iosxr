@@ -8,17 +8,17 @@ locals {
       api_authentication_digest    = try(local.device_config[device.name].pce.api_authentication_digest, local.defaults.iosxr.configuration.pce.api_authentication_digest, null)
       api_sibling_ipv4             = try(local.device_config[device.name].pce.api_sibling_ipv4, local.defaults.iosxr.configuration.pce.api_sibling_ipv4, null)
       peer_filter_ipv4_access_list = try(local.device_config[device.name].pce.peer_filter_ipv4_access_list, local.defaults.iosxr.configuration.pce.peer_filter_ipv4_access_list, null)
-      api_users = try(local.device_config[device.name].pce.api_users, local.defaults.iosxr.configuration.pce.api_users, null) != null ? [
-        for i, api_user in try(local.device_config[device.name].pce.api_users, local.defaults.iosxr.configuration.pce.api_users, []) : {
-          user_name          = try(api_user.user_name, local.defaults.iosxr.configuration.pce.api_users[i].user_name, null)
-          password_encrypted = try(api_user.password_encrypted, local.defaults.iosxr.configuration.pce.api_users[i].password_encrypted, null)
+      api_users = try(length(try(local.device_config[device.name].pce.api_users, local.defaults.iosxr.configuration.pce.api_users, [])) == 0, true) ? null : [
+        for api_user in try(local.device_config[device.name].pce.api_users, local.defaults.iosxr.configuration.pce.api_users, []) : {
+          user_name          = try(api_user.user_name, null)
+          password_encrypted = try(api_user.password_encrypted, null)
         }
-      ] : null
-      state_sync_ipv4s = try(local.device_config[device.name].pce.state_sync_ipv4s, local.defaults.iosxr.configuration.pce.state_sync_ipv4s, null) != null ? [
-        for i, state_sync in try(local.device_config[device.name].pce.state_sync_ipv4s, local.defaults.iosxr.configuration.pce.state_sync_ipv4s, []) : {
-          address = try(state_sync.address, local.defaults.iosxr.configuration.pce.state_sync_ipv4s[i].address, null)
+      ]
+      state_sync_ipv4s = try(length(try(local.device_config[device.name].pce.state_sync_ipv4s, local.defaults.iosxr.configuration.pce.state_sync_ipv4s, [])) == 0, true) ? null : [
+        for state_sync_ipv4 in try(local.device_config[device.name].pce.state_sync_ipv4s, local.defaults.iosxr.configuration.pce.state_sync_ipv4s, []) : {
+          address = try(state_sync_ipv4.address, null)
         }
-      ] : null
+      ]
     }
     if try(local.device_config[device.name].pce, null) != null || try(local.defaults.iosxr.configuration.pce, null) != null
   ]
