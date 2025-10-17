@@ -69,7 +69,6 @@ module "iosxr" {
 | [iosxr_flow_monitor_map.flow_monitor_map](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/flow_monitor_map) | resource |
 | [iosxr_flow_sampler_map.flow_sampler_map](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/flow_sampler_map) | resource |
 | [iosxr_hostname.hostname](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/hostname) | resource |
-| [iosxr_interface.interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface) | resource |
 | [iosxr_interface.main_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface) | resource |
 | [iosxr_interface.sub_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface) | resource |
 | [iosxr_ipv4_access_list_options.ipv4_access_list_options](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/ipv4_access_list_options) | resource |
