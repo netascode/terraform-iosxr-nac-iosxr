@@ -17,31 +17,9 @@ Configuring an IOS-XR hostname configuration using YAML:
 iosxr:
   devices:
     - name: router-1
-      host: 10.122.20.77:2623
+      host: 1.2.3.4
       configuration:
         hostname: router-1
-        # tag_sets:
-        #   - set_name: TEST_TAGS
-        #     rpl: |
-        #       tag-set TEST_TAGS
-        #         4297,
-        #         5000,
-        #         6543
-        #       end-set
-        pce:
-          address_ipv4: "192.168.1.100"
-          address_ipv6: "2001:db8::100"
-          api_authentication_digest: true
-          api_sibling_ipv4: "192.168.1.101"
-          peer_filter_ipv4_access_list: "PCE_PEER_FILTER"
-          api_users:
-            - user_name: "pce-admin"
-              password_encrypted: "094F471A1A0A464058"
-            - user_name: "pce-monitor"
-              password_encrypted: "12345678901234567890"
-          state_sync_ipv4s:
-            - address: "192.168.1.102"
-            - address: "192.168.1.103"
 
 ```
 
@@ -49,9 +27,9 @@ iosxr:
 
 ```hcl
 module "iosxr" {
-  #source  = "netascode/nac-iosxr/iosxr"
-  #version = ">= 0.1.0"
-  source     = "../.."
+  source  = "netascode/nac-iosxr/iosxr"
+  version = ">= 0.1.0"
+
   yaml_files = ["system.nac.yaml"]
 }
 ```
@@ -87,7 +65,6 @@ module "iosxr" {
 | [iosxr_class_map_qos.class_map_qos](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/class_map_qos) | resource |
 | [iosxr_domain.domain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/domain) | resource |
 | [iosxr_domain_vrf.domain_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/domain_vrf) | resource |
-| [iosxr_esi_set.esi_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/esi_set) | resource |
 | [iosxr_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/evpn) | resource |
 | [iosxr_hostname.hostname](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/hostname) | resource |
 | [iosxr_interface.interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface) | resource |
