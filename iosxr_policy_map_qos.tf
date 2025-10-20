@@ -2,9 +2,9 @@ locals {
   device_policy_map_qos = flatten([
     for device in local.devices : [
       for policy_map_qos in try(local.device_config[device.name].policy_map_qos, []) : {
+        key             = "${device.name}-${policy_map_qos.policy_map_name}"
         device_name     = device.name
-        policy_map_name = try(policy_map_qos.policy_map_name, null)
-        key             = "${device.name}-policy_map_qos-${try(policy_map_qos.policy_map_name, "")}"
+        policy_map_name = try(policy_map_qos.policy_map_name, local.defaults.iosxr.configuration.policy_map_qos.policy_map_name, null)
         description     = try(policy_map_qos.description, local.defaults.iosxr.configuration.policy_map_qos.description, null)
         classes = try(length(policy_map_qos.classes) == 0, true) ? null : [for class in policy_map_qos.classes : {
           name                           = try(class.name, local.defaults.iosxr.configuration.policy_map_qos.classes.name, null)
@@ -37,11 +37,9 @@ locals {
 }
 
 resource "iosxr_policy_map_qos" "policy_map_qos" {
-  for_each = { for policy_map in local.device_policy_map_qos : policy_map.key => policy_map }
-
+  for_each        = { for policy_map in local.device_policy_map_qos : policy_map.key => policy_map }
   device          = each.value.device_name
   policy_map_name = each.value.policy_map_name
-
-  description = each.value.description
-  classes     = each.value.classes
+  description     = each.value.description
+  classes         = each.value.classes
 }

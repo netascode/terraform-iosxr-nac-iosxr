@@ -1,7 +1,6 @@
 resource "iosxr_domain" "domain" {
-  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].domain, null) != null || try(local.defaults.iosxr.configuration.domain, null) != null }
-  device   = each.value.name
-
+  for_each                = { for device in local.devices : device.name => device if try(local.device_config[device.name].domain, null) != null || try(local.defaults.iosxr.configuration.domain, null) != null }
+  device                  = each.value.name
   name                    = try(local.device_config[each.value.name].domain.name, local.defaults.iosxr.configuration.domain.name, null)
   lookup_disable          = try(local.device_config[each.value.name].domain.lookup_disable, local.defaults.iosxr.configuration.domain.lookup_disable, null)
   lookup_source_interface = try(local.device_config[each.value.name].domain.lookup_source_interface, local.defaults.iosxr.configuration.domain.lookup_source_interface, null)
