@@ -99,6 +99,7 @@ module "iosxr" {
 | [iosxr_service_timestamps.service_timestamps](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/service_timestamps) | resource |
 | [iosxr_snmp_server_mib.snmp_server_mib](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/snmp_server_mib) | resource |
 | [iosxr_snmp_server_view.snmp_server_view](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/snmp_server_view) | resource |
+| [iosxr_ssh.ssh](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/ssh) | resource |
 | [iosxr_tag_set.tag_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/tag_set) | resource |
 | [iosxr_telnet.telnet](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/telnet) | resource |
 | [local_sensitive_file.defaults](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
