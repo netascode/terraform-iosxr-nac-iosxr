@@ -1,7 +1,6 @@
 resource "iosxr_logging" "logging" {
-  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].logging, null) != null || try(local.defaults.iosxr.configuration.logging, null) != null }
-  device   = each.value.name
-
+  for_each                     = { for device in local.devices : device.name => device if try(local.device_config[device.name].logging, null) != null || try(local.defaults.iosxr.configuration.logging, null) != null }
+  device                       = each.value.name
   ipv4_dscp                    = try(local.device_config[each.value.name].logging.ipv4_dscp, local.defaults.iosxr.configuration.logging.ipv4_dscp, null)
   trap                         = try(local.device_config[each.value.name].logging.trap, local.defaults.iosxr.configuration.logging.trap, null)
   events_display_location      = try(local.device_config[each.value.name].logging.events_display_location, local.defaults.iosxr.configuration.logging.events_display_location, null)

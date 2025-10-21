@@ -1,7 +1,6 @@
 resource "iosxr_lldp" "lldp" {
-  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].lldp, null) != null || try(local.defaults.iosxr.configuration.lldp, null) != null }
-  device   = each.value.name
-
+  for_each                               = { for device in local.devices : device.name => device if try(local.device_config[device.name].lldp, null) != null || try(local.defaults.iosxr.configuration.lldp, null) != null }
+  device                                 = each.value.name
   holdtime                               = try(local.device_config[each.value.name].lldp.holdtime, local.defaults.iosxr.configuration.lldp.holdtime, null)
   timer                                  = try(local.device_config[each.value.name].lldp.timer, local.defaults.iosxr.configuration.lldp.timer, null)
   reinit                                 = try(local.device_config[each.value.name].lldp.reinit, local.defaults.iosxr.configuration.lldp.reinit, null)

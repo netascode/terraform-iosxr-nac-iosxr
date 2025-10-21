@@ -1,7 +1,6 @@
 resource "iosxr_cdp" "cdp" {
-  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].cdp, null) != null || try(local.defaults.iosxr.configuration.cdp, null) != null }
-  device   = each.value.name
-
+  for_each              = { for device in local.devices : device.name => device if try(local.device_config[device.name].cdp, null) != null || try(local.defaults.iosxr.configuration.cdp, null) != null }
+  device                = each.value.name
   enable                = try(local.device_config[each.value.name].cdp.enable, local.defaults.iosxr.configuration.cdp.enable, null)
   holdtime              = try(local.device_config[each.value.name].cdp.holdtime, local.defaults.iosxr.configuration.cdp.holdtime, null)
   timer                 = try(local.device_config[each.value.name].cdp.timer, local.defaults.iosxr.configuration.cdp.timer, null)

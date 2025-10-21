@@ -2,8 +2,8 @@ locals {
   device_flow_monitor_map = flatten([
     for device in local.devices : [
       for flow_monitor_map in try(local.device_config[device.name].flow_monitor_map, []) : {
-        name = try(flow_monitor_map.name, null)
-        key  = "${device.name}-flow_monitor_map-${try(flow_monitor_map.name, "")}"
+        key  = "${device.name}-${flow_monitor_map.name}"
+        name = try(flow_monitor_map.name, local.defaults.iosxr.configuration.flow_monitor_map.name, null)
         exporters = try(length(flow_monitor_map.exporters) == 0, true) ? null : [for exporter in flow_monitor_map.exporters : {
           name = try(exporter.name, local.defaults.iosxr.configuration.flow_monitor_map.exporters.name, null)
         }]
@@ -66,10 +66,8 @@ locals {
 }
 
 resource "iosxr_flow_monitor_map" "flow_monitor_map" {
-  for_each = { for flow_monitor_map in local.device_flow_monitor_map : flow_monitor_map.key => flow_monitor_map }
-
-  name = each.value.name
-
+  for_each                                   = { for flow_monitor_map in local.device_flow_monitor_map : flow_monitor_map.key => flow_monitor_map }
+  name                                       = each.value.name
   exporters                                  = each.value.exporters
   option_outphysint                          = each.value.option_outphysint
   option_filtered                            = each.value.option_filtered

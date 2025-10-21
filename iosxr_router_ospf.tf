@@ -2,9 +2,8 @@ locals {
   device_router_ospf = flatten([
     for device in local.devices : [
       for ospf_process in try(local.device_config[device.name].router_ospf, []) : {
-        device_name = device.name
-        key         = "${device.name}-${ospf_process.process_name}"
-
+        key                                       = "${device.name}-${ospf_process.process_name}"
+        device_name                               = device.name
         process_name                              = try(ospf_process.process_name, local.defaults.iosxr.configuration.router_ospf.process_name, null)
         mpls_ldp_sync                             = try(ospf_process.mpls_ldp_sync, local.defaults.iosxr.configuration.router_ospf.mpls_ldp_sync, null)
         hello_interval                            = try(ospf_process.hello_interval, local.defaults.iosxr.configuration.router_ospf.hello_interval, null)
@@ -31,40 +30,32 @@ locals {
         auto_cost_disable                         = try(ospf_process.auto_cost_disable, local.defaults.iosxr.configuration.router_ospf.auto_cost_disable, null)
         segment_routing_mpls                      = try(ospf_process.segment_routing_mpls, local.defaults.iosxr.configuration.router_ospf.segment_routing_mpls, null)
         segment_routing_sr_prefer                 = try(ospf_process.segment_routing_sr_prefer, local.defaults.iosxr.configuration.router_ospf.segment_routing_sr_prefer, null)
-
-        areas = [
-          for area in try(ospf_process.areas, local.defaults.iosxr.configuration.router_ospf.areas, []) : {
-            area_id = try(area.area_id, local.defaults.iosxr.configuration.router_ospf.area_id, null)
+        areas = try(length(ospf_process.areas) == 0, true) ? null : [for area in ospf_process.areas : {
+          area_id = try(area.area_id, local.defaults.iosxr.configuration.router_ospf.area_id, null)
           }
         ]
-
-        redistribute_bgp = [
-          for bgp in try(ospf_process.redistribute_bgp, local.defaults.iosxr.configuration.router_ospf.redistribute_bgp, []) : {
-            as_number   = try(bgp.as_number, local.defaults.iosxr.configuration.router_ospf.redistribute_bgp_as_number, null)
-            tag         = try(bgp.tag, local.defaults.iosxr.configuration.router_ospf.redistribute_bgp_tag, null)
-            metric_type = try(bgp.metric_type, local.defaults.iosxr.configuration.router_ospf.redistribute_bgp_metric_type, null)
+        redistribute_bgp = try(length(ospf_process.redistribute_bgp) == 0, true) ? null : [for bgp in ospf_process.redistribute_bgp : {
+          as_number   = try(bgp.as_number, local.defaults.iosxr.configuration.router_ospf.redistribute_bgp_as_number, null)
+          tag         = try(bgp.tag, local.defaults.iosxr.configuration.router_ospf.redistribute_bgp_tag, null)
+          metric_type = try(bgp.metric_type, local.defaults.iosxr.configuration.router_ospf.redistribute_bgp_metric_type, null)
           }
         ]
-
-        redistribute_isis = [
-          for isis in try(ospf_process.redistribute_isis, local.defaults.iosxr.configuration.router_ospf.redistribute_isis, []) : {
-            instance_name = try(isis.instance_name, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_instance_name, null)
-            level_1       = try(isis.level_1, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_level_1, null)
-            level_2       = try(isis.level_2, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_level_2, null)
-            level_1_2     = try(isis.level_1_2, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_level_1_2, null)
-            tag           = try(isis.tag, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_tag, null)
-            metric_type   = try(isis.metric_type, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_metric_type, null)
+        redistribute_isis = try(length(ospf_process.redistribute_isis) == 0, true) ? null : [for isis in ospf_process.redistribute_isis : {
+          instance_name = try(isis.instance_name, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_instance_name, null)
+          level_1       = try(isis.level_1, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_level_1, null)
+          level_2       = try(isis.level_2, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_level_2, null)
+          level_1_2     = try(isis.level_1_2, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_level_1_2, null)
+          tag           = try(isis.tag, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_tag, null)
+          metric_type   = try(isis.metric_type, local.defaults.iosxr.configuration.router_ospf.redistribute_isis_metric_type, null)
           }
         ]
-
-        redistribute_ospf = [
-          for ospf in try(ospf_process.redistribute_ospf, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf, []) : {
-            instance_name       = try(ospf.instance_name, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_instance_name, null)
-            match_internal      = try(ospf.match_internal, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_match_internal, null)
-            match_external      = try(ospf.match_external, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_match_external, null)
-            match_nssa_external = try(ospf.match_nssa_external, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_match_nssa_external, null)
-            tag                 = try(ospf.tag, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_tag, null)
-            metric_type         = try(ospf.metric_type, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_metric_type, null)
+        redistribute_ospf = try(length(ospf_process.redistribute_ospf) == 0, true) ? null : [for ospf in ospf_process.redistribute_ospf : {
+          instance_name       = try(ospf.instance_name, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_instance_name, null)
+          match_internal      = try(ospf.match_internal, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_match_internal, null)
+          match_external      = try(ospf.match_external, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_match_external, null)
+          match_nssa_external = try(ospf.match_nssa_external, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_match_nssa_external, null)
+          tag                 = try(ospf.tag, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_tag, null)
+          metric_type         = try(ospf.metric_type, local.defaults.iosxr.configuration.router_ospf.redistribute_ospf_metric_type, null)
           }
         ]
       }
@@ -74,10 +65,8 @@ locals {
 }
 
 resource "iosxr_router_ospf" "router_ospf" {
-  for_each = { for ospf in local.device_router_ospf : ospf.key => ospf }
-
-  device = each.value.device_name
-
+  for_each                                  = { for ospf in local.device_router_ospf : ospf.key => ospf }
+  device                                    = each.value.device_name
   process_name                              = each.value.process_name
   mpls_ldp_sync                             = each.value.mpls_ldp_sync
   hello_interval                            = each.value.hello_interval

@@ -2,9 +2,8 @@ locals {
   device_ntp_configs = flatten([
     for device in local.devices : [
       {
-        device_name = device.name
-        key         = "${device.name}-ntp"
-
+        key                          = device.name
+        device_name                  = device.name
         ipv4_dscp                    = try(local.device_config[device.name].ntp.ipv4_dscp, local.defaults.iosxr.configuration.ntp.ipv4_dscp, null)
         ipv4_precedence              = try(local.device_config[device.name].ntp.ipv4_precedence, local.defaults.iosxr.configuration.ntp.ipv4_precedence, null)
         ipv6_dscp                    = try(local.device_config[device.name].ntp.ipv6_dscp, local.defaults.iosxr.configuration.ntp.ipv6_dscp, null)
@@ -33,149 +32,134 @@ locals {
         admin_plane_prefer           = try(local.device_config[device.name].ntp.admin_plane_prefer, local.defaults.iosxr.configuration.ntp.admin_plane_prefer, null)
         admin_plane_burst            = try(local.device_config[device.name].ntp.admin_plane_burst, local.defaults.iosxr.configuration.ntp.admin_plane_burst, null)
         admin_plane_iburst           = try(local.device_config[device.name].ntp.admin_plane_iburst, local.defaults.iosxr.configuration.ntp.admin_plane_iburst, null)
-
-        access_group_vrfs = [
-          for vrf in try(local.device_config[device.name].ntp.access_group_vrfs, local.defaults.iosxr.configuration.ntp.access_group_vrfs, []) : {
-            vrf_name        = try(vrf.vrf_name, null)
-            ipv6_peer       = try(vrf.ipv6_peer, null)
-            ipv6_query_only = try(vrf.ipv6_query_only, null)
-            ipv6_serve      = try(vrf.ipv6_serve, null)
-            ipv6_serve_only = try(vrf.ipv6_serve_only, null)
-            ipv4_peer       = try(vrf.ipv4_peer, null)
-            ipv4_query_only = try(vrf.ipv4_query_only, null)
-            ipv4_serve      = try(vrf.ipv4_serve, null)
-            ipv4_serve_only = try(vrf.ipv4_serve_only, null)
+        access_group_vrfs = try(length(local.device_config[device.name].ntp.access_group_vrfs) == 0, true) ? null : [
+          for vrf in local.device_config[device.name].ntp.access_group_vrfs : {
+            vrf_name        = try(vrf.vrf_name, local.defaults.iosxr.configuration.ntp.access_group_vrfs.vrf_name, null)
+            ipv6_peer       = try(vrf.ipv6_peer, local.defaults.iosxr.configuration.ntp.access_group_vrfs.ipv6_peer, null)
+            ipv6_query_only = try(vrf.ipv6_query_only, local.defaults.iosxr.configuration.ntp.access_group_vrfs.ipv6_query_only, null)
+            ipv6_serve      = try(vrf.ipv6_serve, local.defaults.iosxr.configuration.ntp.access_group_vrfs.ipv6_serve, null)
+            ipv6_serve_only = try(vrf.ipv6_serve_only, local.defaults.iosxr.configuration.ntp.access_group_vrfs.ipv6_serve_only, null)
+            ipv4_peer       = try(vrf.ipv4_peer, local.defaults.iosxr.configuration.ntp.access_group_vrfs.ipv4_peer, null)
+            ipv4_query_only = try(vrf.ipv4_query_only, local.defaults.iosxr.configuration.ntp.access_group_vrfs.ipv4_query_only, null)
+            ipv4_serve      = try(vrf.ipv4_serve, local.defaults.iosxr.configuration.ntp.access_group_vrfs.ipv4_serve, null)
+            ipv4_serve_only = try(vrf.ipv4_serve_only, local.defaults.iosxr.configuration.ntp.access_group_vrfs.ipv4_serve_only, null)
           }
         ]
-
-        authentication_keys = [
-          for key in try(local.device_config[device.name].ntp.authentication_keys, local.defaults.iosxr.configuration.ntp.authentication_keys, []) : {
-            key_number    = try(key.key_number, null)
-            md5_encrypted = try(key.md5_encrypted, null)
+        authentication_keys = try(length(local.device_config[device.name].ntp.authentication_keys) == 0, true) ? null : [
+          for key in local.device_config[device.name].ntp.authentication_keys : {
+            key_number    = try(key.key_number, local.defaults.iosxr.configuration.ntp.authentication_keys.key_number, null)
+            md5_encrypted = try(key.md5_encrypted, local.defaults.iosxr.configuration.ntp.authentication_keys.md5_encrypted, null)
           }
         ]
-
-        trusted_keys = [
-          for key in try(local.device_config[device.name].ntp.trusted_keys, local.defaults.iosxr.configuration.ntp.trusted_keys, []) : {
-            key_number = try(key.key_number, null)
+        trusted_keys = try(length(local.device_config[device.name].ntp.trusted_keys) == 0, true) ? null : [
+          for key in local.device_config[device.name].ntp.trusted_keys : {
+            key_number = try(key.key_number, local.defaults.iosxr.configuration.ntp.trusted_keys.key_number, null)
           }
         ]
-
-        source_vrfs = [
-          for vrf in try(local.device_config[device.name].ntp.source_vrfs, local.defaults.iosxr.configuration.ntp.source_vrfs, []) : {
-            vrf_name       = try(vrf.vrf_name, null)
-            interface_name = try(vrf.interface_name, null)
+        source_vrfs = try(length(local.device_config[device.name].ntp.source_vrfs) == 0, true) ? null : [
+          for vrf in local.device_config[device.name].ntp.source_vrfs : {
+            vrf_name       = try(vrf.vrf_name, local.defaults.iosxr.configuration.ntp.source_vrfs.vrf_name, null)
+            interface_name = try(vrf.interface_name, local.defaults.iosxr.configuration.ntp.source_vrfs.interface_name, null)
           }
         ]
-
-        cmac_authentication_keys = [
-          for key in try(local.device_config[device.name].ntp.cmac_authentication_keys, local.defaults.iosxr.configuration.ntp.cmac_authentication_keys, []) : {
-            key_number     = try(key.key_number, null)
-            cmac_encrypted = try(key.cmac_encrypted, null)
+        cmac_authentication_keys = try(length(local.device_config[device.name].ntp.cmac_authentication_keys) == 0, true) ? null : [
+          for key in local.device_config[device.name].ntp.cmac_authentication_keys : {
+            key_number     = try(key.key_number, local.defaults.iosxr.configuration.ntp.cmac_authentication_keys.key_number, null)
+            cmac_encrypted = try(key.cmac_encrypted, local.defaults.iosxr.configuration.ntp.cmac_authentication_keys.cmac_encrypted, null)
           }
         ]
-
-        hmac_sha1_authentication_keys = [
-          for key in try(local.device_config[device.name].ntp.hmac_sha1_authentication_keys, local.defaults.iosxr.configuration.ntp.hmac_sha1_authentication_keys, []) : {
-            key_number          = try(key.key_number, null)
-            hmac_sha1_encrypted = try(key.hmac_sha1_encrypted, null)
+        hmac_sha1_authentication_keys = try(length(local.device_config[device.name].ntp.hmac_sha1_authentication_keys) == 0, true) ? null : [
+          for key in local.device_config[device.name].ntp.hmac_sha1_authentication_keys : {
+            key_number          = try(key.key_number, local.defaults.iosxr.configuration.ntp.hmac_sha1_authentication_keys.key_number, null)
+            hmac_sha1_encrypted = try(key.hmac_sha1_encrypted, local.defaults.iosxr.configuration.ntp.hmac_sha1_authentication_keys.hmac_sha1_encrypted, null)
           }
         ]
-
-        hmac_sha2_authentication_keys = [
-          for key in try(local.device_config[device.name].ntp.hmac_sha2_authentication_keys, local.defaults.iosxr.configuration.ntp.hmac_sha2_authentication_keys, []) : {
-            key_number          = try(key.key_number, null)
-            hmac_sha2_encrypted = try(key.hmac_sha2_encrypted, null)
+        hmac_sha2_authentication_keys = try(length(local.device_config[device.name].ntp.hmac_sha2_authentication_keys) == 0, true) ? null : [
+          for key in local.device_config[device.name].ntp.hmac_sha2_authentication_keys : {
+            key_number          = try(key.key_number, local.defaults.iosxr.configuration.ntp.hmac_sha2_authentication_keys.key_number, null)
+            hmac_sha2_encrypted = try(key.hmac_sha2_encrypted, local.defaults.iosxr.configuration.ntp.hmac_sha2_authentication_keys.hmac_sha2_encrypted, null)
           }
         ]
-
-        interfaces = [
-          for interface in try(local.device_config[device.name].ntp.interfaces, local.defaults.iosxr.configuration.ntp.interfaces, []) : {
-            interface_name        = try(interface.interface_name, null)
-            broadcast_destination = try(interface.broadcast_destination, null)
-            broadcast_key         = try(interface.broadcast_key, null)
-            broadcast_version     = try(interface.broadcast_version, null)
-            disable               = try(interface.disable, null)
+        interfaces = try(length(local.device_config[device.name].ntp.interfaces) == 0, true) ? null : [
+          for interface in local.device_config[device.name].ntp.interfaces : {
+            interface_name        = try(interface.interface_name, local.defaults.iosxr.configuration.ntp.interfaces.interface_name, null)
+            broadcast_destination = try(interface.broadcast_destination, local.defaults.iosxr.configuration.ntp.interfaces.broadcast_destination, null)
+            broadcast_key         = try(interface.broadcast_key, local.defaults.iosxr.configuration.ntp.interfaces.broadcast_key, null)
+            broadcast_version     = try(interface.broadcast_version, local.defaults.iosxr.configuration.ntp.interfaces.broadcast_version, null)
+            disable               = try(interface.disable, local.defaults.iosxr.configuration.ntp.interfaces.disable, null)
           }
         ]
-
-        interface_vrfs = [
-          for vrf in try(local.device_config[device.name].ntp.interface_vrfs, local.defaults.iosxr.configuration.ntp.interface_vrfs, []) : {
-            vrf_name = try(vrf.vrf_name, null)
-            interfaces = [
-              for interface in try(vrf.interfaces, []) : {
-                interface_name        = try(interface.interface_name, null)
-                broadcast_client      = try(interface.broadcast_client, null)
-                broadcast_destination = try(interface.broadcast_destination, null)
-                broadcast_key         = try(interface.broadcast_key, null)
-                broadcast_version     = try(interface.broadcast_version, null)
-                disable               = try(interface.disable, null)
+        interface_vrfs = try(length(local.device_config[device.name].ntp.interface_vrfs) == 0, true) ? null : [
+          for vrf in local.device_config[device.name].ntp.interface_vrfs : {
+            vrf_name = try(vrf.vrf_name, local.defaults.iosxr.configuration.ntp.interface_vrfs.vrf_name, null)
+            interfaces = try(length(vrf.interfaces) == 0, true) ? null : [for interface in vrf.interfaces : {
+              interface_name        = try(interface.interface_name, local.defaults.iosxr.configuration.ntp.interface_vrfs.interfaces.interface_name, null)
+              broadcast_client      = try(interface.broadcast_client, local.defaults.iosxr.configuration.ntp.interface_vrfs.interfaces.broadcast_client, null)
+              broadcast_destination = try(interface.broadcast_destination, local.defaults.iosxr.configuration.ntp.interface_vrfs.interfaces.broadcast_destination, null)
+              broadcast_key         = try(interface.broadcast_key, local.defaults.iosxr.configuration.ntp.interface_vrfs.interfaces.broadcast_key, null)
+              broadcast_version     = try(interface.broadcast_version, local.defaults.iosxr.configuration.ntp.interface_vrfs.interfaces.broadcast_version, null)
+              disable               = try(interface.disable, local.defaults.iosxr.configuration.ntp.interface_vrfs.interfaces.disable, null)
               }
             ]
           }
         ]
-
-        ipv4_peers_servers = [
-          for server in try(local.device_config[device.name].ntp.ipv4_peers_servers, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers, []) : {
-            address = try(server.address, null)
-            type    = try(server.type, null)
-            version = try(server.version, null)
-            key     = try(server.key, null)
-            minpoll = try(server.minpoll, null)
-            maxpoll = try(server.maxpoll, null)
-            prefer  = try(server.prefer, null)
-            burst   = try(server.burst, null)
-            iburst  = try(server.iburst, null)
-            source  = try(server.source, null)
+        ipv4_peers_servers = try(length(local.device_config[device.name].ntp.ipv4_peers_servers) == 0, true) ? null : [
+          for server in local.device_config[device.name].ntp.ipv4_peers_servers : {
+            address = try(server.address, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers.address, null)
+            type    = try(server.type, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers.type, null)
+            version = try(server.version, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers.version, null)
+            key     = try(server.key, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers.key, null)
+            minpoll = try(server.minpoll, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers.minpoll, null)
+            maxpoll = try(server.maxpoll, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers.maxpoll, null)
+            prefer  = try(server.prefer, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers.prefer, null)
+            burst   = try(server.burst, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers.burst, null)
+            iburst  = try(server.iburst, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers.iburst, null)
+            source  = try(server.source, local.defaults.iosxr.configuration.ntp.ipv4_peers_servers.source, null)
           }
         ]
-
-        ipv6_peers_servers = [
-          for server in try(local.device_config[device.name].ntp.ipv6_peers_servers, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers, []) : {
-            address      = try(server.address, null)
-            type         = try(server.type, null)
-            version      = try(server.version, null)
-            key          = try(server.key, null)
-            minpoll      = try(server.minpoll, null)
-            maxpoll      = try(server.maxpoll, null)
-            prefer       = try(server.prefer, null)
-            burst        = try(server.burst, null)
-            iburst       = try(server.iburst, null)
-            source       = try(server.source, null)
-            ipv6_address = try(server.ipv6_address, null)
+        ipv6_peers_servers = try(length(local.device_config[device.name].ntp.ipv6_peers_servers) == 0, true) ? null : [
+          for server in local.device_config[device.name].ntp.ipv6_peers_servers : {
+            address      = try(server.address, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.address, null)
+            type         = try(server.type, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.type, null)
+            version      = try(server.version, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.version, null)
+            key          = try(server.key, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.key, null)
+            minpoll      = try(server.minpoll, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.minpoll, null)
+            maxpoll      = try(server.maxpoll, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.maxpoll, null)
+            prefer       = try(server.prefer, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.prefer, null)
+            burst        = try(server.burst, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.burst, null)
+            iburst       = try(server.iburst, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.iburst, null)
+            source       = try(server.source, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.source, null)
+            ipv6_address = try(server.ipv6_address, local.defaults.iosxr.configuration.ntp.ipv6_peers_servers.ipv6_address, null)
           }
         ]
-
-        peers_servers_vrfs = [
-          for vrf in try(local.device_config[device.name].ntp.peers_servers_vrfs, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs, []) : {
+        peers_servers_vrfs = try(length(local.device_config[device.name].ntp.peers_servers_vrfs) == 0, true) ? null : [
+          for vrf in local.device_config[device.name].ntp.peers_servers_vrfs : {
             vrf_name = try(vrf.vrf_name, null)
-            ipv4_peers_servers = [
-              for server in try(vrf.ipv4_peers_servers, []) : {
-                address = try(server.address, null)
-                type    = try(server.type, null)
-                version = try(server.version, null)
-                key     = try(server.key, null)
-                minpoll = try(server.minpoll, null)
-                maxpoll = try(server.maxpoll, null)
-                prefer  = try(server.prefer, null)
-                burst   = try(server.burst, null)
-                iburst  = try(server.iburst, null)
-                source  = try(server.source, null)
+            ipv4_peers_servers = try(length(vrf.ipv4_peers_servers) == 0, true) ? null : [for server in vrf.ipv4_peers_servers : {
+              address = try(server.address, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv4_peers_servers.address, null)
+              type    = try(server.type, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv4_peers_servers.type, null)
+              version = try(server.version, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv4_peers_servers.version, null)
+              key     = try(server.key, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv4_peers_servers.key, null)
+              minpoll = try(server.minpoll, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv4_peers_servers.minpoll, null)
+              maxpoll = try(server.maxpoll, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv4_peers_servers.maxpoll, null)
+              prefer  = try(server.prefer, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv4_peers_servers.prefer, null)
+              burst   = try(server.burst, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv4_peers_servers.burst, null)
+              iburst  = try(server.iburst, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv4_peers_servers.iburst, null)
+              source  = try(server.source, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv4_peers_servers.source, null)
               }
             ]
-            ipv6_peers_servers = [
-              for server in try(vrf.ipv6_peers_servers, []) : {
-                address      = try(server.address, null)
-                type         = try(server.type, null)
-                version      = try(server.version, null)
-                key          = try(server.key, null)
-                minpoll      = try(server.minpoll, null)
-                maxpoll      = try(server.maxpoll, null)
-                prefer       = try(server.prefer, null)
-                burst        = try(server.burst, null)
-                iburst       = try(server.iburst, null)
-                source       = try(server.source, null)
-                ipv6_address = try(server.ipv6_address, null)
+            ipv6_peers_servers = try(length(vrf.ipv6_peers_servers) == 0, true) ? null : [for server in vrf.ipv6_peers_servers : {
+              address      = try(server.address, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.address, null)
+              type         = try(server.type, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.type, null)
+              version      = try(server.version, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.version, null)
+              key          = try(server.key, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.key, null)
+              minpoll      = try(server.minpoll, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.minpoll, null)
+              maxpoll      = try(server.maxpoll, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.maxpoll, null)
+              prefer       = try(server.prefer, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.prefer, null)
+              burst        = try(server.burst, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.burst, null)
+              iburst       = try(server.iburst, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.iburst, null)
+              source       = try(server.source, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.source, null)
+              ipv6_address = try(server.ipv6_address, local.defaults.iosxr.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.ipv6_address, null)
               }
             ]
           }
@@ -186,9 +170,8 @@ locals {
 }
 
 resource "iosxr_ntp" "ntp" {
-  for_each = { for ntp_config in local.device_ntp_configs : ntp_config.key => ntp_config }
-  device   = each.value.device_name
-
+  for_each                      = { for ntp_config in local.device_ntp_configs : ntp_config.key => ntp_config }
+  device                        = each.value.device_name
   ipv4_dscp                     = each.value.ipv4_dscp
   ipv4_precedence               = each.value.ipv4_precedence
   ipv6_dscp                     = each.value.ipv6_dscp

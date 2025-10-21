@@ -2,9 +2,8 @@ locals {
   device_segment_routing_te_configs = flatten([
     for device in local.devices : [
       {
-        device_name = device.name
-        key         = device.name
-
+        key                      = device.name
+        device_name              = device.name
         logging_pcep_peer_status = try(local.device_config[device.name].segment_routing_te.logging_pcep_peer_status, local.defaults.iosxr.configuration.segment_routing_te.logging_pcep_peer_status, null)
         logging_policy_status    = try(local.device_config[device.name].segment_routing_te.logging_policy_status, local.defaults.iosxr.configuration.segment_routing_te.logging_policy_status, null)
         pcc_report_all           = try(local.device_config[device.name].segment_routing_te.pcc_report_all, local.defaults.iosxr.configuration.segment_routing_te.pcc_report_all, null)
@@ -13,16 +12,14 @@ locals {
         pcc_dead_timer           = try(local.device_config[device.name].segment_routing_te.pcc_dead_timer, local.defaults.iosxr.configuration.segment_routing_te.pcc_dead_timer, null)
         pcc_initiated_state      = try(local.device_config[device.name].segment_routing_te.pcc_initiated_state, local.defaults.iosxr.configuration.segment_routing_te.pcc_initiated_state, null)
         pcc_initiated_orphan     = try(local.device_config[device.name].segment_routing_te.pcc_initiated_orphan, local.defaults.iosxr.configuration.segment_routing_te.pcc_initiated_orphan, null)
-
-        pce_peers = [
-          for peer in try(local.device_config[device.name].segment_routing_te.pce_peers, local.defaults.iosxr.configuration.segment_routing_te.pce_peers, []) : {
+        pce_peers = try(length(local.device_config[device.name].segment_routing_te.pce_peers) == 0, true) ? null : [
+          for peer in local.device_config[device.name].segment_routing_te.pce_peers : {
             pce_address = try(peer.pce_address, local.defaults.iosxr.configuration.segment_routing_te.pce_peers_defaults.pce_address, null)
             precedence  = try(peer.precedence, local.defaults.iosxr.configuration.segment_routing_te.pce_peers_defaults.precedence, null)
           }
         ]
-
-        on_demand_colors = [
-          for color in try(local.device_config[device.name].segment_routing_te.on_demand_colors, local.defaults.iosxr.configuration.segment_routing_te.on_demand_colors, []) : {
+        on_demand_colors = try(length(local.device_config[device.name].segment_routing_te.on_demand_colors) == 0, true) ? null : [
+          for color in local.device_config[device.name].segment_routing_te.on_demand_colors : {
             color                               = try(color.color, local.defaults.iosxr.configuration.segment_routing_te.on_demand_colors_defaults.color, null)
             source_address                      = try(color.source_address, local.defaults.iosxr.configuration.segment_routing_te.on_demand_colors_defaults.source_address, null)
             source_address_type                 = try(color.source_address_type, local.defaults.iosxr.configuration.segment_routing_te.on_demand_colors_defaults.source_address_type, null)
@@ -39,9 +36,8 @@ locals {
             srv6_locator_name                   = try(color.srv6_locator_name, local.defaults.iosxr.configuration.segment_routing_te.on_demand_colors_defaults.srv6_locator_name, null)
           }
         ]
-
-        policies = [
-          for policy in try(local.device_config[device.name].segment_routing_te.policies, local.defaults.iosxr.configuration.segment_routing_te.policies, []) : {
+        policies = try(length(local.device_config[device.name].segment_routing_te.policies) == 0, true) ? null : [
+          for policy in local.device_config[device.name].segment_routing_te.policies : {
             policy_name                   = try(policy.policy_name, local.defaults.iosxr.configuration.segment_routing_te.policies_defaults.policy_name, null)
             source_address                = try(policy.source_address, local.defaults.iosxr.configuration.segment_routing_te.policies_defaults.source_address, null)
             source_address_type           = try(policy.source_address_type, local.defaults.iosxr.configuration.segment_routing_te.policies_defaults.source_address_type, null)
@@ -60,9 +56,8 @@ locals {
 }
 
 resource "iosxr_segment_routing_te" "segment_routing_te" {
-  for_each = { for sr_te_config in local.device_segment_routing_te_configs : sr_te_config.key => sr_te_config }
-  device   = each.value.device_name
-
+  for_each                 = { for sr_te_config in local.device_segment_routing_te_configs : sr_te_config.key => sr_te_config }
+  device                   = each.value.device_name
   logging_pcep_peer_status = each.value.logging_pcep_peer_status
   logging_policy_status    = each.value.logging_policy_status
   pcc_report_all           = each.value.pcc_report_all
