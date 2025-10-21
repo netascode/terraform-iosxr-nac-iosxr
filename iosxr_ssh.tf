@@ -16,7 +16,7 @@ locals {
           }
         ]
       }
-    ]
+    ] if try(local.device_config[device.name].ssh, null) != null || try(local.defaults.iosxr.configuration.ssh, null) != null
   ])
 }
 
