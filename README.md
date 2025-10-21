@@ -64,11 +64,15 @@ module "iosxr" {
 | [iosxr_banner.banner](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/banner) | resource |
 | [iosxr_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/cdp) | resource |
 | [iosxr_class_map_qos.class_map_qos](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/class_map_qos) | resource |
+| [iosxr_community_set.community_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/community_set) | resource |
 | [iosxr_domain.domain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/domain) | resource |
 | [iosxr_domain_vrf.domain_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/domain_vrf) | resource |
 | [iosxr_esi_set.esi_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/esi_set) | resource |
 | [iosxr_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/evpn) | resource |
+| [iosxr_evpn_evi.evpn_evi](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/evpn_evi) | resource |
 | [iosxr_evpn_group.evpn_group](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/evpn_group) | resource |
+| [iosxr_extcommunity_cost_set.extcommunity_cost_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/extcommunity_cost_set) | resource |
+| [iosxr_extcommunity_opaque_set.extcommunity_opaque_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/extcommunity_opaque_set) | resource |
 | [iosxr_flow_monitor_map.flow_monitor_map](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/flow_monitor_map) | resource |
 | [iosxr_flow_sampler_map.flow_sampler_map](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/flow_sampler_map) | resource |
 | [iosxr_hostname.hostname](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/hostname) | resource |
@@ -81,6 +85,7 @@ module "iosxr" {
 | [iosxr_l2vpn.l2vpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/l2vpn) | resource |
 | [iosxr_l2vpn_bridge_group.l2vpn_bridge_group](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/l2vpn_bridge_group) | resource |
 | [iosxr_l2vpn_bridge_group_bridge_domain.l2vpn_bridge_group_bridge_domain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/l2vpn_bridge_group_bridge_domain) | resource |
+| [iosxr_l2vpn_pw_class.l2vpn_pw_class](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/l2vpn_pw_class) | resource |
 | [iosxr_lacp.lacp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/lacp) | resource |
 | [iosxr_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/lldp) | resource |
 | [iosxr_logging.logging](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/logging) | resource |
@@ -91,6 +96,7 @@ module "iosxr" {
 | [iosxr_pce.pce](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/pce) | resource |
 | [iosxr_policy_map_qos.policy_map_qos](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/policy_map_qos) | resource |
 | [iosxr_prefix_set.prefix_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/prefix_set) | resource |
+| [iosxr_rd_set.rd_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/rd_set) | resource |
 | [iosxr_route_policy.route_policy](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/route_policy) | resource |
 | [iosxr_router_hsrp_interface.router_hsrp_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_hsrp_interface) | resource |
 | [iosxr_router_ospf.router_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_ospf) | resource |
