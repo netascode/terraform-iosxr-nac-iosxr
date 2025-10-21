@@ -2,9 +2,9 @@ locals {
   device_interfaces_group = flatten([
     for device in local.devices : [
       for interface in try(local.device_config[device.name].interface, []) : {
+        key             = "${device.name}-${interface.interface_name}"
         device_name     = device.name
         interface_name  = interface.interface_name
-        key             = "${device.name}-${interface.interface_name}"
         is_subinterface = can(regex("\\.", interface.interface_name))
         configuration = yamldecode(try(provider::utils::yaml_merge(concat(
           [yamlencode(interface)],
@@ -16,10 +16,9 @@ locals {
 
   device_main_interfaces = flatten([
     for interface in local.device_interfaces_group : {
-      device_name    = interface.device_name
-      interface_name = interface.interface_name
-      key            = interface.key
-
+      key                                                      = interface.key
+      device_name                                              = interface.device_name
+      interface_name                                           = interface.interface_name
       l2transport                                              = try(interface.configuration.l2transport, local.defaults.iosxr.configuration.interface.l2transport, null)
       point_to_point                                           = try(interface.configuration.point_to_point, local.defaults.iosxr.configuration.interface.point_to_point, null)
       multipoint                                               = try(interface.configuration.multipoint, local.defaults.iosxr.configuration.interface.multipoint, null)
@@ -117,10 +116,9 @@ locals {
 
   device_sub_interfaces = flatten([
     for interface in local.device_interfaces_group : {
-      device_name    = interface.device_name
-      interface_name = interface.interface_name
-      key            = interface.key
-
+      key                                                      = interface.key
+      device_name                                              = interface.device_name
+      interface_name                                           = interface.interface_name
       l2transport                                              = try(interface.configuration.l2transport, local.defaults.iosxr.configuration.interface.l2transport, null)
       point_to_point                                           = try(interface.configuration.point_to_point, local.defaults.iosxr.configuration.interface.point_to_point, null)
       multipoint                                               = try(interface.configuration.multipoint, local.defaults.iosxr.configuration.interface.multipoint, null)
@@ -218,11 +216,9 @@ locals {
 }
 
 resource "iosxr_interface" "main_interface" {
-  for_each = { for interface in local.device_main_interfaces : interface.key => interface }
-
-  device         = each.value.device_name
-  interface_name = each.value.interface_name
-
+  for_each                                                 = { for interface in local.device_main_interfaces : interface.key => interface }
+  device                                                   = each.value.device_name
+  interface_name                                           = each.value.interface_name
   l2transport                                              = each.value.l2transport
   point_to_point                                           = each.value.point_to_point
   multipoint                                               = each.value.multipoint
@@ -290,11 +286,9 @@ resource "iosxr_interface" "main_interface" {
 }
 
 resource "iosxr_interface" "sub_interface" {
-  for_each = { for interface in local.device_sub_interfaces : interface.key => interface }
-
-  device         = each.value.device_name
-  interface_name = each.value.interface_name
-
+  for_each                                                 = { for interface in local.device_sub_interfaces : interface.key => interface }
+  device                                                   = each.value.device_name
+  interface_name                                           = each.value.interface_name
   l2transport                                              = each.value.l2transport
   point_to_point                                           = each.value.point_to_point
   multipoint                                               = each.value.multipoint
