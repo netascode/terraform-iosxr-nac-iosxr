@@ -32,7 +32,6 @@ locals {
         }]
       }
     ]
-    if try(local.device_config[device.name].policy_map_qos, null) != null || try(local.defaults.iosxr.configuration.policy_map_qos, null) != null
   ])
 }
 
@@ -42,4 +41,8 @@ resource "iosxr_policy_map_qos" "policy_map_qos" {
   policy_map_name = each.value.policy_map_name
   description     = each.value.description
   classes         = each.value.classes
+
+  depends_on = [
+    iosxr_class_map_qos.class_map_qos
+  ]
 }
