@@ -1,11 +1,11 @@
 locals {
   community_sets = flatten([
     for device in local.devices : [
-      for community_set in try(local.device_config[device.name].community_set, []) : {
+      for community_set in try(local.device_config[device.name].community_sets, []) : {
         key         = "${device.name}-${community_set.set_name}"
         device_name = device.name
-        set_name    = try(community_set.set_name, local.defaults.iosxr.configuration.community_set.set_name, null)
-        rpl         = try(community_set.rpl, local.defaults.iosxr.configuration.community_set.rpl, null)
+        set_name    = try(community_set.set_name, local.defaults.iosxr.configuration.community_sets.set_name, null)
+        rpl         = try(community_set.rpl, local.defaults.iosxr.configuration.community_sets.rpl, null)
       }
     ]
   ])
