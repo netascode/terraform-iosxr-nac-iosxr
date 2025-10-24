@@ -1,11 +1,11 @@
 locals {
   extcommunity_opaque_sets = flatten([
     for device in local.devices : [
-      for extcommunity_opaque_set in try(local.device_config[device.name].extcommunity_opaque_set, []) : {
+      for extcommunity_opaque_set in try(local.device_config[device.name].extcommunity_opaque_sets, []) : {
         key         = "${device.name}-${extcommunity_opaque_set.set_name}"
         device_name = device.name
-        set_name    = try(extcommunity_opaque_set.set_name, local.defaults.iosxr.configuration.extcommunity_opaque_set.set_name, null)
-        rpl         = try(extcommunity_opaque_set.rpl, local.defaults.iosxr.configuration.extcommunity_opaque_set.rpl, null)
+        set_name    = try(extcommunity_opaque_set.set_name, local.defaults.iosxr.configuration.extcommunity_opaque_sets.set_name, null)
+        rpl         = try(extcommunity_opaque_set.rpl, local.defaults.iosxr.configuration.extcommunity_opaque_sets.rpl, null)
       }
     ]
   ])
