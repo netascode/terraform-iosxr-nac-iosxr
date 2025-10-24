@@ -1,11 +1,11 @@
 locals {
   extcommunity_cost_sets = flatten([
     for device in local.devices : [
-      for extcommunity_cost_set in try(local.device_config[device.name].extcommunity_cost_set, []) : {
+      for extcommunity_cost_set in try(local.device_config[device.name].extcommunity_cost_sets, []) : {
         key         = "${device.name}-${extcommunity_cost_set.set_name}"
         device_name = device.name
-        set_name    = try(extcommunity_cost_set.set_name, local.defaults.iosxr.configuration.extcommunity_cost_set.set_name, null)
-        rpl         = try(extcommunity_cost_set.rpl, local.defaults.iosxr.configuration.extcommunity_cost_set.rpl, null)
+        set_name    = try(extcommunity_cost_set.set_name, local.defaults.iosxr.configuration.extcommunity_cost_sets.set_name, null)
+        rpl         = try(extcommunity_cost_set.rpl, local.defaults.iosxr.configuration.extcommunity_cost_sets.rpl, null)
       }
     ]
   ])
