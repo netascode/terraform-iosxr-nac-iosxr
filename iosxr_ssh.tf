@@ -29,4 +29,9 @@ resource "iosxr_ssh" "ssh" {
   server_session_limit = each.value.server_session_limit
   server_v2            = each.value.server_v2
   server_vrfs          = each.value.server_vrfs
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_vrf.vrf
+  ]
 }

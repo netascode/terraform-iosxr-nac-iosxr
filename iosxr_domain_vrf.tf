@@ -46,4 +46,9 @@ resource "iosxr_domain_vrf" "domain_vrf" {
   name_servers            = each.value.name_servers
   ipv4_hosts              = each.value.ipv4_hosts
   ipv6_hosts              = each.value.ipv6_hosts
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_vrf.vrf
+  ]
 }

@@ -69,4 +69,9 @@ resource "iosxr_segment_routing_te" "segment_routing_te" {
   pce_peers                = each.value.pce_peers
   on_demand_colors         = each.value.on_demand_colors
   policies                 = each.value.policies
+
+  depends_on = [
+    iosxr_segment_routing.segment_routing,
+    iosxr_segment_routing_v6.segment_routing_v6
+  ]
 }

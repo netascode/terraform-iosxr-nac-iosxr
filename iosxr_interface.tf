@@ -283,6 +283,13 @@ resource "iosxr_interface" "main_interface" {
   flow_ipv6_egress_monitors                                = each.value.flow_ipv6_egress_monitors
   flow_ipv6_ingress_monitor_samplers                       = each.value.flow_ipv6_ingress_monitor_samplers
   flow_ipv6_ingress_monitors                               = each.value.flow_ipv6_ingress_monitors
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_vrf.vrf,
+    #iosxr_ipv4_access_list.ipv4_access_list,
+    #iosxr_ipv6_access_list.ipv6_access_list,
+  ]
 }
 
 resource "iosxr_interface" "sub_interface" {
@@ -354,5 +361,11 @@ resource "iosxr_interface" "sub_interface" {
   flow_ipv6_ingress_monitor_samplers                       = each.value.flow_ipv6_ingress_monitor_samplers
   flow_ipv6_ingress_monitors                               = each.value.flow_ipv6_ingress_monitors
 
-  depends_on = [iosxr_interface.main_interface]
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_vrf.vrf,
+    #iosxr_ipv4_access_list.ipv4_access_list,
+    #iosxr_ipv6_access_list.ipv6_access_list,
+    iosxr_interface.main_interface
+  ]
 }

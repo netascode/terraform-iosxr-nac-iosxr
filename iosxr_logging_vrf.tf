@@ -28,4 +28,9 @@ resource "iosxr_logging_vrf" "logging_vrf" {
   vrf_name            = each.value.vrf_name
   host_ipv4_addresses = each.value.host_ipv4_addresses
   host_ipv6_addresses = each.value.host_ipv6_addresses
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_vrf.vrf
+  ]
 }

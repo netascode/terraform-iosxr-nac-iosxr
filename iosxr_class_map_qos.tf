@@ -26,4 +26,10 @@ resource "iosxr_class_map_qos" "class_map_qos" {
   match_mpls_experimental_topmost = each.value.match_mpls_experimental_topmost
   match_qos_group                 = each.value.match_qos_group
   match_traffic_class             = each.value.match_traffic_class
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_ipv4_access_list.ipv4_access_list,
+    #iosxr_ipv6_access_list.ipv6_access_list
+  ]
 }

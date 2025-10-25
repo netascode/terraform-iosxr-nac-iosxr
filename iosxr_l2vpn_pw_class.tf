@@ -40,4 +40,8 @@ resource "iosxr_l2vpn_pw_class" "l2vpn_pw_class" {
   encapsulation_mpls_load_balancing_flow_label_receive_static    = each.value.encapsulation_mpls_load_balancing_flow_label_receive_static
   encapsulation_mpls_load_balancing_flow_label_transmit          = each.value.encapsulation_mpls_load_balancing_flow_label_transmit
   encapsulation_mpls_load_balancing_flow_label_transmit_static   = each.value.encapsulation_mpls_load_balancing_flow_label_transmit_static
+
+  depends_on = [
+    iosxr_l2vpn.l2vpn
+  ]
 }

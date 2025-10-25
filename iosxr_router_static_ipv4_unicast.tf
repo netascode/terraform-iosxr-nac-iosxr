@@ -87,4 +87,9 @@ resource "iosxr_router_static_ipv4_unicast" "router_static_ipv4_unicast" {
   nexthop_interface_addresses = each.value.nexthop_interface_addresses
   nexthop_addresses           = each.value.nexthop_addresses
   vrfs                        = each.value.vrfs
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_vrf.vrf
+  ]
 }

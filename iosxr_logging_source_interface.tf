@@ -19,4 +19,9 @@ resource "iosxr_logging_source_interface" "logging_source_interface" {
   device   = each.value.device_name
   name     = each.value.name
   vrfs     = each.value.vrfs
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_vrf.vrf
+  ]
 }

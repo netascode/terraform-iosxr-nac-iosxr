@@ -212,4 +212,9 @@ resource "iosxr_ntp" "ntp" {
   ipv4_peers_servers            = each.value.ipv4_peers_servers
   ipv6_peers_servers            = each.value.ipv6_peers_servers
   peers_servers_vrfs            = each.value.peers_servers_vrfs
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_vrf.vrf
+  ]
 }

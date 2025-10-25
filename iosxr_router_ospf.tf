@@ -96,4 +96,11 @@ resource "iosxr_router_ospf" "router_ospf" {
   redistribute_bgp                          = each.value.redistribute_bgp
   redistribute_isis                         = each.value.redistribute_isis
   redistribute_ospf                         = each.value.redistribute_ospf
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_vrf.vrf,
+    iosxr_route_policy.route_policy,
+    iosxr_key_chain.key_chain
+  ]
 }

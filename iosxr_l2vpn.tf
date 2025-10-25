@@ -27,4 +27,8 @@ resource "iosxr_l2vpn" "l2vpn" {
   load_balancing_flow_src_dst_ip  = each.value.load_balancing_flow_src_dst_ip
   load_balancing_flow_src_dst_mac = each.value.load_balancing_flow_src_dst_mac
   xconnect_groups                 = each.value.xconnect_groups
+
+  depends_on = [
+    iosxr_route_policy.route_policy
+  ]
 }

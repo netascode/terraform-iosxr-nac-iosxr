@@ -120,4 +120,10 @@ resource "iosxr_flow_monitor_map" "flow_monitor_map" {
   sflow_options_sample_header_size           = each.value.sflow_options_sample_header_size
   sflow_options_input_ifindex                = each.value.sflow_options_input_ifindex
   sflow_options_output_ifindex               = each.value.sflow_options_output_ifindex
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_flow_exporter_map.flow_exporter_map,
+    iosxr_flow_sampler_map.flow_sampler_map
+  ]
 }

@@ -51,4 +51,8 @@ resource "iosxr_l2vpn_bridge_group_bridge_domain" "l2vpn_bridge_group_bridge_dom
   interfaces                         = each.value.interfaces
   srv6_evis                          = each.value.srv6_evis
   vnis                               = each.value.vnis
+
+  depends_on = [
+    iosxr_l2vpn_bridge_group.l2vpn_bridge_group
+  ]
 }

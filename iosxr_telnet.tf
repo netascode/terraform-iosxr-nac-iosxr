@@ -31,4 +31,9 @@ resource "iosxr_telnet" "telnet" {
   ipv6_client_source_interface = each.value.ipv6_client_source_interface
   vrfs                         = each.value.vrfs
   vrfs_dscp                    = each.value.vrfs_dscp
+
+  depends_on = [
+    # Future dependencies - uncomment when resource is created:
+    #iosxr_vrf.vrf
+  ]
 }

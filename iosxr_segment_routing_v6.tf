@@ -32,4 +32,8 @@ resource "iosxr_segment_routing_v6" "segment_routing_v6" {
   encapsulation_source_address = each.value.encapsulation_source_address
   formats                      = each.value.formats
   locators                     = each.value.locators
+
+  depends_on = [
+    iosxr_segment_routing.segment_routing
+  ]
 }

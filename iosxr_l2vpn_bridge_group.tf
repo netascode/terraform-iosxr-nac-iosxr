@@ -14,4 +14,8 @@ resource "iosxr_l2vpn_bridge_group" "l2vpn_bridge_group" {
   for_each   = { for bg in local.l2vpn_bridge_groups : bg.key => bg }
   device     = each.value.device_name
   group_name = each.value.group_name
+
+  depends_on = [
+    iosxr_l2vpn.l2vpn
+  ]
 }
