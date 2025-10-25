@@ -84,4 +84,8 @@ resource "iosxr_evpn_evi" "evpn_evi" {
   bgp_route_target_export_two_byte_as_format  = each.value.bgp_route_target_export_two_byte_as_format
   bgp_route_target_export_four_byte_as_format = each.value.bgp_route_target_export_four_byte_as_format
   bgp_route_target_export_ipv4_address_format = each.value.bgp_route_target_export_ipv4_address_format
+
+  depends_on = [
+    iosxr_evpn.evpn
+  ]
 }
