@@ -18,4 +18,8 @@ resource "iosxr_evpn_group" "evpn_group" {
   device          = each.value.device_name
   group_id        = each.value.group_id
   core_interfaces = each.value.core_interfaces
+
+  depends_on = [
+    iosxr_evpn.evpn
+  ]
 }
