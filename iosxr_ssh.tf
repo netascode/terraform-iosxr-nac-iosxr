@@ -4,19 +4,19 @@ locals {
       {
         key                  = device.name
         device_name          = device.name
-        server_dscp          = try(local.device_config[device.name].ssh.server_dscp, local.defaults.iosxr.configuration.ssh.server_dscp, null)
-        server_logging       = try(local.device_config[device.name].ssh.server_logging, local.defaults.iosxr.configuration.ssh.server_logging, null)
-        server_rate_limit    = try(local.device_config[device.name].ssh.server_rate_limit, local.defaults.iosxr.configuration.ssh.server_rate_limit, null)
-        server_session_limit = try(local.device_config[device.name].ssh.server_session_limit, local.defaults.iosxr.configuration.ssh.server_session_limit, null)
-        server_v2            = try(local.device_config[device.name].ssh.server_v2, local.defaults.iosxr.configuration.ssh.server_v2, null)
+        server_dscp          = try(local.device_config[device.name].ssh.server_dscp, local.defaults.iosxr.devices.configuration.ssh.server_dscp, null)
+        server_logging       = try(local.device_config[device.name].ssh.server_logging, local.defaults.iosxr.devices.configuration.ssh.server_logging, null)
+        server_rate_limit    = try(local.device_config[device.name].ssh.server_rate_limit, local.defaults.iosxr.devices.configuration.ssh.server_rate_limit, null)
+        server_session_limit = try(local.device_config[device.name].ssh.server_session_limit, local.defaults.iosxr.devices.configuration.ssh.server_session_limit, null)
+        server_v2            = try(local.device_config[device.name].ssh.server_v2, local.defaults.iosxr.devices.configuration.ssh.server_v2, null)
         server_vrfs = try(length(local.device_config[device.name].ssh.server_vrfs) == 0, true) ? null : [for vrf in local.device_config[device.name].ssh.server_vrfs : {
-          vrf_name         = try(vrf.vrf_name, local.defaults.iosxr.configuration.ssh_server_vrfs.vrf_name, null)
-          ipv4_access_list = try(vrf.ipv4_access_list, local.defaults.iosxr.configuration.ssh_server_vrfs.ipv4_access_list, null)
-          ipv6_access_list = try(vrf.ipv6_access_list, local.defaults.iosxr.configuration.ssh_server_vrfs.ipv6_access_list, null)
+          vrf_name         = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.ssh_server_vrfs.vrf_name, null)
+          ipv4_access_list = try(vrf.ipv4_access_list, local.defaults.iosxr.devices.configuration.ssh_server_vrfs.ipv4_access_list, null)
+          ipv6_access_list = try(vrf.ipv6_access_list, local.defaults.iosxr.devices.configuration.ssh_server_vrfs.ipv6_access_list, null)
           }
         ]
       }
-    ] if try(local.device_config[device.name].ssh, null) != null || try(local.defaults.iosxr.configuration.ssh, null) != null
+    ] if try(local.device_config[device.name].ssh, null) != null || try(local.defaults.iosxr.devices.configuration.ssh, null) != null
   ])
 }
 

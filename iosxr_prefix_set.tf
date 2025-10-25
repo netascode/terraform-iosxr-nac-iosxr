@@ -4,8 +4,8 @@ locals {
       for prefix_set in try(local.device_config[device.name].prefix_sets, []) : {
         key         = "${device.name}-${prefix_set.set_name}"
         device_name = device.name
-        set_name    = try(prefix_set.set_name, local.defaults.iosxr.configuration.prefix_sets.set_name, null)
-        rpl         = try(prefix_set.rpl, local.defaults.iosxr.configuration.prefix_sets.rpl, null)
+        set_name    = try(prefix_set.set_name, local.defaults.iosxr.devices.configuration.prefix_sets.set_name, null)
+        rpl         = try(prefix_set.rpl, local.defaults.iosxr.devices.configuration.prefix_sets.rpl, null)
       }
     ]
   ])

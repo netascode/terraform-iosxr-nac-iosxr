@@ -4,9 +4,9 @@ locals {
       for logging_source_interface in try(local.device_config[device.name].logging_source_interface, []) : {
         key         = "${device.name}-${logging_source_interface.name}"
         device_name = device.name
-        name        = try(logging_source_interface.name, local.defaults.iosxr.configuration.logging_source_interface.name, null)
+        name        = try(logging_source_interface.name, local.defaults.iosxr.devices.configuration.logging_source_interface.name, null)
         vrfs = try(length(logging_source_interface.vrfs) == 0, true) ? null : [for vrf in logging_source_interface.vrfs : {
-          name = try(vrf.name, local.defaults.iosxr.configuration.logging_source_interface_vrfs.name, null)
+          name = try(vrf.name, local.defaults.iosxr.devices.configuration.logging_source_interface_vrfs.name, null)
           }
         ]
       }
