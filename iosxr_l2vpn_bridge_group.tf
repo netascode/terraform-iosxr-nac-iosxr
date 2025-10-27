@@ -2,7 +2,7 @@ locals {
   l2vpn_bridge_groups = flatten([
     for device in local.devices : [
       for bg in try(local.device_config[device.name].l2vpn_bridge_group, []) : {
-        key         = "${device.name}-${bg.group_name}"
+        key         = format("%s/%s", device.name, bg.group_name)
         device_name = device.name
         group_name  = try(bg.group_name, local.defaults.iosxr.devices.configuration.l2vpn_bridge_group_name, null)
       }

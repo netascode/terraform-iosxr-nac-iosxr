@@ -2,7 +2,7 @@ locals {
   router_hsrp_interfaces = flatten([
     for device in local.devices : [
       for hsrp_interface in try(local.device_config[device.name].router_hsrp_interface, []) : {
-        key                       = "${device.name}-${hsrp_interface.interface_name}"
+        key                       = format("%s/%s", device.name, hsrp_interface.interface_name)
         device_name               = device.name
         interface_name            = try(hsrp_interface.interface_name, local.defaults.iosxr.devices.configuration.router_hsrp_interface.interface_name, null)
         hsrp_use_bia              = try(hsrp_interface.hsrp_use_bia, local.defaults.iosxr.devices.configuration.router_hsrp_interface.hsrp_use_bia, null)

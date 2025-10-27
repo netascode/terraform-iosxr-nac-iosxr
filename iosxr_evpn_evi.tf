@@ -2,7 +2,7 @@ locals {
   evpn_evis = flatten([
     for device in local.devices : [
       for evi in try(local.device_config[device.name].evpn_evis, []) : {
-        key                                 = "${device.name}-${evi.vpn_id}"
+        key                                 = format("%s/%s", device.name, evi.vpn_id)
         device_name                         = device.name
         vpn_id                              = try(evi.vpn_id, local.defaults.iosxr.devices.configuration.evpn_evis.vpn_id, null)
         description                         = try(evi.description, local.defaults.iosxr.devices.configuration.evpn_evis.description, null)

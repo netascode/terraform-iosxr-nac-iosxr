@@ -2,7 +2,7 @@ locals {
   l2vpn_pw_class = flatten([
     for device in local.devices : [
       for pw_class in try(local.device_config[device.name].l2vpn_pw_class, []) : {
-        key                                                            = "${device.name}-${pw_class.name}"
+        key                                                            = format("%s/%s", device.name, pw_class.name)
         device_name                                                    = device.name
         name                                                           = try(pw_class.name, local.defaults.iosxr.devices.configuration.l2vpn_pw_class.name, null)
         encapsulation_mpls                                             = try(pw_class.encapsulation_mpls, local.defaults.iosxr.devices.configuration.l2vpn_pw_class.encapsulation_mpls, null)

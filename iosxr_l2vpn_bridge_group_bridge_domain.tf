@@ -2,7 +2,7 @@ locals {
   l2vpn_bridge_group_bridge_domain = flatten([
     for device in local.devices : [
       for bridge_domain in try(local.device_config[device.name].l2vpn_bridge_group_bridge_domain, []) : {
-        key                                = "${device.name}-${bridge_domain.bridge_group_name}-${bridge_domain.bridge_domain_name}"
+        key                                = format("%s/%s/%s", device.name, bridge_domain.bridge_group_name, bridge_domain.bridge_domain_name)
         device_name                        = device.name
         bridge_group_name                  = bridge_domain.bridge_group_name
         bridge_domain_name                 = bridge_domain.bridge_domain_name

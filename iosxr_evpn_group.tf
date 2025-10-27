@@ -2,7 +2,7 @@ locals {
   evpn_groups = flatten([
     for device in local.devices : [
       for evpn_group in try(local.device_config[device.name].evpn_groups, []) : {
-        key         = "${device.name}-${evpn_group.group_id}"
+        key         = format("%s/%s", device.name, evpn_group.group_id)
         device_name = device.name
         group_id    = try(evpn_group.group_id, local.defaults.iosxr.devices.configuration.evpn_groups.group_id, null)
         core_interfaces = try(length(evpn_group.core_interfaces) == 0, true) ? null : [for core_interface in evpn_group.core_interfaces : {

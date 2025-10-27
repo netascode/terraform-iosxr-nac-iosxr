@@ -2,7 +2,7 @@ locals {
   domain_vrfs = flatten([
     for device in local.devices : [
       for domain_vrf in try(local.device_config[device.name].domain_vrfs, []) : {
-        key                     = "${device.name}-${domain_vrf.vrf_name}"
+        key                     = format("%s/%s", device.name, domain_vrf.vrf_name)
         device_name             = device.name
         vrf_name                = try(domain_vrf.vrf_name, null)
         name                    = try(domain_vrf.name, local.defaults.iosxr.devices.configuration.domain_vrfs.name, null)

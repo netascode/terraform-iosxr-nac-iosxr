@@ -2,7 +2,7 @@ locals {
   tag_sets = flatten([
     for device in local.devices : [
       for tag_set in try(local.device_config[device.name].tag_sets, []) : {
-        key         = "${device.name}-${tag_set.set_name}"
+        key         = format("%s/%s", device.name, tag_set.set_name)
         device_name = device.name
         set_name    = try(tag_set.set_name, local.defaults.iosxr.devices.configuration.tag_sets.set_name, null)
         rpl_tag_set = try(tag_set.rpl, local.defaults.iosxr.devices.configuration.tag_sets.rpl, null)

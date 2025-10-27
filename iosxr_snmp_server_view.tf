@@ -2,7 +2,7 @@ locals {
   snmp_server_views = flatten([
     for device in local.devices : [
       for view in try(local.device_config[device.name].snmp_server_views, []) : {
-        key         = "${device.name}-${view.view_name}"
+        key         = format("%s/%s", device.name, view.view_name)
         device_name = device.name
         view_name   = try(view.view_name, local.defaults.iosxr.devices.configuration.snmp_server_views.view_name, null)
         mib_view_families = try(length(view.mib_view_families) == 0, true) ? null : [for family in view.mib_view_families : {

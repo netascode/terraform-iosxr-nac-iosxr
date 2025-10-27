@@ -2,7 +2,7 @@ locals {
   interfaces_groups = flatten([
     for device in local.devices : [
       for interface in try(local.device_config[device.name].interfaces, []) : {
-        key             = "${device.name}-${interface.interface_name}"
+        key             = format("%s/%s", device.name, interface.interface_name)
         device_name     = device.name
         interface_name  = interface.interface_name
         is_subinterface = can(regex("\\.", interface.interface_name))

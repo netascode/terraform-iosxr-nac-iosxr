@@ -2,7 +2,7 @@ locals {
   router_static_ipv4_unicast = flatten([
     for device in local.devices : [
       for route in try(local.device_config[device.name].router_static_ipv4_unicast, []) : {
-        key            = "${device.name}-${route.prefix_address}-${route.prefix_length}"
+        key            = format("%s/%s/%s", device.name, route.prefix_address, route.prefix_length)
         device_name    = device.name
         prefix_address = try(route.prefix_address, local.defaults.iosxr.devices.configuration.router_static_ipv4_unicast.prefix_address, null)
         prefix_length  = try(route.prefix_length, local.defaults.iosxr.devices.configuration.router_static_ipv4_unicast.prefix_length, null)

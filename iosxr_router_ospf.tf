@@ -2,7 +2,7 @@ locals {
   router_ospf = flatten([
     for device in local.devices : [
       for ospf_process in try(local.device_config[device.name].router_ospf, []) : {
-        key                                       = "${device.name}-${ospf_process.process_name}"
+        key                                       = format("%s/%s", device.name, ospf_process.process_name)
         device_name                               = device.name
         process_name                              = try(ospf_process.process_name, local.defaults.iosxr.devices.configuration.router_ospf.process_name, null)
         mpls_ldp_sync                             = try(ospf_process.mpls_ldp_sync, local.defaults.iosxr.devices.configuration.router_ospf.mpls_ldp_sync, null)

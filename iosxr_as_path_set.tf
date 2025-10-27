@@ -2,7 +2,7 @@ locals {
   as_path_sets = flatten([
     for device in local.devices : [
       for as_path_set in try(local.device_config[device.name].as_path_sets, []) : {
-        key         = "${device.name}-${as_path_set.set_name}"
+        key         = format("%s/%s", device.name, as_path_set.set_name)
         device_name = device.name
         set_name    = try(as_path_set.set_name, local.defaults.iosxr.devices.configuration.as_path_sets.set_name, null)
         rpl         = try(as_path_set.rpl, local.defaults.iosxr.devices.configuration.as_path_sets.rpl, null)

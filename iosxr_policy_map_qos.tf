@@ -2,7 +2,7 @@ locals {
   policy_map_qos = flatten([
     for device in local.devices : [
       for policy_map_qos in try(local.device_config[device.name].policy_map_qos, []) : {
-        key             = "${device.name}-${policy_map_qos.policy_map_name}"
+        key             = format("%s/%s", device.name, policy_map_qos.policy_map_name)
         device_name     = device.name
         policy_map_name = try(policy_map_qos.policy_map_name, local.defaults.iosxr.devices.configuration.policy_map_qos.policy_map_name, null)
         description     = try(policy_map_qos.description, local.defaults.iosxr.devices.configuration.policy_map_qos.description, null)

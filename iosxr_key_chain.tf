@@ -2,7 +2,7 @@ locals {
   key_chains = flatten([
     for device in local.devices : [
       for key_chain in try(local.device_config[device.name].key_chains, []) : {
-        key         = "${device.name}-${key_chain.name}"
+        key         = format("%s/%s", device.name, key_chain.name)
         device_name = device.name
         name        = try(key_chain.name, local.defaults.iosxr.devices.configuration.key_chains.name, null)
         keys = try(length(key_chain.keys) == 0, true) ? null : [for key in key_chain.keys : {
