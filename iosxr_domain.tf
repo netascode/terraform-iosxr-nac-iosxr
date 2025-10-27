@@ -2,7 +2,7 @@ locals {
   domains = flatten([
     for device in local.devices : [
       {
-        key                     = format("%s/%s", device.name, "domain")
+        key                     = device.name
         device_name             = device.name
         name                    = try(local.device_config[device.name].domain.name, local.defaults.iosxr.devices.configuration.domain.name, null)
         lookup_disable          = try(local.device_config[device.name].domain.lookup_disable, local.defaults.iosxr.devices.configuration.domain.lookup_disable, null)
