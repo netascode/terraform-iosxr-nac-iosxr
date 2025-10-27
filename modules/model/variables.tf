@@ -14,6 +14,10 @@ variable "model" {
   description = "As an alternative to YAML files, a native Terraform data structure can be provided as well."
   type        = map(any)
   default     = {}
+  validation {
+    condition     = length(var.yaml_directories) != 0 || length(var.yaml_files) != 0 || length(keys(var.model)) != 0
+    error_message = "Either `yaml_directories`,`yaml_files` or a non-empty `model` value must be provided."
+  }
 }
 
 variable "managed_device_groups" {
@@ -36,6 +40,6 @@ variable "write_default_values_file" {
 
 variable "write_model_file" {
   type        = string
-  description = "Write the full model including all resolved templates to a single YAML file. Value is a path pointing to the file to be created."
+  description = "Write the rendered device model to a single YAML file. Value is a path pointing to the file to be created."
   default     = ""
 }
