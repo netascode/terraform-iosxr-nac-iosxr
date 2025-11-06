@@ -1,6 +1,57 @@
 iosxr:
   devices:
     - name: router-1
-      host: 1.2.3.4
+      host: 10.122.20.77:2623
+      credentials:
+        username: cisco
+        password: cisco
       configuration:
         hostname: router-1
+        interface:
+          - interface_name: GigabitEthernet0/0/0/0
+            ipv6_enable: true
+            ipv6_addresses:
+              - address: 2001:db8::1
+                prefix_length: 64
+            ipv6_link_local_address: fe80::1
+            ipv6_link_local_zone: "0"
+          - interface_name: GigabitEthernet0/0/0/1
+            ipv4_enable: true
+            ipv4_addresses:
+              - address: 10.0.0.11
+                prefix_length: 24
+          - interface_name: GigabitEthernet0/0/0/2
+            ipv4_enable: true
+            ipv4_addresses:
+              - address: 10.0.0.12
+                prefix_length: 24
+        router_vrrp_interface:
+          - interface_name: GigabitEthernet0/0/0/0
+        router_vrrp_interface_ipv4:
+          - vrrp_id: 10
+            interface_name: GigabitEthernet0/0/0/0
+            name: vrrp-10
+            version: 2
+            priority: 110
+            preempt_disable: false
+            timer_advertisement_seconds: 1
+            text_authentication: mysecret
+            address: 10.0.0.1
+            secondary_addresses:
+              - address: 10.0.0.2
+            track_interfaces:
+              - interface_name: GigabitEthernet0/0/0/1
+                priority_decrement: 20
+            track_objects:
+              - object_name: obj1
+                priority_decrement: 10
+        router_vrrp_interface_ipv6:
+          - vrrp_id: 20
+            interface_name: GigabitEthernet0/0/0/0
+            name: vrrp6-20
+            priority: 120
+            preempt_disable: false
+            timer_advertisement_seconds: 1
+            track_objects:
+              - object_name: obj6
+                priority_decrement: 5
