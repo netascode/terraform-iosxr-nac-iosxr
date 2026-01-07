@@ -30,10 +30,6 @@ locals {
           redistribute_static_metric_type           = try(vrf.redistribute_static_metric_type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.redistribute_static_metric_type, null)
           redistribute_static_tag                   = try(vrf.redistribute_static_tag, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.redistribute_static_tag, null)
           router_id                                 = try(vrf.router_id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.router_id, null)
-          areas = try(length(vrf.areas) == 0, true) ? null : [for area in vrf.areas : {
-            area_id = try(area.area_id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.area_id, null)
-            }
-          ]
           redistribute_bgp = try(length(vrf.redistribute_bgp) == 0, true) ? null : [for bgp in vrf.redistribute_bgp : {
             as_number   = try(bgp.as_number, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.redistribute_bgp.as_number, null)
             metric_type = try(bgp.metric_type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.redistribute_bgp.metric_type, null)
@@ -92,7 +88,6 @@ resource "iosxr_router_ospf_vrf" "router_ospf_vrf" {
   redistribute_static_metric_type           = each.value.redistribute_static_metric_type
   redistribute_static_tag                   = each.value.redistribute_static_tag
   router_id                                 = each.value.router_id
-  areas                                     = each.value.areas
   redistribute_bgp                          = each.value.redistribute_bgp
   redistribute_isis                         = each.value.redistribute_isis
   redistribute_ospf                         = each.value.redistribute_ospf

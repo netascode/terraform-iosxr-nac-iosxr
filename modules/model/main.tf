@@ -6,9 +6,10 @@ locals {
   interface_groups = try(local.iosxr.interface_groups, [])
 
   all_devices = [for device in local.devices : {
-    name    = device.name
-    host    = device.host
-    managed = try(device.managed, local.defaults.iosxr.devices.managed, true)
+    name     = device.name
+    host     = device.host
+    protocol = try(device.protocol, null)
+    managed  = try(device.managed, local.defaults.iosxr.devices.managed, true)
   }]
 
   managed_devices = [
@@ -189,20 +190,66 @@ locals {
     iosxr = {
       devices = [
         for device in try(local.managed_devices, []) : {
-          name    = device.name
-          host    = device.host
-          managed = try(device.managed, local.defaults.iosxr.devices.managed, true)
+          name     = device.name
+          host     = device.host
+          protocol = try(device.protocol, null)
+          managed  = try(device.managed, local.defaults.iosxr.devices.managed, true)
           configuration = merge(
             { for k, v in try(local.devices_config[device.name], {}) : k => v if k != "interfaces" },
             {
-              interfaces = [
-                for interface in try(local.devices_config[device.name].interfaces, []) : merge(
-                  yamldecode(provider::utils::yaml_merge(concat(
-                    [for g in try(interface.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
-                    [yamlencode(interface)]
-                  )))
-                )
-              ]
+              interfaces = merge(
+                { for k, v in try(local.devices_config[device.name].interfaces, {}) : k => v if k != "ethernets" && k != "bundle_ethernets" && k != "bvis" && k != "loopbacks" && k != "tunnels" },
+                {
+                  "ethernets" = [
+                    for ethernet in try(local.devices_config[device.name].interfaces.ethernets, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(ethernet.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(ethernet)]
+                      )))
+                    )
+                  ]
+                },
+                {
+                  "bundle_ethernets" = [
+                    for bundle_ethernet in try(local.devices_config[device.name].interfaces.bundle_ethernets, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(bundle_ethernet.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(bundle_ethernet)]
+                      )))
+                    )
+                  ]
+                },
+                {
+                  "bvis" = [
+                    for bvi in try(local.devices_config[device.name].interfaces.bvis, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(bvi.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(bvi)]
+                      )))
+                    )
+                  ]
+                },
+                {
+                  "loopbacks" = [
+                    for loopback in try(local.devices_config[device.name].interfaces.loopbacks, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(loopback.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(loopback)]
+                      )))
+                    )
+                  ]
+                },
+                {
+                  "tunnels" = [
+                    for tunnel in try(local.devices_config[device.name].interfaces.tunnels, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(tunnel.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(tunnel)]
+                      )))
+                    )
+                  ]
+                }
+              )
             }
           )
           cli_templates = local.all_cli_templates[device.name]

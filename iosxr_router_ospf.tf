@@ -30,10 +30,6 @@ locals {
         auto_cost_disable                         = try(ospf_process.auto_cost_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.auto_cost_disable, null)
         segment_routing_mpls                      = try(ospf_process.segment_routing_mpls, local.defaults.iosxr.devices.configuration.routing.ospf_processes.segment_routing_mpls, null)
         segment_routing_sr_prefer                 = try(ospf_process.segment_routing_sr_prefer, local.defaults.iosxr.devices.configuration.routing.ospf_processes.segment_routing_sr_prefer, null)
-        areas = try(length(ospf_process.areas) == 0, true) ? null : [for area in ospf_process.areas : {
-          area_id = try(area.area_id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.areas.area_id, null)
-          }
-        ]
         redistribute_bgp = try(length(ospf_process.redistribute_bgp) == 0, true) ? null : [for bgp in ospf_process.redistribute_bgp : {
           as_number   = try(bgp.as_number, local.defaults.iosxr.devices.configuration.routing.ospf_processes.redistribute_bgp_as_number, null)
           tag         = try(bgp.tag, local.defaults.iosxr.devices.configuration.routing.ospf_processes.redistribute_bgp_tag, null)
@@ -92,7 +88,6 @@ resource "iosxr_router_ospf" "router_ospf" {
   auto_cost_disable                         = each.value.auto_cost_disable
   segment_routing_mpls                      = each.value.segment_routing_mpls
   segment_routing_sr_prefer                 = each.value.segment_routing_sr_prefer
-  areas                                     = each.value.areas
   redistribute_bgp                          = each.value.redistribute_bgp
   redistribute_isis                         = each.value.redistribute_isis
   redistribute_ospf                         = each.value.redistribute_ospf
@@ -100,8 +95,7 @@ resource "iosxr_router_ospf" "router_ospf" {
   depends_on = [
     # Future dependencies - uncomment when resource is created:
     #iosxr_vrf.vrf,
-    iosxr_interface.main_interface,
-    iosxr_interface.sub_interface,
+    iosxr_interface_ethernet.ethernet,
     iosxr_route_policy.route_policy,
     iosxr_key_chain.key_chain
   ]

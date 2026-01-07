@@ -25,6 +25,7 @@ locals {
 
 provider "iosxr" {
   devices = local.provider_devices
+  # protocol    = var.device_transaction ? "netconf" : null
 }
 
 locals {
@@ -136,7 +137,6 @@ resource "iosxr_cli" "cli_0" {
     iosxr_esi_set.esi_set,
     iosxr_evpn.evpn,
     iosxr_evpn_evi.evpn_evi,
-    iosxr_evpn_group.evpn_group,
     iosxr_extcommunity_cost_set.extcommunity_cost_set,
     iosxr_extcommunity_opaque_set.extcommunity_opaque_set,
     iosxr_flow_monitor_map.flow_monitor_map,
@@ -144,20 +144,17 @@ resource "iosxr_cli" "cli_0" {
     iosxr_fpd.fpd,
     iosxr_gnmi.gnmi,
     iosxr_hostname.hostname,
-    iosxr_interface.main_interface,
-    iosxr_interface.sub_interface,
+    iosxr_interface_ethernet.ethernet,
     iosxr_ipv4_access_list_options.ipv4_access_list_options,
     iosxr_ipv4_prefix_list.ipv4_prefix_list,
     iosxr_ipv6_access_list_options.ipv6_access_list_options,
     iosxr_key_chain.key_chain,
     iosxr_l2vpn.l2vpn,
-    iosxr_l2vpn_bridge_group.l2vpn_bridge_group,
     iosxr_l2vpn_bridge_group_bridge_domain.l2vpn_bridge_group_bridge_domain,
     iosxr_l2vpn_pw_class.l2vpn_pw_class,
     iosxr_lacp.lacp,
     iosxr_lldp.lldp,
     iosxr_logging.logging,
-    iosxr_logging_source_interface.logging_source_interface,
     iosxr_logging_vrf.logging_vrf,
     iosxr_mpls_oam.mpls_oam,
     iosxr_mpls_traffic_eng.mpls_traffic_eng,
@@ -176,7 +173,6 @@ resource "iosxr_cli" "cli_0" {
     iosxr_service_timestamps.service_timestamps,
     iosxr_snmp_server.snmp_server,
     iosxr_snmp_server_mib.snmp_server_mib,
-    iosxr_snmp_server_view.snmp_server_view,
     iosxr_ssh.ssh,
     iosxr_tag_set.tag_set,
     iosxr_telnet.telnet
