@@ -116,6 +116,7 @@ module "iosxr" {
 | [iosxr_ssh.ssh](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/ssh) | resource |
 | [iosxr_tag_set.tag_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/tag_set) | resource |
 | [iosxr_telnet.telnet](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/telnet) | resource |
+| [iosxr_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/vrf) | resource |
 ## Modules
 
 | Name | Source | Version |
