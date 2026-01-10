@@ -106,6 +106,7 @@ module "iosxr" {
 | [iosxr_router_hsrp_interface.router_hsrp_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_hsrp_interface) | resource |
 | [iosxr_router_ospf.router_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_ospf) | resource |
 | [iosxr_router_static_ipv4_unicast.router_static_ipv4_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_static_ipv4_unicast) | resource |
+| [iosxr_router_vrrp_interface_ipv4.router_vrrp_interface_ipv4](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_vrrp_interface_ipv4) | resource |
 | [iosxr_segment_routing.segment_routing](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/segment_routing) | resource |
 | [iosxr_segment_routing_te.segment_routing_te](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/segment_routing_te) | resource |
 | [iosxr_segment_routing_v6.segment_routing_v6](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/segment_routing_v6) | resource |
