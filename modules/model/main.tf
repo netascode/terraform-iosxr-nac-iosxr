@@ -107,9 +107,21 @@ locals {
     device => yamldecode(templatestring(config, local.device_variables[device]))
   }
 
+  # collect interface groups used on each device
+  used_interface_groups = {
+    for device in local.managed_devices : device.name => distinct(flatten([
+      flatten([for ethernet in try(yamldecode(local.devices_raw_config[device.name]).interfaces.ethernets, []) : try(ethernet.interface_groups, [])]),
+      flatten([for bundle_ethernet in try(yamldecode(local.devices_raw_config[device.name]).interfaces.bundle_ethernets, []) : try(bundle_ethernet.interface_groups, [])]),
+      flatten([for bvi in try(yamldecode(local.devices_raw_config[device.name]).interfaces.bvis, []) : try(bvi.interface_groups, [])]),
+      flatten([for loopback in try(yamldecode(local.devices_raw_config[device.name]).interfaces.loopbacks, []) : try(loopback.interface_groups, [])]),
+      flatten([for tunnel in try(yamldecode(local.devices_raw_config[device.name]).interfaces.tunnels, []) : try(tunnel.interface_groups, [])])
+    ]))
+  }
+
   interface_groups_raw_config = {
     for device in local.managed_devices : device.name => {
       for ig in local.interface_groups : ig.name => yamlencode(try(ig.configuration, {}))
+      if contains(local.used_interface_groups[device.name], ig.name)
     }
   }
 
@@ -119,6 +131,7 @@ locals {
         name          = ig.name
         configuration = yamldecode(templatestring(local.interface_groups_raw_config[device.name][ig.name], local.device_variables[device.name]))
       }
+      if contains(local.used_interface_groups[device.name], ig.name)
     ]
   }
 

@@ -93,6 +93,7 @@ module "iosxr" {
 | [iosxr_interface_bundle_ether_subinterface.bundle_ether_subinterface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface_bundle_ether_subinterface) | resource |
 | [iosxr_interface_bvi.bvi](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface_bvi) | resource |
 | [iosxr_interface_ethernet.ethernet](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface_ethernet) | resource |
+| [iosxr_interface_ethernet.ethernet_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface_ethernet) | resource |
 | [iosxr_interface_ethernet_subinterface.ethernet_subinterface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface_ethernet_subinterface) | resource |
 | [iosxr_interface_loopback.loopback](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface_loopback) | resource |
 | [iosxr_interface_tunnel_ip.tunnel_ip](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/interface_tunnel_ip) | resource |

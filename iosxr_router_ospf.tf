@@ -30,6 +30,8 @@ locals {
         auto_cost_disable                         = try(ospf_process.auto_cost_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.auto_cost_disable, null)
         segment_routing_mpls                      = try(ospf_process.segment_routing_mpls, local.defaults.iosxr.devices.configuration.routing.ospf_processes.segment_routing_mpls, null)
         segment_routing_sr_prefer                 = try(ospf_process.segment_routing_sr_prefer, local.defaults.iosxr.devices.configuration.routing.ospf_processes.segment_routing_sr_prefer, null)
+        delay_normalize_interval                  = try(ospf_process.delay_normalize_interval, local.defaults.iosxr.devices.configuration.routing.ospf_processes.delay_normalize_interval, null)
+        delay_normalize_offset                    = try(ospf_process.delay_normalize_offset, ospf_process.delay_normalize_interval != null ? 0 : null, local.defaults.iosxr.devices.configuration.routing.ospf_processes.delay_normalize_offset, null)
         redistribute_bgp = try(length(ospf_process.redistribute_bgp) == 0, true) ? null : [for bgp in ospf_process.redistribute_bgp : {
           as_number   = try(bgp.as_number, local.defaults.iosxr.devices.configuration.routing.ospf_processes.redistribute_bgp_as_number, null)
           tag         = try(bgp.tag, local.defaults.iosxr.devices.configuration.routing.ospf_processes.redistribute_bgp_tag, null)
@@ -88,6 +90,8 @@ resource "iosxr_router_ospf" "router_ospf" {
   auto_cost_disable                         = each.value.auto_cost_disable
   segment_routing_mpls                      = each.value.segment_routing_mpls
   segment_routing_sr_prefer                 = each.value.segment_routing_sr_prefer
+  delay_normalize_interval                  = each.value.delay_normalize_interval
+  delay_normalize_offset                    = each.value.delay_normalize_offset
   redistribute_bgp                          = each.value.redistribute_bgp
   redistribute_isis                         = each.value.redistribute_isis
   redistribute_ospf                         = each.value.redistribute_ospf
