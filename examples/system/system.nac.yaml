@@ -27,31 +27,11 @@ iosxr:
                 prefix_length: 24
         router_vrrp_interface:
           - interface_name: GigabitEthernet0/0/0/0
-        router_vrrp_interface_ipv4:
-          - vrrp_id: 10
-            interface_name: GigabitEthernet0/0/0/0
-            name: vrrp-10
-            version: 2
-            priority: 110
-            preempt_disable: false
-            timer_advertisement_seconds: 1
-            text_authentication: mysecret
-            address: 10.0.0.1
-            secondary_addresses:
-              - address: 10.0.0.2
-            track_interfaces:
-              - interface_name: GigabitEthernet0/0/0/1
-                priority_decrement: 20
-            track_objects:
-              - object_name: obj1
-                priority_decrement: 10
-        router_vrrp_interface_ipv6:
-          - vrrp_id: 20
-            interface_name: GigabitEthernet0/0/0/0
-            name: vrrp6-20
-            priority: 120
-            preempt_disable: false
-            timer_advertisement_seconds: 1
-            track_objects:
-              - object_name: obj6
-                priority_decrement: 5
+            mac_refresh: 5000
+            delay_minimum: 100
+            delay_reload: 200
+            bfd_minimum_interval: 10
+            bfd_multiplier: 5
+          - interface_name: GigabitEthernet0/0/0/1
+            mac_refresh: 3000
+            bfd_minimum_interval: 15
