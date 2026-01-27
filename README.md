@@ -64,6 +64,7 @@ module "iosxr" {
 |------|------|
 | [iosxr_as_path_set.as_path_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/as_path_set) | resource |
 | [iosxr_banner.banner](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/banner) | resource |
+| [iosxr_bmp_server.bmp_server](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/bmp_server) | resource |
 | [iosxr_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/cdp) | resource |
 | [iosxr_class_map_qos.class_map_qos](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/class_map_qos) | resource |
 | [iosxr_cli.cli_0](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/cli) | resource |
@@ -118,20 +119,36 @@ module "iosxr" {
 | [iosxr_rd_set.rd_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/rd_set) | resource |
 | [iosxr_route_policy.route_policy](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/route_policy) | resource |
 | [iosxr_router_bgp.router_bgp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp) | resource |
-| [iosxr_router_bgp_address_family.router_bgp_address_family](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_address_family) | resource |
+| [iosxr_router_bgp_address_family.ipv4_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_address_family) | resource |
+| [iosxr_router_bgp_address_family.ipv6_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_address_family) | resource |
+| [iosxr_router_bgp_address_family.l2vpn_evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_address_family) | resource |
+| [iosxr_router_bgp_address_family.vpnv4_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_address_family) | resource |
+| [iosxr_router_bgp_address_family.vpnv4_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_address_family) | resource |
+| [iosxr_router_bgp_address_family.vpnv6_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_address_family) | resource |
+| [iosxr_router_bgp_address_family.vpnv6_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_address_family) | resource |
+| [iosxr_router_bgp_af_group.router_bgp_af_group](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_af_group) | resource |
 | [iosxr_router_bgp_neighbor_address_family.router_bgp_neighbor_address_family](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_neighbor_address_family) | resource |
 | [iosxr_router_bgp_neighbor_group.router_bgp_neighbor_group](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_neighbor_group) | resource |
+| [iosxr_router_bgp_session_group.router_bgp_session_group](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_session_group) | resource |
 | [iosxr_router_bgp_vrf.router_bgp_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_vrf) | resource |
-| [iosxr_router_bgp_vrf_address_family.router_bgp_vrf_address_family](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_vrf_address_family) | resource |
+| [iosxr_router_bgp_vrf_address_family.ipv4_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_vrf_address_family) | resource |
+| [iosxr_router_bgp_vrf_address_family.ipv4_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_vrf_address_family) | resource |
+| [iosxr_router_bgp_vrf_address_family.ipv6_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_vrf_address_family) | resource |
+| [iosxr_router_bgp_vrf_address_family.ipv6_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_vrf_address_family) | resource |
 | [iosxr_router_bgp_vrf_neighbor_address_family.router_bgp_vrf_neighbor_address_family](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_bgp_vrf_neighbor_address_family) | resource |
 | [iosxr_router_hsrp_interface.router_hsrp_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_hsrp_interface) | resource |
 | [iosxr_router_isis.router_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_isis) | resource |
-| [iosxr_router_isis_address_family.router_isis_address_family](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_isis_address_family) | resource |
+| [iosxr_router_isis_address_family.ipv4_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_isis_address_family) | resource |
+| [iosxr_router_isis_address_family.ipv4_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_isis_address_family) | resource |
+| [iosxr_router_isis_address_family.ipv6_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_isis_address_family) | resource |
+| [iosxr_router_isis_address_family.ipv6_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_isis_address_family) | resource |
 | [iosxr_router_isis_interface.router_isis_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_isis_interface) | resource |
 | [iosxr_router_isis_interface_address_family.router_isis_interface_address_family](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_isis_interface_address_family) | resource |
 | [iosxr_router_ospf.router_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_ospf) | resource |
+| [iosxr_router_ospf_area.router_ospf_area](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_ospf_area) | resource |
 | [iosxr_router_ospf_area_interface.router_ospf_area_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_ospf_area_interface) | resource |
 | [iosxr_router_ospf_vrf.router_ospf_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_ospf_vrf) | resource |
+| [iosxr_router_ospf_vrf_area.router_ospf_vrf_area](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_ospf_vrf_area) | resource |
 | [iosxr_router_ospf_vrf_area_interface.router_ospf_vrf_area_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_ospf_vrf_area_interface) | resource |
 | [iosxr_router_static_ipv4_multicast.router_static_ipv4_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_static_ipv4_multicast) | resource |
 | [iosxr_router_static_ipv4_unicast.router_static_ipv4_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/router_static_ipv4_unicast) | resource |
@@ -150,6 +167,7 @@ module "iosxr" {
 | [iosxr_ssh.ssh](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/ssh) | resource |
 | [iosxr_tag_set.tag_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/tag_set) | resource |
 | [iosxr_telnet.telnet](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/telnet) | resource |
+| [iosxr_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/latest/docs/resources/vrf) | resource |
 ## Modules
 
 | Name | Source | Version |

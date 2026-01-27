@@ -7,8 +7,8 @@ locals {
         as_number                                                = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
         default_metric                                           = try(bgp_process.default_metric, local.defaults.iosxr.devices.configuration.routing.bgp.default_metric, null)
         mvpn                                                     = try(bgp_process.mvpn, local.defaults.iosxr.devices.configuration.routing.bgp.mvpn, null)
-        segment_routing_srv6_locator                             = try(bgp_process.segment_routing_srv6_locator, local.defaults.iosxr.devices.configuration.routing.bgp.segment_routing_srv6_locator, null)
-        segment_routing_srv6_usid_allocation_wide_local_id_block = try(bgp_process.segment_routing_srv6_usid_allocation_wide_local_id_block, local.defaults.iosxr.devices.configuration.routing.bgp.segment_routing_srv6_usid_allocation_wide_local_id_block, null)
+        segment_routing_srv6_locator                             = try(bgp_process.segment_routing_srv6.locator, local.defaults.iosxr.devices.configuration.routing.bgp.segment_routing_srv6.locator, null)
+        segment_routing_srv6_usid_allocation_wide_local_id_block = try(bgp_process.segment_routing_srv6.usid_allocation_wide_local_id_block, local.defaults.iosxr.devices.configuration.routing.bgp.segment_routing_srv6.usid_allocation_wide_local_id_block, null)
         neighbors = try(length(bgp_process.neighbors) == 0, true) ? null : [for neighbor in bgp_process.neighbors : {
           address                                    = try(neighbor.ip, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.ip, null)
           remote_as                                  = try(neighbor.remote_as, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.remote_as, null)
@@ -58,9 +58,9 @@ locals {
           fast_fallover_inheritance_disable                                 = try(neighbor.fast_fallover_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.fast_fallover_inheritance_disable, null)
           shutdown                                                          = try(neighbor.shutdown, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.shutdown, null)
           timers_keepalive_interval                                         = try(neighbor.timers_keepalive_interval, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.timers_keepalive_interval, null)
-          timers_keepalive_zero                                             = try(neighbor.timers_keepalive_zero, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.timers_keepalive_zero, null)
-          timers_keepalive_zero_holdtime_zero                               = try(neighbor.timers_keepalive_zero_holdtime_zero, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.timers_keepalive_zero_holdtime_zero, null)
-          timers_keepalive_zero_minimum_acceptable_holdtime                 = try(neighbor.timers_keepalive_zero_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.timers_keepalive_zero_minimum_acceptable_holdtime, null)
+          timers_holddown_zero                                              = try(neighbor.timers_holddown_zero, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.timers_holddown_zero, null)
+          timers_holddown_zero_minimum_acceptable_zero                      = try(neighbor.timers_holddown_zero_minimum_acceptable_zero, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.timers_holddown_zero_minimum_acceptable_zero, null)
+          timers_holddown_zero_minimum_acceptable_holdtime                  = try(neighbor.timers_holddown_zero_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.timers_holddown_zero_minimum_acceptable_holdtime, null)
           timers_holdtime                                                   = try(neighbor.timers_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.timers_holdtime, null)
           timers_holdtime_minimum_acceptable_holdtime                       = try(neighbor.timers_holdtime_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.timers_holdtime_minimum_acceptable_holdtime, null)
           local_address                                                     = try(neighbor.local_address, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.local_address, null)
@@ -240,41 +240,41 @@ locals {
           peer_as_number = try(peer.peer_as_number, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_confederation_peers.peer_as_number, null)
           }
         ]
-        bgp_graceful_restart_enable                           = try(bgp_process.bgp_graceful_restart_enable, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_enable, null)
-        bgp_graceful_restart_purge_time                       = try(bgp_process.bgp_graceful_restart_purge_time, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_purge_time, null)
-        bgp_graceful_restart_restart_time                     = try(bgp_process.bgp_graceful_restart_restart_time, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_restart_time, null)
-        bgp_graceful_restart_stalepath_time                   = try(bgp_process.bgp_graceful_restart_stalepath_time, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_stalepath_time, null)
-        bgp_graceful_restart_graceful_reset                   = try(bgp_process.bgp_graceful_restart_graceful_reset, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_graceful_reset, null)
-        bgp_graceful_restart_retain_nbr_routes_disable        = try(bgp_process.bgp_graceful_restart_retain_nbr_routes_disable, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_retain_nbr_routes_disable, null)
-        bgp_install_diversion                                 = try(bgp_process.bgp_install_diversion, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_install_diversion, null)
-        bgp_update_delay                                      = try(bgp_process.bgp_update_delay, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_update_delay, null)
-        bgp_update_delay_always                               = try(bgp_process.bgp_update_delay_always, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_update_delay_always, null)
-        bgp_maximum_neighbor                                  = try(bgp_process.bgp_maximum_neighbor, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_maximum_neighbor, null)
-        bgp_origin_as_validation_signal_ibgp                  = try(bgp_process.bgp_origin_as_validation_signal_ibgp, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_origin_as_validation_signal_ibgp, null)
-        bgp_origin_as_validation_time_off                     = try(bgp_process.bgp_origin_as_validation_time_off, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_origin_as_validation_time_off, null)
-        bgp_origin_as_validation_time                         = try(bgp_process.bgp_origin_as_validation_time, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_origin_as_validation_time, null)
-        timers_bgp_keepalive_interval                         = try(bgp_process.timers_bgp_keepalive_interval, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_keepalive_interval, null)
-        timers_bgp_keepalive_zero                             = try(bgp_process.timers_bgp_keepalive_zero, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_keepalive_zero, null)
-        timers_bgp_keepalive_zero_holdtime_zero               = try(bgp_process.timers_bgp_keepalive_zero_holdtime_zero, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_keepalive_zero_holdtime_zero, null)
-        timers_bgp_keepalive_zero_minimum_acceptable_holdtime = try(bgp_process.timers_bgp_keepalive_zero_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_keepalive_zero_minimum_acceptable_holdtime, null)
-        timers_bgp_holdtime                                   = try(bgp_process.timers_bgp_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_holdtime, null)
-        timers_bgp_holdtime_minimum_acceptable_holdtime       = try(bgp_process.timers_bgp_holdtime_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_holdtime_minimum_acceptable_holdtime, null)
-        nsr                                                   = try(bgp_process.nsr, local.defaults.iosxr.devices.configuration.routing.bgp.nsr, null)
-        nsr_disable                                           = try(bgp_process.nsr_disable, local.defaults.iosxr.devices.configuration.routing.bgp.nsr_disable, null)
-        ibgp_policy_out_enforce_modifications                 = try(bgp_process.ibgp_policy_out_enforce_modifications, local.defaults.iosxr.devices.configuration.routing.bgp.ibgp_policy_out_enforce_modifications, null)
-        openconfig_rib_telemetry                              = try(bgp_process.openconfig_rib_telemetry, local.defaults.iosxr.devices.configuration.routing.bgp.openconfig_rib_telemetry, null)
-        update_limit                                          = try(bgp_process.update_limit, local.defaults.iosxr.devices.configuration.routing.bgp.update_limit, null)
-        update_in_error_handling_basic_ebgp_disable           = try(bgp_process.update_in_error_handling_basic_ebgp_disable, local.defaults.iosxr.devices.configuration.routing.bgp.update_in_error_handling_basic_ebgp_disable, null)
-        update_in_error_handling_basic_ibgp_disable           = try(bgp_process.update_in_error_handling_basic_ibgp_disable, local.defaults.iosxr.devices.configuration.routing.bgp.update_in_error_handling_basic_ibgp_disable, null)
-        update_in_error_handling_extended_ebgp                = try(bgp_process.update_in_error_handling_extended_ebgp, local.defaults.iosxr.devices.configuration.routing.bgp.update_in_error_handling_extended_ebgp, null)
-        update_in_error_handling_extended_ibgp                = try(bgp_process.update_in_error_handling_extended_ibgp, local.defaults.iosxr.devices.configuration.routing.bgp.update_in_error_handling_extended_ibgp, null)
-        update_out_logging                                    = try(bgp_process.update_out_logging, local.defaults.iosxr.devices.configuration.routing.bgp.update_out_logging, null)
-        bfd_multiplier                                        = try(bgp_process.bfd_multiplier, local.defaults.iosxr.devices.configuration.routing.bgp.bfd_multiplier, null)
-        bfd_minimum_interval                                  = try(bgp_process.bfd_minimum_interval, local.defaults.iosxr.devices.configuration.routing.bgp.bfd_minimum_interval, null)
+        bgp_graceful_restart_enable                          = try(bgp_process.bgp_graceful_restart_enable, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_enable, null)
+        bgp_graceful_restart_purge_time                      = try(bgp_process.bgp_graceful_restart_purge_time, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_purge_time, null)
+        bgp_graceful_restart_restart_time                    = try(bgp_process.bgp_graceful_restart_restart_time, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_restart_time, null)
+        bgp_graceful_restart_stalepath_time                  = try(bgp_process.bgp_graceful_restart_stalepath_time, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_stalepath_time, null)
+        bgp_graceful_restart_graceful_reset                  = try(bgp_process.bgp_graceful_restart_graceful_reset, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_graceful_reset, null)
+        bgp_graceful_restart_retain_nbr_routes_disable       = try(bgp_process.bgp_graceful_restart_retain_nbr_routes_disable, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_graceful_restart_retain_nbr_routes_disable, null)
+        bgp_install_diversion                                = try(bgp_process.bgp_install_diversion, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_install_diversion, null)
+        bgp_update_delay                                     = try(bgp_process.bgp_update_delay, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_update_delay, null)
+        bgp_update_delay_always                              = try(bgp_process.bgp_update_delay_always, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_update_delay_always, null)
+        bgp_maximum_neighbor                                 = try(bgp_process.bgp_maximum_neighbor, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_maximum_neighbor, null)
+        bgp_origin_as_validation_signal_ibgp                 = try(bgp_process.bgp_origin_as_validation_signal_ibgp, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_origin_as_validation_signal_ibgp, null)
+        bgp_origin_as_validation_time_off                    = try(bgp_process.bgp_origin_as_validation_time_off, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_origin_as_validation_time_off, null)
+        bgp_origin_as_validation_time                        = try(bgp_process.bgp_origin_as_validation_time, local.defaults.iosxr.devices.configuration.routing.bgp.bgp_origin_as_validation_time, null)
+        timers_bgp_keepalive_interval                        = try(bgp_process.timers_bgp_keepalive_interval, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_keepalive_interval, null)
+        timers_bgp_holddown_zero                             = try(bgp_process.timers_bgp_holddown_zero, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_holddown_zero, null)
+        timers_bgp_holddown_zero_minimum_acceptable_zero     = try(bgp_process.timers_bgp_holddown_zero_minimum_acceptable_zero, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_holddown_zero_minimum_acceptable_zero, null)
+        timers_bgp_holddown_zero_minimum_acceptable_holdtime = try(bgp_process.timers_bgp_holddown_zero_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_holddown_zero_minimum_acceptable_holdtime, null)
+        timers_bgp_holdtime                                  = try(bgp_process.timers_bgp_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_holdtime, null)
+        timers_bgp_holdtime_minimum_acceptable_holdtime      = try(bgp_process.timers_bgp_holdtime_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.timers_bgp_holdtime_minimum_acceptable_holdtime, null)
+        nsr                                                  = try(bgp_process.nsr, local.defaults.iosxr.devices.configuration.routing.bgp.nsr, null)
+        nsr_disable                                          = try(bgp_process.nsr_disable, local.defaults.iosxr.devices.configuration.routing.bgp.nsr_disable, null)
+        ibgp_policy_out_enforce_modifications                = try(bgp_process.ibgp_policy_out_enforce_modifications, local.defaults.iosxr.devices.configuration.routing.bgp.ibgp_policy_out_enforce_modifications, null)
+        openconfig_rib_telemetry                             = try(bgp_process.openconfig_rib_telemetry, local.defaults.iosxr.devices.configuration.routing.bgp.openconfig_rib_telemetry, null)
+        update_limit                                         = try(bgp_process.update_limit, local.defaults.iosxr.devices.configuration.routing.bgp.update_limit, null)
+        update_in_error_handling_basic_ebgp_disable          = try(bgp_process.update_in_error_handling_basic_ebgp_disable, local.defaults.iosxr.devices.configuration.routing.bgp.update_in_error_handling_basic_ebgp_disable, null)
+        update_in_error_handling_basic_ibgp_disable          = try(bgp_process.update_in_error_handling_basic_ibgp_disable, local.defaults.iosxr.devices.configuration.routing.bgp.update_in_error_handling_basic_ibgp_disable, null)
+        update_in_error_handling_extended_ebgp               = try(bgp_process.update_in_error_handling_extended_ebgp, local.defaults.iosxr.devices.configuration.routing.bgp.update_in_error_handling_extended_ebgp, null)
+        update_in_error_handling_extended_ibgp               = try(bgp_process.update_in_error_handling_extended_ibgp, local.defaults.iosxr.devices.configuration.routing.bgp.update_in_error_handling_extended_ibgp, null)
+        update_out_logging                                   = try(bgp_process.update_out_logging, local.defaults.iosxr.devices.configuration.routing.bgp.update_out_logging, null)
+        bfd_multiplier                                       = try(bgp_process.bfd_multiplier, local.defaults.iosxr.devices.configuration.routing.bgp.bfd_multiplier, null)
+        bfd_minimum_interval                                 = try(bgp_process.bfd_minimum_interval, local.defaults.iosxr.devices.configuration.routing.bgp.bfd_minimum_interval, null)
         rpki_routes = try(length(bgp_process.rpki_routes) == 0, true) ? null : [for route in bgp_process.rpki_routes : {
           route_address = try(route.route_address, local.defaults.iosxr.devices.configuration.routing.bgp.rpki_routes.route_address, null)
           route_prefix  = try(route.route_prefix, local.defaults.iosxr.devices.configuration.routing.bgp.rpki_routes.route_prefix, null)
-          max_lengch    = try(route.max_lengch, local.defaults.iosxr.devices.configuration.routing.bgp.rpki_routes.max_lengch, null)
+          max_length    = try(route.max_length, local.defaults.iosxr.devices.configuration.routing.bgp.rpki_routes.max_length, null)
           origin_as     = try(route.origin_as, local.defaults.iosxr.devices.configuration.routing.bgp.rpki_routes.origin_as, null)
           }
         ]
@@ -379,9 +379,9 @@ resource "iosxr_router_bgp" "router_bgp" {
   bgp_origin_as_validation_time_off                        = each.value.bgp_origin_as_validation_time_off
   bgp_origin_as_validation_time                            = each.value.bgp_origin_as_validation_time
   timers_bgp_keepalive_interval                            = each.value.timers_bgp_keepalive_interval
-  timers_bgp_keepalive_zero                                = each.value.timers_bgp_keepalive_zero
-  timers_bgp_keepalive_zero_holdtime_zero                  = each.value.timers_bgp_keepalive_zero_holdtime_zero
-  timers_bgp_keepalive_zero_minimum_acceptable_holdtime    = each.value.timers_bgp_keepalive_zero_minimum_acceptable_holdtime
+  timers_bgp_holddown_zero                                 = each.value.timers_bgp_holddown_zero
+  timers_bgp_holddown_zero_minimum_acceptable_zero         = each.value.timers_bgp_holddown_zero_minimum_acceptable_zero
+  timers_bgp_holddown_zero_minimum_acceptable_holdtime     = each.value.timers_bgp_holddown_zero_minimum_acceptable_holdtime
   timers_bgp_holdtime                                      = each.value.timers_bgp_holdtime
   timers_bgp_holdtime_minimum_acceptable_holdtime          = each.value.timers_bgp_holdtime_minimum_acceptable_holdtime
   nsr                                                      = each.value.nsr
@@ -400,12 +400,8 @@ resource "iosxr_router_bgp" "router_bgp" {
   rpki_servers                                             = each.value.rpki_servers
 
   depends_on = [
-    # Future dependencies - uncomment when resource is created:
-    #iosxr_vrf.vrf,
-    iosxr_router_bgp_neighbor_group.router_bgp_neighbor_group,
-    iosxr_router_bgp_address_family.router_bgp_address_family,
-    iosxr_interface_ethernet.ethernet,
+    iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    iosxr_key_chain.key_chain
+    iosxr_bmp_server.bmp_server
   ]
 }
