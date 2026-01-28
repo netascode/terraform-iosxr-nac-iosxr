@@ -86,7 +86,7 @@ locals {
           distribute_list_out_static_acl             = try(vrf.distribute_list_out_static_acl, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.distribute_list_out_static_acl, null)
           distribute_list_out_bgp_as                 = try(vrf.distribute_list_out_bgp_as, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.distribute_list_out_bgp_as, null)
           distribute_list_out_bgp_acl                = try(vrf.distribute_list_out_bgp_acl, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.distribute_list_out_bgp_acl, null)
-          distribute_list_out_ospf_instance_name     = try(vrf.distribute_list_out_ospf_instance_name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.distribute_list_out_ospf_instance_name, null)
+          distribute_list_out_ospf_instance_name     = try(vrf.distribute_list_out_ospf_instance_id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.distribute_list_out_ospf_instance_id, null)
           distribute_list_out_ospf_acl               = try(vrf.distribute_list_out_ospf_acl, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.distribute_list_out_ospf_acl, null)
           packet_size                                = try(vrf.packet_size, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.packet_size, null)
           bfd_fast_detect                            = try(vrf.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.bfd_fast_detect, null) == "enable" ? true : null
