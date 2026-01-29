@@ -80,6 +80,7 @@ module "iosxr" {
 | [iosxr_community_set.community_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/community_set) | resource |
 | [iosxr_domain.domain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/domain) | resource |
 | [iosxr_domain_vrf.domain_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/domain_vrf) | resource |
+| [iosxr_error_disable_recovery.error_disable_recovery](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/error_disable_recovery) | resource |
 | [iosxr_esi_set.esi_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/esi_set) | resource |
 | [iosxr_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/evpn) | resource |
 | [iosxr_evpn_evi.evpn_evi](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/evpn_evi) | resource |

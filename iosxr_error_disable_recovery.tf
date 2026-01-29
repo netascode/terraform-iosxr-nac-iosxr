@@ -2,8 +2,8 @@ locals {
   error_disable_recovery = flatten([
     for device in local.devices : [
       {
-        key                             = device.name
-        device_name                     = device.name
+        key                                     = device.name
+        device_name                             = device.name
         link_oam_session_down_interval          = try(local.device_config[device.name].error_disable_recovery.link_oam_session_down_interval, local.defaults.iosxr.devices.configuration.error_disable_recovery.link_oam_session_down_interval, null)
         link_oam_discovery_timeout_interval     = try(local.device_config[device.name].error_disable_recovery.link_oam_discovery_timeout_interval, local.defaults.iosxr.devices.configuration.error_disable_recovery.link_oam_discovery_timeout_interval, null)
         link_oam_capabilities_conflict_interval = try(local.device_config[device.name].error_disable_recovery.link_oam_capabilities_conflict_interval, local.defaults.iosxr.devices.configuration.error_disable_recovery.link_oam_capabilities_conflict_interval, null)
@@ -31,8 +31,8 @@ locals {
 }
 
 resource "iosxr_error_disable_recovery" "error_disable_recovery" {
-  for_each                        = { for error_disable_recovery in local.error_disable_recovery : error_disable_recovery.key => error_disable_recovery }
-  device                          = each.value.device_name
+  for_each                                = { for error_disable_recovery in local.error_disable_recovery : error_disable_recovery.key => error_disable_recovery }
+  device                                  = each.value.device_name
   link_oam_session_down_interval          = each.value.link_oam_session_down_interval
   link_oam_discovery_timeout_interval     = each.value.link_oam_discovery_timeout_interval
   link_oam_capabilities_conflict_interval = each.value.link_oam_capabilities_conflict_interval
