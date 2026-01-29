@@ -1,37 +1,6 @@
 iosxr:
   devices:
     - name: router-1
-      host: 10.122.20.77:2623
-      credentials:
-        username: cisco
-        password: cisco
+      host: 1.2.3.4
       configuration:
         hostname: router-1
-        interface:
-          - interface_name: GigabitEthernet0/0/0/0
-            ipv6_enable: true
-            ipv6_addresses:
-              - address: 2001:db8::1
-                prefix_length: 64
-            ipv6_link_local_address: fe80::1
-            ipv6_link_local_zone: "0"
-          - interface_name: GigabitEthernet0/0/0/1
-            ipv4_enable: true
-            ipv4_addresses:
-              - address: 10.0.0.11
-                prefix_length: 24
-          - interface_name: GigabitEthernet0/0/0/2
-            ipv4_enable: true
-            ipv4_addresses:
-              - address: 10.0.0.12
-                prefix_length: 24
-        router_vrrp_interface:
-          - interface_name: GigabitEthernet0/0/0/0
-            mac_refresh: 5000
-            delay_minimum: 100
-            delay_reload: 200
-            bfd_minimum_interval: 10
-            bfd_multiplier: 5
-          - interface_name: GigabitEthernet0/0/0/1
-            mac_refresh: 3000
-            bfd_minimum_interval: 15
