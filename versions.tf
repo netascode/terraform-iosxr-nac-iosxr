@@ -4,11 +4,11 @@ terraform {
   required_providers {
     iosxr = {
       source  = "CiscoDevNet/iosxr"
-      version = ">= 0.6.0"
+      version = "0.7.0"
     }
     utils = {
       source  = "netascode/utils"
-      version = "= 1.1.0-beta3"
+      version = "1.1.0-beta3"
     }
   }
 }
