@@ -1,3 +1,7 @@
 defaults:
   iosxr:
-    configuration:
+    templates:
+      order: 0
+    devices:
+      managed: true
+      configuration:
