@@ -1,0 +1,61 @@
+name: Pull Request
+description: Submit a pull request for review
+labels: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please ensure that the WIP label is not being applied if ready for review.
+        If the WIP label is applied to your PR, no one will look at it.
+        Please feel free to ask for help.
+
+  - type: textarea
+    id: proposed-changes
+    attributes:
+      label: Proposed Changes
+      description: Please provide a description of proposed changes
+      placeholder: Describe what changes you've made and why
+    validations:
+      required: true
+
+  - type: dropdown
+    id: iosxr-version
+    attributes:
+      label: Cisco IOS-XR Version
+      description: Please select the Cisco IOS-XR version developed against
+      options:
+        - "24.4.2"
+        - "25.4.1"
+        - "Other (please specify in comments)"
+    validations:
+      required: true
+
+  - type: input
+    id: related-issues
+    attributes:
+      label: Related Issue(s)
+      description: Please link the relevant issue(s)
+      placeholder: "Closes #123, Related to #456"
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-comments
+    attributes:
+      label: Additional Comments
+      description: Please provide any additional information or context that would be helpful for reviewers.
+      placeholder: "Add any relevant details, testing notes, or other information here"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Test, validate and ensure pre-commit is run before submitting PR
+      options:
+        - label: Latest commit is rebased from main/master with merge conflicts resolved
+          required: true
+        - label: All pre-commit hooks passed
+          required: true
