@@ -144,22 +144,22 @@ locals {
             ]
             fast_reroute_per_prefix_exclude_interfaces = try(length(af.fast_reroute_per_prefix.exclude_interfaces) == 0, true) ? null : [for intf in af.fast_reroute_per_prefix.exclude_interfaces : {
               interface_name = try(intf.interface_name, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_prefix.exclude_interfaces.interface_name, null)
-              level          = try(intf.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_prefix.exclude_interfaces.level, null)
+              level          = try(intf.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_prefix.exclude_interfaces.level_number, null)
               }
             ]
             fast_reroute_per_prefix_lfa_candidate_interfaces = try(length(af.fast_reroute_per_prefix.lfa_candidate_interfaces) == 0, true) ? null : [for intf in af.fast_reroute_per_prefix.lfa_candidate_interfaces : {
               interface_name = try(intf.interface_name, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_prefix.lfa_candidate_interfaces.interface_name, null)
-              level          = try(intf.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_prefix.lfa_candidate_interfaces.level, null)
+              level          = try(intf.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_prefix.lfa_candidate_interfaces.level_number, null)
               }
             ]
             fast_reroute_per_link_exclude_interfaces = try(length(af.fast_reroute_per_link.exclude_interfaces) == 0, true) ? null : [for intf in af.fast_reroute_per_link.exclude_interfaces : {
               interface_name = try(intf.interface_name, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_link.exclude_interfaces.interface_name, null)
-              level          = try(intf.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_link.exclude_interfaces.level, null)
+              level          = try(intf.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_link.exclude_interfaces.level_number, null)
               }
             ]
             fast_reroute_per_link_lfa_candidate_interfaces = try(length(af.fast_reroute_per_link.lfa_candidate_interfaces) == 0, true) ? null : [for intf in af.fast_reroute_per_link.lfa_candidate_interfaces : {
               interface_name = try(intf.interface_name, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_link.lfa_candidate_interfaces.interface_name, null)
-              level          = try(intf.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_link.lfa_candidate_interfaces.level, null)
+              level          = try(intf.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.interfaces.address_family.fast_reroute_per_link.lfa_candidate_interfaces.level_number, null)
               }
             ]
             weight_levels = try(length(af.weight_levels) == 0, true) ? null : [for level in af.weight_levels : {
