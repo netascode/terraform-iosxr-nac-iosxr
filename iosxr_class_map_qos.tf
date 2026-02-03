@@ -2,7 +2,7 @@ locals {
   class_map_qos = flatten([
     for device in local.devices : [
       for class_map_qos in try(local.device_config[device.name].class_map_qos, []) : {
-        key                             = "${device.name}-${class_map_qos.class_map_name}"
+        key                             = format("%s/%s", device.name, class_map_qos.class_map_name)
         device_name                     = device.name
         class_map_name                  = try(class_map_qos.class_map_name, null)
         description                     = try(class_map_qos.description, local.defaults.iosxr.devices.configuration.class_map_qos.description, null)

@@ -83,4 +83,14 @@ resource "iosxr_snmp_server" "snmp_server" {
     ipv6        = try(community.ipv6, null)
     }
   ]
+  views = try(length(local.device_config[each.value.name].snmp_server.views) == 0, true) ? null : [for view in local.device_config[each.value.name].snmp_server.views : {
+    view_name = try(view.view_name, null)
+    mib_view_families = try(length(view.mib_view_families) == 0, true) ? null : [for family in view.mib_view_families : {
+      name     = try(family.name, null)
+      excluded = try(family.excluded, null)
+      included = try(family.included, null)
+      }
+    ]
+    }
+  ]
 }

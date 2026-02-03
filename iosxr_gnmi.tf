@@ -2,7 +2,7 @@ locals {
   gnmi = flatten([
     for device in local.devices : [
       for gnmi_name, gnmi in try(local.device_config[device.name].gnmi, {}) : {
-        key         = "${device.name}-${gnmi_name}"
+        key         = format("%s/%s", device.name, gnmi_name)
         device_name = device.name
         path        = try(gnmi.path, null)
         attributes  = try(gnmi.attributes, null)

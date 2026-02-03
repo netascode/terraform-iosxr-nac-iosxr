@@ -2,7 +2,7 @@ locals {
   flow_monitor_maps = flatten([
     for device in local.devices : [
       for flow_monitor_map in try(local.device_config[device.name].flow_monitor_maps, []) : {
-        key  = "${device.name}-${flow_monitor_map.name}"
+        key  = format("%s/%s", device.name, flow_monitor_map.name)
         name = try(flow_monitor_map.name, local.defaults.iosxr.devices.configuration.flow_monitor_maps.name, null)
         exporters = try(length(flow_monitor_map.exporters) == 0, true) ? null : [for exporter in flow_monitor_map.exporters : {
           name = try(exporter.name, local.defaults.iosxr.devices.configuration.flow_monitor_maps.exporters.name, null)

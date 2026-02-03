@@ -2,7 +2,7 @@ locals {
   ipv4_prefix_lists = flatten([
     for device in local.devices : [
       for prefix_list in try(local.device_config[device.name].ipv4_prefix_lists, []) : {
-        key              = "${device.name}-${prefix_list.prefix_list_name}"
+        key              = format("%s/%s", device.name, prefix_list.prefix_list_name)
         device_name      = device.name
         prefix_list_name = try(prefix_list.prefix_list_name, local.defaults.iosxr.devices.configuration.ipv4_prefix_lists.prefix_list_name, null)
         sequences = try(length(prefix_list.sequences) == 0, true) ? null : [for sequence in prefix_list.sequences : {

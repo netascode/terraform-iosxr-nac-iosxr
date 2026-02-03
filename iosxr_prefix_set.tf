@@ -2,7 +2,7 @@ locals {
   prefix_sets = flatten([
     for device in local.devices : [
       for prefix_set in try(local.device_config[device.name].prefix_sets, []) : {
-        key         = "${device.name}-${prefix_set.set_name}"
+        key         = format("%s/%s", device.name, prefix_set.set_name)
         device_name = device.name
         set_name    = try(prefix_set.set_name, local.defaults.iosxr.devices.configuration.prefix_sets.set_name, null)
         rpl         = try(prefix_set.rpl, local.defaults.iosxr.devices.configuration.prefix_sets.rpl, null)

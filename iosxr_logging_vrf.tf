@@ -2,7 +2,7 @@ locals {
   logging_vrfs = flatten([
     for device in local.devices : [
       for logging_vrf in try(local.device_config[device.name].logging_vrf, []) : {
-        key         = "${device.name}-${logging_vrf.vrf_name}"
+        key         = format("%s/%s", device.name, logging_vrf.vrf_name)
         device_name = device.name
         vrf_name    = try(logging_vrf.vrf_name, local.defaults.iosxr.devices.configuration.logging_vrf.vrf_name, null)
         host_ipv4_addresses = try(length(logging_vrf.host_ipv4_addresses) == 0, true) ? null : [for host in logging_vrf.host_ipv4_addresses : {
