@@ -84,6 +84,7 @@ module "iosxr" {
 | [iosxr_esi_set.esi_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/esi_set) | resource |
 | [iosxr_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/evpn) | resource |
 | [iosxr_evpn_evi.evpn_evi](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/evpn_evi) | resource |
+| [iosxr_evpn_interface.evpn_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/evpn_interface) | resource |
 | [iosxr_extcommunity_cost_set.extcommunity_cost_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/extcommunity_cost_set) | resource |
 | [iosxr_extcommunity_opaque_set.extcommunity_opaque_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/extcommunity_opaque_set) | resource |
 | [iosxr_flow_monitor_map.flow_monitor_map](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/flow_monitor_map) | resource |
