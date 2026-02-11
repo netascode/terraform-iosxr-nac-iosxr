@@ -34,6 +34,7 @@ locals {
           for intf in local.device_config[device.name].snmp_server_mibs.interfaces : {
             interface_name                  = try(intf.interface_name, local.defaults.iosxr.devices.configuration.snmp_server_mibs.interfaces_defaults.interface_name, null)
             notification_linkupdown_disable = try(intf.notification_linkupdown_disable, local.defaults.iosxr.devices.configuration.snmp_server_mibs.interfaces_defaults.notification_linkupdown_disable, null)
+            notification_linkupdown_enable  = try(intf.notification_linkupdown_enable, local.defaults.iosxr.devices.configuration.snmp_server_mibs.interfaces_defaults.notification_linkupdown_enable, null)
             index_persistence               = try(intf.index_persistence, local.defaults.iosxr.devices.configuration.snmp_server_mibs.interfaces_defaults.index_persistence, null)
           }
         ]
