@@ -170,6 +170,7 @@ module "iosxr" {
 | [iosxr_service_timestamps.service_timestamps](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/service_timestamps) | resource |
 | [iosxr_snmp_server.snmp_server](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/snmp_server) | resource |
 | [iosxr_snmp_server_mib.snmp_server_mib](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/snmp_server_mib) | resource |
+| [iosxr_snmp_server_vrf_host.snmp_server_vrf_host](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/snmp_server_vrf_host) | resource |
 | [iosxr_ssh.ssh](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/ssh) | resource |
 | [iosxr_tag_set.tag_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/tag_set) | resource |
 | [iosxr_telnet.telnet](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/telnet) | resource |
