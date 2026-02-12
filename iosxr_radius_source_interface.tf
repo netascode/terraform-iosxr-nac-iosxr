@@ -5,7 +5,7 @@ locals {
         key              = format("%s/%s", device.name, radius_source_interface.vrf)
         device_name      = device.name
         vrf              = radius_source_interface.vrf
-        source_interface = try(radius_source_interface.source_interface, local.defaults.iosxr.devices.configuration.radius_source_interface.source_interface, null)
+        source_interface = try(radius_source_interface.interface, local.defaults.iosxr.devices.configuration.radius_source_interface.interface, null)
       }
     ]
   ])
