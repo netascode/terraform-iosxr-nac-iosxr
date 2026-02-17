@@ -28,6 +28,12 @@ variable "managed_devices" {
   default     = []
 }
 
+# variable "device_transaction" {
+#   description = "Enable device transaction mode. This will group all changes into a single transaction. This enables NETCONF as protocol."
+#   type        = bool
+#   default     = false
+# }
+
 variable "write_default_values_file" {
   description = "Write all default values to a YAML file. Value is a path pointing to the file to be created."
   type        = string

@@ -6,9 +6,10 @@ locals {
   interface_groups = try(local.iosxr.interface_groups, [])
 
   all_devices = [for device in local.devices : {
-    name    = device.name
-    host    = device.host
-    managed = try(device.managed, local.defaults.iosxr.devices.managed, true)
+    name     = device.name
+    host     = device.host
+    protocol = try(device.protocol, null)
+    managed  = try(device.managed, local.defaults.iosxr.devices.managed, true)
   }]
 
   managed_devices = [
@@ -106,9 +107,21 @@ locals {
     device => yamldecode(templatestring(config, local.device_variables[device]))
   }
 
+  # collect interface groups used on each device
+  used_interface_groups = {
+    for device in local.managed_devices : device.name => distinct(flatten([
+      flatten([for ethernet in try(yamldecode(local.devices_raw_config[device.name]).interfaces.ethernets, []) : try(ethernet.interface_groups, [])]),
+      flatten([for bundle_ethernet in try(yamldecode(local.devices_raw_config[device.name]).interfaces.bundle_ethernets, []) : try(bundle_ethernet.interface_groups, [])]),
+      flatten([for bvi in try(yamldecode(local.devices_raw_config[device.name]).interfaces.bvis, []) : try(bvi.interface_groups, [])]),
+      flatten([for loopback in try(yamldecode(local.devices_raw_config[device.name]).interfaces.loopbacks, []) : try(loopback.interface_groups, [])]),
+      flatten([for tunnel in try(yamldecode(local.devices_raw_config[device.name]).interfaces.tunnels, []) : try(tunnel.interface_groups, [])])
+    ]))
+  }
+
   interface_groups_raw_config = {
     for device in local.managed_devices : device.name => {
       for ig in local.interface_groups : ig.name => yamlencode(try(ig.configuration, {}))
+      if contains(local.used_interface_groups[device.name], ig.name)
     }
   }
 
@@ -118,6 +131,7 @@ locals {
         name          = ig.name
         configuration = yamldecode(templatestring(local.interface_groups_raw_config[device.name][ig.name], local.device_variables[device.name]))
       }
+      if contains(local.used_interface_groups[device.name], ig.name)
     ]
   }
 
@@ -189,20 +203,66 @@ locals {
     iosxr = {
       devices = [
         for device in try(local.managed_devices, []) : {
-          name    = device.name
-          host    = device.host
-          managed = try(device.managed, local.defaults.iosxr.devices.managed, true)
+          name     = device.name
+          host     = device.host
+          protocol = try(device.protocol, null)
+          managed  = try(device.managed, local.defaults.iosxr.devices.managed, true)
           configuration = merge(
             { for k, v in try(local.devices_config[device.name], {}) : k => v if k != "interfaces" },
             {
-              interfaces = [
-                for interface in try(local.devices_config[device.name].interfaces, []) : merge(
-                  yamldecode(provider::utils::yaml_merge(concat(
-                    [for g in try(interface.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
-                    [yamlencode(interface)]
-                  )))
-                )
-              ]
+              interfaces = merge(
+                { for k, v in try(local.devices_config[device.name].interfaces, {}) : k => v if k != "ethernets" && k != "bundle_ethernets" && k != "bvis" && k != "loopbacks" && k != "tunnels" },
+                {
+                  "ethernets" = [
+                    for ethernet in try(local.devices_config[device.name].interfaces.ethernets, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(ethernet.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(ethernet)]
+                      )))
+                    )
+                  ]
+                },
+                {
+                  "bundle_ethernets" = [
+                    for bundle_ethernet in try(local.devices_config[device.name].interfaces.bundle_ethernets, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(bundle_ethernet.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(bundle_ethernet)]
+                      )))
+                    )
+                  ]
+                },
+                {
+                  "bvis" = [
+                    for bvi in try(local.devices_config[device.name].interfaces.bvis, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(bvi.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(bvi)]
+                      )))
+                    )
+                  ]
+                },
+                {
+                  "loopbacks" = [
+                    for loopback in try(local.devices_config[device.name].interfaces.loopbacks, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(loopback.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(loopback)]
+                      )))
+                    )
+                  ]
+                },
+                {
+                  "tunnels" = [
+                    for tunnel in try(local.devices_config[device.name].interfaces.tunnels, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(tunnel.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(tunnel)]
+                      )))
+                    )
+                  ]
+                }
+              )
             }
           )
           cli_templates = local.all_cli_templates[device.name]
