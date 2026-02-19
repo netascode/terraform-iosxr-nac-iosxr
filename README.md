@@ -78,6 +78,7 @@ module "iosxr" {
 | [iosxr_cli.cli_8](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/cli) | resource |
 | [iosxr_cli.cli_9](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/cli) | resource |
 | [iosxr_community_set.community_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/community_set) | resource |
+| [iosxr_controller_optics.controller_optics](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/controller_optics) | resource |
 | [iosxr_domain.domain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/domain) | resource |
 | [iosxr_domain_vrf.domain_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/domain_vrf) | resource |
 | [iosxr_error_disable_recovery.error_disable_recovery](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/error_disable_recovery) | resource |
