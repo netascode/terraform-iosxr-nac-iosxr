@@ -174,6 +174,7 @@ module "iosxr" {
 | [iosxr_tacacs_server.tacacs_server](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/tacacs_server) | resource |
 | [iosxr_tag_set.tag_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/tag_set) | resource |
 | [iosxr_telnet.telnet](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/telnet) | resource |
+| [iosxr_tpa.tpa](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/tpa) | resource |
 | [iosxr_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/vrf) | resource |
 ## Modules
 
