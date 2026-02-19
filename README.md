@@ -17,7 +17,7 @@ Configuring an IOS-XR hostname configuration using YAML:
 iosxr:
   devices:
     - name: router-1
-      host: bru-spcore-pe6.cisco.com:57400
+      host: 1.2.3.4
       configuration:
         hostname: router-1
         lldp:
@@ -44,7 +44,8 @@ iosxr:
 
 ```hcl
 module "iosxr" {
-  source = "../.."
+  source = "netascode/nac-iosxr/iosxr"
+  version = ">= 0.1.0"
 
   yaml_files = ["system.nac.yaml"]
 }
