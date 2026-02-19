@@ -163,6 +163,7 @@ module "iosxr" {
 | [iosxr_router_static_vrf_ipv6_multicast.router_static_vrf_ipv6_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/router_static_vrf_ipv6_multicast) | resource |
 | [iosxr_router_static_vrf_ipv6_unicast.router_static_vrf_ipv6_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/router_static_vrf_ipv6_unicast) | resource |
 | [iosxr_router_vrrp_interface.router_vrrp_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/router_vrrp_interface) | resource |
+| [iosxr_router_vrrp_interface_ipv4.router_vrrp_interface_ipv4](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/router_vrrp_interface_ipv4) | resource |
 | [iosxr_router_vrrp_interface_ipv6.router_vrrp_interface_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/router_vrrp_interface_ipv6) | resource |
 | [iosxr_segment_routing.segment_routing](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/segment_routing) | resource |
 | [iosxr_segment_routing_te.segment_routing_te](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/segment_routing_te) | resource |
