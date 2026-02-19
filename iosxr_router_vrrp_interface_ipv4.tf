@@ -15,6 +15,7 @@ locals {
         preempt_disable                  = try(vrrp.preempt_disable, local.defaults.iosxr.devices.configuration.router_vrrp_interface_ipv4.preempt_disable, null)
         priority                         = try(vrrp.priority, local.defaults.iosxr.devices.configuration.router_vrrp_interface_ipv4.priority, null)
         text_authentication              = try(vrrp.text_authentication, local.defaults.iosxr.devices.configuration.router_vrrp_interface_ipv4.text_authentication, null)
+        unicast_peer                     = try(vrrp.unicast_peer, local.defaults.iosxr.devices.configuration.router_vrrp_interface_ipv4.unicast_peer, null)
         timer_advertisement_milliseconds = try(vrrp.timer_advertisement_milliseconds, local.defaults.iosxr.devices.configuration.router_vrrp_interface_ipv4.timer_advertisement_milliseconds, null)
         timer_advertisement_seconds      = try(vrrp.timer_advertisement_seconds, local.defaults.iosxr.devices.configuration.router_vrrp_interface_ipv4.timer_advertisement_seconds, null)
         timer_force                      = try(vrrp.timer_force, local.defaults.iosxr.devices.configuration.router_vrrp_interface_ipv4.timer_force, null)
@@ -49,6 +50,7 @@ resource "iosxr_router_vrrp_interface_ipv4" "router_vrrp_interface_ipv4" {
   preempt_disable                  = each.value.preempt_disable
   priority                         = each.value.priority
   text_authentication              = each.value.text_authentication
+  unicast_peer                     = each.value.unicast_peer
   timer_advertisement_milliseconds = each.value.timer_advertisement_milliseconds
   timer_advertisement_seconds      = each.value.timer_advertisement_seconds
   timer_force                      = each.value.timer_force
