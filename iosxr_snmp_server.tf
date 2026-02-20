@@ -171,48 +171,42 @@ resource "iosxr_snmp_server" "snmp_server" {
   ]
   hosts = try(length(local.device_config[each.value.name].snmp_server.hosts) == 0, true) ? null : [for host in local.device_config[each.value.name].snmp_server.hosts : {
     address = try(host.address, local.defaults.iosxr.devices.configuration.snmp_server.hosts.address, null)
-    traps_unencrypted_strings = try(length(host.traps_unencrypted) == 0, true) ? null : [for trap in host.traps_unencrypted : {
-      community_string          = try(trap.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_unencrypted.community_name, null)
-      udp_port                  = try(trap.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_unencrypted.udp_port, null)
-      version_v2c               = try(trap.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_unencrypted.version_v2c, null)
-      version_v3_security_level = try(trap.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_unencrypted.version_v3_security_level, null)
-      }
-    ]
-    traps_encrypted_default = try(length(host.traps_encrypted_default) == 0, true) ? null : [for trap in host.traps_encrypted_default : {
-      community_string          = try(trap.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_encrypted_default.community_name, null)
-      udp_port                  = try(trap.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_encrypted_default.udp_port, null)
-      version_v2c               = try(trap.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_encrypted_default.version_v2c, null)
-      version_v3_security_level = try(trap.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_encrypted_default.version_v3_security_level, null)
-      }
-    ]
-    traps_encrypted_aes = try(length(host.traps_encrypted_aes) == 0, true) ? null : [for trap in host.traps_encrypted_aes : {
-      community_string          = try(trap.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_encrypted_aes.community_name, null)
-      udp_port                  = try(trap.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_encrypted_aes.udp_port, null)
-      version_v2c               = try(trap.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_encrypted_aes.version_v2c, null)
-      version_v3_security_level = try(trap.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_encrypted_aes.version_v3_security_level, null)
-      }
-    ]
-    informs_unencrypted_strings = try(length(host.informs_unencrypted) == 0, true) ? null : [for inform in host.informs_unencrypted : {
-      community_string          = try(inform.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_unencrypted.community_name, null)
-      udp_port                  = try(inform.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_unencrypted.udp_port, null)
-      version_v2c               = try(inform.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_unencrypted.version_v2c, null)
-      version_v3_security_level = try(inform.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_unencrypted.version_v3_security_level, null)
-      }
-    ]
-    informs_encrypted_default = try(length(host.informs_encrypted_default) == 0, true) ? null : [for inform in host.informs_encrypted_default : {
-      community_string          = try(inform.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_encrypted_default.community_name, null)
-      udp_port                  = try(inform.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_encrypted_default.udp_port, null)
-      version_v2c               = try(inform.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_encrypted_default.version_v2c, null)
-      version_v3_security_level = try(inform.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_encrypted_default.version_v3_security_level, null)
-      }
-    ]
-    informs_encrypted_aes = try(length(host.informs_encrypted_aes) == 0, true) ? null : [for inform in host.informs_encrypted_aes : {
-      community_string          = try(inform.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_encrypted_aes.community_name, null)
-      udp_port                  = try(inform.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_encrypted_aes.udp_port, null)
-      version_v2c               = try(inform.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_encrypted_aes.version_v2c, null)
-      version_v3_security_level = try(inform.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_encrypted_aes.version_v3_security_level, null)
-      }
-    ]
+    traps_unencrypted_strings = try(length([for t in host.traps : t if try(t.type, null) == "unencrypted"]) == 0, true) ? null : [for t in host.traps : {
+      community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.community_name, null)
+      udp_port                  = try(t.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.udp_port, null)
+      version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v2c, null)
+      version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v3_security_level, null)
+    } if try(t.type, null) == "unencrypted"]
+    traps_encrypted_default = try(length([for t in host.traps : t if try(t.type, null) == "encrypted_default"]) == 0, true) ? null : [for t in host.traps : {
+      community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.community_name, null)
+      udp_port                  = try(t.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.udp_port, null)
+      version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v2c, null)
+      version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v3_security_level, null)
+    } if try(t.type, null) == "encrypted_default"]
+    traps_encrypted_aes = try(length([for t in host.traps : t if try(t.type, null) == "encrypted_aes"]) == 0, true) ? null : [for t in host.traps : {
+      community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.community_name, null)
+      udp_port                  = try(t.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.udp_port, null)
+      version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v2c, null)
+      version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v3_security_level, null)
+    } if try(t.type, null) == "encrypted_aes"]
+    informs_unencrypted_strings = try(length([for i in host.informs : i if try(i.type, null) == "unencrypted"]) == 0, true) ? null : [for i in host.informs : {
+      community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.community_name, null)
+      udp_port                  = try(i.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.udp_port, null)
+      version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v2c, null)
+      version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v3_security_level, null)
+    } if try(i.type, null) == "unencrypted"]
+    informs_encrypted_default = try(length([for i in host.informs : i if try(i.type, null) == "encrypted_default"]) == 0, true) ? null : [for i in host.informs : {
+      community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.community_name, null)
+      udp_port                  = try(i.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.udp_port, null)
+      version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v2c, null)
+      version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v3_security_level, null)
+    } if try(i.type, null) == "encrypted_default"]
+    informs_encrypted_aes = try(length([for i in host.informs : i if try(i.type, null) == "encrypted_aes"]) == 0, true) ? null : [for i in host.informs : {
+      community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.community_name, null)
+      udp_port                  = try(i.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.udp_port, null)
+      version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v2c, null)
+      version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v3_security_level, null)
+    } if try(i.type, null) == "encrypted_aes"]
     }
   ]
   users = try(length(local.device_config[each.value.name].snmp_server.users) == 0, true) ? null : [for user in local.device_config[each.value.name].snmp_server.users : {
@@ -258,7 +252,6 @@ resource "iosxr_snmp_server" "snmp_server" {
   ]
 }
 
-
 ##### SNMP Server VRFs #####
 
 locals {
@@ -270,42 +263,42 @@ locals {
         vrf_name    = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.vrf_name, null)
         hosts = try(length(vrf.hosts) == 0, true) ? null : [for host in vrf.hosts : {
           address = try(host.address, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.address, null)
-          traps_unencrypted_strings = try(length(host.traps_unencrypted) == 0, true) ? null : [for trap in host.traps_unencrypted : {
-            community_string          = try(trap.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_unencrypted.community_name, null)
-            udp_port                  = try(trap.udp_port, trap.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_unencrypted.udp_port, null)
-            version_v2c               = try(trap.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_unencrypted.version_v2c, null)
-            version_v3_security_level = try(trap.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_unencrypted.version_v3_security_level, null)
-          }]
-          traps_encrypted_default = try(length(host.traps_encrypted_default) == 0, true) ? null : [for trap in host.traps_encrypted_default : {
-            community_string          = try(trap.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_encrypted_default.community_name, null)
-            udp_port                  = try(trap.udp_port, trap.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_encrypted_default.udp_port, null)
-            version_v2c               = try(trap.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_encrypted_default.version_v2c, null)
-            version_v3_security_level = try(trap.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_encrypted_default.version_v3_security_level, null)
-          }]
-          traps_encrypted_aes = try(length(host.traps_encrypted_aes) == 0, true) ? null : [for trap in host.traps_encrypted_aes : {
-            community_string          = try(trap.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_encrypted_aes.community_name, null)
-            udp_port                  = try(trap.udp_port, trap.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_encrypted_aes.udp_port, null)
-            version_v2c               = try(trap.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_encrypted_aes.version_v2c, null)
-            version_v3_security_level = try(trap.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps_encrypted_aes.version_v3_security_level, null)
-          }]
-          informs_unencrypted_strings = try(length(host.informs_unencrypted) == 0, true) ? null : [for inform in host.informs_unencrypted : {
-            community_string          = try(inform.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_unencrypted.community_name, null)
-            udp_port                  = try(inform.udp_port, inform.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_unencrypted.udp_port, null)
-            version_v2c               = try(inform.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_unencrypted.version_v2c, null)
-            version_v3_security_level = try(inform.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_unencrypted.version_v3_security_level, null)
-          }]
-          informs_encrypted_default = try(length(host.informs_encrypted_default) == 0, true) ? null : [for inform in host.informs_encrypted_default : {
-            community_string          = try(inform.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_encrypted_default.community_name, null)
-            udp_port                  = try(inform.udp_port, inform.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_encrypted_default.udp_port, null)
-            version_v2c               = try(inform.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_encrypted_default.version_v2c, null)
-            version_v3_security_level = try(inform.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_encrypted_default.version_v3_security_level, null)
-          }]
-          informs_encrypted_aes = try(length(host.informs_encrypted_aes) == 0, true) ? null : [for inform in host.informs_encrypted_aes : {
-            community_string          = try(inform.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_encrypted_aes.community_name, null)
-            udp_port                  = try(inform.udp_port, inform.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_encrypted_aes.udp_port, null)
-            version_v2c               = try(inform.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_encrypted_aes.version_v2c, null)
-            version_v3_security_level = try(inform.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs_encrypted_aes.version_v3_security_level, null)
-          }]
+          traps_unencrypted_strings = try(length([for t in host.traps : t if try(t.type, null) == "unencrypted"]) == 0, true) ? null : [for t in host.traps : {
+            community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.community_name, null)
+            udp_port                  = try(t.udp_port, t.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.udp_port, null)
+            version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v2c, null)
+            version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v3_security_level, null)
+          } if try(t.type, null) == "unencrypted"]
+          traps_encrypted_default = try(length([for t in host.traps : t if try(t.type, null) == "encrypted_default"]) == 0, true) ? null : [for t in host.traps : {
+            community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.community_name, null)
+            udp_port                  = try(t.udp_port, t.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.udp_port, null)
+            version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v2c, null)
+            version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v3_security_level, null)
+          } if try(t.type, null) == "encrypted_default"]
+          traps_encrypted_aes = try(length([for t in host.traps : t if try(t.type, null) == "encrypted_aes"]) == 0, true) ? null : [for t in host.traps : {
+            community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.community_name, null)
+            udp_port                  = try(t.udp_port, t.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.udp_port, null)
+            version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v2c, null)
+            version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v3_security_level, null)
+          } if try(t.type, null) == "encrypted_aes"]
+          informs_unencrypted_strings = try(length([for i in host.informs : i if try(i.type, null) == "unencrypted"]) == 0, true) ? null : [for i in host.informs : {
+            community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.community_name, null)
+            udp_port                  = try(i.udp_port, i.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.udp_port, null)
+            version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v2c, null)
+            version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v3_security_level, null)
+          } if try(i.type, null) == "unencrypted"]
+          informs_encrypted_default = try(length([for i in host.informs : i if try(i.type, null) == "encrypted_default"]) == 0, true) ? null : [for i in host.informs : {
+            community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.community_name, null)
+            udp_port                  = try(i.udp_port, i.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.udp_port, null)
+            version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v2c, null)
+            version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v3_security_level, null)
+          } if try(i.type, null) == "encrypted_default"]
+          informs_encrypted_aes = try(length([for i in host.informs : i if try(i.type, null) == "encrypted_aes"]) == 0, true) ? null : [for i in host.informs : {
+            community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.community_name, null)
+            udp_port                  = try(i.udp_port, i.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.udp_port, null)
+            version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v2c, null)
+            version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v3_security_level, null)
+          } if try(i.type, null) == "encrypted_aes"]
         }]
         contexts = try(length(vrf.contexts) == 0, true) ? null : [for context in vrf.contexts : {
           name = try(context.context_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.contexts.context_name, null)
@@ -322,7 +315,6 @@ resource "iosxr_snmp_server_vrf" "snmp_server_vrf" {
   hosts    = each.value.hosts
   contexts = each.value.contexts
 }
-
 
 ##### SNMP Server MIBs #####
 
