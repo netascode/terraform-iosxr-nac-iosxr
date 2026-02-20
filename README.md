@@ -175,6 +175,7 @@ module "iosxr" {
 | [iosxr_tag_set.tag_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/tag_set) | resource |
 | [iosxr_telnet.telnet](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/telnet) | resource |
 | [iosxr_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/vrf) | resource |
+| [iosxr_vty_pool.vty_pool](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/vty_pool) | resource |
 ## Modules
 
 | Name | Source | Version |
