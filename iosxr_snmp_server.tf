@@ -1,3 +1,5 @@
+#### SNMP Server ####
+
 resource "iosxr_snmp_server" "snmp_server" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].snmp_server, null) != null || try(local.defaults.iosxr.devices.configuration.snmp_server, null) != null }
   device   = each.value.name
@@ -169,20 +171,42 @@ resource "iosxr_snmp_server" "snmp_server" {
   ]
   hosts = try(length(local.device_config[each.value.name].snmp_server.hosts) == 0, true) ? null : [for host in local.device_config[each.value.name].snmp_server.hosts : {
     address = try(host.address, local.defaults.iosxr.devices.configuration.snmp_server.hosts.address, null)
-    traps_unencrypted_strings = try(length(host.traps_unencrypted_strings) == 0, true) ? null : [for trap in host.traps_unencrypted_strings : {
-      community_string          = try(trap.community_string, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_unencrypted_strings.community_string, null)
-      udp_port                  = try(trap.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_unencrypted_strings.udp_port, null)
-      version_v2c               = try(trap.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_unencrypted_strings.version_v2c, null)
-      version_v3_security_level = try(trap.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps_unencrypted_strings.version_v3_security_level, null)
-      }
-    ]
-    informs_unencrypted_strings = try(length(host.informs_unencrypted_strings) == 0, true) ? null : [for inform in host.informs_unencrypted_strings : {
-      community_string          = try(inform.community_string, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_unencrypted_strings.community_string, null)
-      udp_port                  = try(inform.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_unencrypted_strings.udp_port, null)
-      version_v2c               = try(inform.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_unencrypted_strings.version_v2c, null)
-      version_v3_security_level = try(inform.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs_unencrypted_strings.version_v3_security_level, null)
-      }
-    ]
+    traps_unencrypted_strings = try(length([for t in host.traps : t if try(t.type, null) == "unencrypted"]) == 0, true) ? null : [for t in host.traps : {
+      community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.community_name, null)
+      udp_port                  = try(t.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.udp_port, null)
+      version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v2c, null)
+      version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v3_security_level, null)
+    } if try(t.type, null) == "unencrypted"]
+    traps_encrypted_default = try(length([for t in host.traps : t if try(t.type, null) == "encrypted_default"]) == 0, true) ? null : [for t in host.traps : {
+      community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.community_name, null)
+      udp_port                  = try(t.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.udp_port, null)
+      version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v2c, null)
+      version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v3_security_level, null)
+    } if try(t.type, null) == "encrypted_default"]
+    traps_encrypted_aes = try(length([for t in host.traps : t if try(t.type, null) == "encrypted_aes"]) == 0, true) ? null : [for t in host.traps : {
+      community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.community_name, null)
+      udp_port                  = try(t.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.udp_port, null)
+      version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v2c, null)
+      version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.traps.version_v3_security_level, null)
+    } if try(t.type, null) == "encrypted_aes"]
+    informs_unencrypted_strings = try(length([for i in host.informs : i if try(i.type, null) == "unencrypted"]) == 0, true) ? null : [for i in host.informs : {
+      community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.community_name, null)
+      udp_port                  = try(i.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.udp_port, null)
+      version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v2c, null)
+      version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v3_security_level, null)
+    } if try(i.type, null) == "unencrypted"]
+    informs_encrypted_default = try(length([for i in host.informs : i if try(i.type, null) == "encrypted_default"]) == 0, true) ? null : [for i in host.informs : {
+      community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.community_name, null)
+      udp_port                  = try(i.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.udp_port, null)
+      version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v2c, null)
+      version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v3_security_level, null)
+    } if try(i.type, null) == "encrypted_default"]
+    informs_encrypted_aes = try(length([for i in host.informs : i if try(i.type, null) == "encrypted_aes"]) == 0, true) ? null : [for i in host.informs : {
+      community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.community_name, null)
+      udp_port                  = try(i.udp_port, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.udp_port, null)
+      version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v2c, null)
+      version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.hosts.informs.version_v3_security_level, null)
+    } if try(i.type, null) == "encrypted_aes"]
     }
   ]
   users = try(length(local.device_config[each.value.name].snmp_server.users) == 0, true) ? null : [for user in local.device_config[each.value.name].snmp_server.users : {
@@ -226,4 +250,147 @@ resource "iosxr_snmp_server" "snmp_server" {
     ]
     }
   ]
+}
+
+##### SNMP Server VRFs #####
+
+locals {
+  snmp_server_vrfs = flatten([
+    for device in local.devices : [
+      for vrf in try(local.device_config[device.name].snmp_server.vrfs, []) : {
+        key         = format("%s/%s", device.name, vrf.vrf_name)
+        device_name = device.name
+        vrf_name    = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.vrf_name, null)
+        hosts = try(length(vrf.hosts) == 0, true) ? null : [for host in vrf.hosts : {
+          address = try(host.address, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.address, null)
+          traps_unencrypted_strings = try(length([for t in host.traps : t if try(t.type, null) == "unencrypted"]) == 0, true) ? null : [for t in host.traps : {
+            community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.community_name, null)
+            udp_port                  = try(t.udp_port, t.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.udp_port, null)
+            version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v2c, null)
+            version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v3_security_level, null)
+          } if try(t.type, null) == "unencrypted"]
+          traps_encrypted_default = try(length([for t in host.traps : t if try(t.type, null) == "encrypted_default"]) == 0, true) ? null : [for t in host.traps : {
+            community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.community_name, null)
+            udp_port                  = try(t.udp_port, t.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.udp_port, null)
+            version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v2c, null)
+            version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v3_security_level, null)
+          } if try(t.type, null) == "encrypted_default"]
+          traps_encrypted_aes = try(length([for t in host.traps : t if try(t.type, null) == "encrypted_aes"]) == 0, true) ? null : [for t in host.traps : {
+            community_string          = try(t.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.community_name, null)
+            udp_port                  = try(t.udp_port, t.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.udp_port, null)
+            version_v2c               = try(t.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v2c, null)
+            version_v3_security_level = try(t.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.traps.version_v3_security_level, null)
+          } if try(t.type, null) == "encrypted_aes"]
+          informs_unencrypted_strings = try(length([for i in host.informs : i if try(i.type, null) == "unencrypted"]) == 0, true) ? null : [for i in host.informs : {
+            community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.community_name, null)
+            udp_port                  = try(i.udp_port, i.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.udp_port, null)
+            version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v2c, null)
+            version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v3_security_level, null)
+          } if try(i.type, null) == "unencrypted"]
+          informs_encrypted_default = try(length([for i in host.informs : i if try(i.type, null) == "encrypted_default"]) == 0, true) ? null : [for i in host.informs : {
+            community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.community_name, null)
+            udp_port                  = try(i.udp_port, i.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.udp_port, null)
+            version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v2c, null)
+            version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v3_security_level, null)
+          } if try(i.type, null) == "encrypted_default"]
+          informs_encrypted_aes = try(length([for i in host.informs : i if try(i.type, null) == "encrypted_aes"]) == 0, true) ? null : [for i in host.informs : {
+            community_string          = try(i.community_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.community_name, null)
+            udp_port                  = try(i.udp_port, i.community_name != null ? "default" : null, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.udp_port, null)
+            version_v2c               = try(i.version_v2c, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v2c, null)
+            version_v3_security_level = try(i.version_v3_security_level, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.hosts.informs.version_v3_security_level, null)
+          } if try(i.type, null) == "encrypted_aes"]
+        }]
+        contexts = try(length(vrf.contexts) == 0, true) ? null : [for context in vrf.contexts : {
+          name = try(context.context_name, local.defaults.iosxr.devices.configuration.snmp_server.vrfs.contexts.context_name, null)
+        }]
+      }
+    ]
+  ])
+}
+
+resource "iosxr_snmp_server_vrf" "snmp_server_vrf" {
+  for_each = { for vrf in local.snmp_server_vrfs : vrf.key => vrf }
+  device   = each.value.device_name
+  vrf_name = each.value.vrf_name
+  hosts    = each.value.hosts
+  contexts = each.value.contexts
+}
+
+##### SNMP Server MIBs #####
+
+locals {
+  snmp_server_mibs = flatten([
+    for device in local.devices : [
+      {
+        key                                    = device.name
+        device_name                            = device.name
+        cbqosmib_cache                         = try(local.device_config[device.name].snmp_server.mibs.cbqosmib_cache, local.defaults.iosxr.devices.configuration.snmp_server.mibs.cbqosmib_cache, null)
+        cbqosmib_cache_refresh_time            = try(local.device_config[device.name].snmp_server.mibs.cbqosmib_cache_refresh_time, local.defaults.iosxr.devices.configuration.snmp_server.mibs.cbqosmib_cache_refresh_time, null)
+        cbqosmib_cache_service_policy_count    = try(local.device_config[device.name].snmp_server.mibs.cbqosmib_cache_service_policy_count, local.defaults.iosxr.devices.configuration.snmp_server.mibs.cbqosmib_cache_service_policy_count, null)
+        cbqosmib_persist                       = try(local.device_config[device.name].snmp_server.mibs.cbqosmib_persist, local.defaults.iosxr.devices.configuration.snmp_server.mibs.cbqosmib_persist, null)
+        cbqosmib_member_stats                  = try(local.device_config[device.name].snmp_server.mibs.cbqosmib_member_stats, local.defaults.iosxr.devices.configuration.snmp_server.mibs.cbqosmib_member_stats, null)
+        ifindex_persist                        = try(local.device_config[device.name].snmp_server.mibs.ifindex_persist, local.defaults.iosxr.devices.configuration.snmp_server.mibs.ifindex_persist, null)
+        trap_link_ietf                         = try(local.device_config[device.name].snmp_server.mibs.trap_link_ietf, local.defaults.iosxr.devices.configuration.snmp_server.mibs.trap_link_ietf, null)
+        ifmib_ifalias_long                     = try(local.device_config[device.name].snmp_server.mibs.ifmib_ifalias_long, local.defaults.iosxr.devices.configuration.snmp_server.mibs.ifmib_ifalias_long, null)
+        ifmib_stats_cache                      = try(local.device_config[device.name].snmp_server.mibs.ifmib_stats_cache, local.defaults.iosxr.devices.configuration.snmp_server.mibs.ifmib_stats_cache, null)
+        ifmib_ipsubscriber                     = try(local.device_config[device.name].snmp_server.mibs.ifmib_ipsubscriber, local.defaults.iosxr.devices.configuration.snmp_server.mibs.ifmib_ipsubscriber, null)
+        ifmib_internal_cache_max_duration      = try(local.device_config[device.name].snmp_server.mibs.ifmib_internal_cache_max_duration, local.defaults.iosxr.devices.configuration.snmp_server.mibs.ifmib_internal_cache_max_duration, null)
+        rfmib_entphyindex                      = try(local.device_config[device.name].snmp_server.mibs.rfmib_entphyindex, local.defaults.iosxr.devices.configuration.snmp_server.mibs.rfmib_entphyindex, null)
+        sensormib_cache                        = try(local.device_config[device.name].snmp_server.mibs.sensormib_cache, local.defaults.iosxr.devices.configuration.snmp_server.mibs.sensormib_cache, null)
+        mplstemib_cache_timers_garbage_collect = try(local.device_config[device.name].snmp_server.mibs.mplstemib_cache_timers_garbage_collect, local.defaults.iosxr.devices.configuration.snmp_server.mibs.mplstemib_cache_timers_garbage_collect, null)
+        mplstemib_cache_timers_refresh         = try(local.device_config[device.name].snmp_server.mibs.mplstemib_cache_timers_refresh, local.defaults.iosxr.devices.configuration.snmp_server.mibs.mplstemib_cache_timers_refresh, null)
+        mplsp2mpmib_cache_timer                = try(local.device_config[device.name].snmp_server.mibs.mplsp2mpmib_cache_timer, local.defaults.iosxr.devices.configuration.snmp_server.mibs.mplsp2mpmib_cache_timer, null)
+        frrmib_cache_timer                     = try(local.device_config[device.name].snmp_server.mibs.frrmib_cache_timer, local.defaults.iosxr.devices.configuration.snmp_server.mibs.frrmib_cache_timer, null)
+        cmplsteextmib_cache_timer              = try(local.device_config[device.name].snmp_server.mibs.cmplsteextmib_cache_timer, local.defaults.iosxr.devices.configuration.snmp_server.mibs.cmplsteextmib_cache_timer, null)
+        cmplsteextstdmib_cache_timer           = try(local.device_config[device.name].snmp_server.mibs.cmplsteextstdmib_cache_timer, local.defaults.iosxr.devices.configuration.snmp_server.mibs.cmplsteextstdmib_cache_timer, null)
+        mroutemib_send_all_vrf                 = try(local.device_config[device.name].snmp_server.mibs.mroutemib_send_all_vrf, local.defaults.iosxr.devices.configuration.snmp_server.mibs.mroutemib_send_all_vrf, null)
+        notification_log_mib_default           = try(local.device_config[device.name].snmp_server.mibs.notification_log_mib_default, local.defaults.iosxr.devices.configuration.snmp_server.mibs.notification_log_mib_default, null)
+        notification_log_mib_global_age_out    = try(local.device_config[device.name].snmp_server.mibs.notification_log_mib_global_age_out, local.defaults.iosxr.devices.configuration.snmp_server.mibs.notification_log_mib_global_age_out, null)
+        notification_log_mib_global_size       = try(local.device_config[device.name].snmp_server.mibs.notification_log_mib_global_size, local.defaults.iosxr.devices.configuration.snmp_server.mibs.notification_log_mib_global_size, null)
+        notification_log_mib_disable           = try(local.device_config[device.name].snmp_server.mibs.notification_log_mib_disable, local.defaults.iosxr.devices.configuration.snmp_server.mibs.notification_log_mib_disable, null)
+        notification_log_mib_size              = try(local.device_config[device.name].snmp_server.mibs.notification_log_mib_size, local.defaults.iosxr.devices.configuration.snmp_server.mibs.notification_log_mib_size, null)
+        entityindex_persist                    = try(local.device_config[device.name].snmp_server.mibs.entityindex_persist, local.defaults.iosxr.devices.configuration.snmp_server.mibs.entityindex_persist, null)
+        interfaces = try(length(local.device_config[device.name].snmp_server.mibs.interfaces) == 0, true) ? null : [
+          for intf in local.device_config[device.name].snmp_server.mibs.interfaces : {
+            interface_name                  = try(intf.interface_name, local.defaults.iosxr.devices.configuration.snmp_server.mibs.interfaces.interface_name, null)
+            notification_linkupdown_disable = try(intf.notification_linkupdown_disable, local.defaults.iosxr.devices.configuration.snmp_server.mibs.interfaces.notification_linkupdown_disable, null)
+            notification_linkupdown_enable  = try(intf.notification_linkupdown_enable, local.defaults.iosxr.devices.configuration.snmp_server.mibs.interfaces.notification_linkupdown_enable, null)
+            index_persistence               = try(intf.index_persistence, local.defaults.iosxr.devices.configuration.snmp_server.mibs.interfaces.index_persistence, null)
+          }
+        ]
+      }
+    ] if try(local.device_config[device.name].snmp_server.mibs, null) != null || try(local.defaults.iosxr.devices.configuration.snmp_server.mibs, null) != null
+  ])
+}
+
+resource "iosxr_snmp_server_mib" "snmp_server_mib" {
+  for_each                               = { for mib in local.snmp_server_mibs : mib.key => mib }
+  device                                 = each.value.device_name
+  cbqosmib_cache                         = each.value.cbqosmib_cache
+  cbqosmib_cache_refresh_time            = each.value.cbqosmib_cache_refresh_time
+  cbqosmib_cache_service_policy_count    = each.value.cbqosmib_cache_service_policy_count
+  cbqosmib_persist                       = each.value.cbqosmib_persist
+  cbqosmib_member_stats                  = each.value.cbqosmib_member_stats
+  ifindex_persist                        = each.value.ifindex_persist
+  trap_link_ietf                         = each.value.trap_link_ietf
+  ifmib_ifalias_long                     = each.value.ifmib_ifalias_long
+  ifmib_stats_cache                      = each.value.ifmib_stats_cache
+  ifmib_ipsubscriber                     = each.value.ifmib_ipsubscriber
+  ifmib_internal_cache_max_duration      = each.value.ifmib_internal_cache_max_duration
+  rfmib_entphyindex                      = each.value.rfmib_entphyindex
+  sensormib_cache                        = each.value.sensormib_cache
+  mplstemib_cache_timers_garbage_collect = each.value.mplstemib_cache_timers_garbage_collect
+  mplstemib_cache_timers_refresh         = each.value.mplstemib_cache_timers_refresh
+  mplsp2mpmib_cache_timer                = each.value.mplsp2mpmib_cache_timer
+  frrmib_cache_timer                     = each.value.frrmib_cache_timer
+  cmplsteextmib_cache_timer              = each.value.cmplsteextmib_cache_timer
+  cmplsteextstdmib_cache_timer           = each.value.cmplsteextstdmib_cache_timer
+  mroutemib_send_all_vrf                 = each.value.mroutemib_send_all_vrf
+  notification_log_mib_default           = each.value.notification_log_mib_default
+  notification_log_mib_global_age_out    = each.value.notification_log_mib_global_age_out
+  notification_log_mib_global_size       = each.value.notification_log_mib_global_size
+  notification_log_mib_disable           = each.value.notification_log_mib_disable
+  notification_log_mib_size              = each.value.notification_log_mib_size
+  entityindex_persist                    = each.value.entityindex_persist
+  interfaces                             = each.value.interfaces
 }
