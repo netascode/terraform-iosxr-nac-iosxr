@@ -4,3 +4,35 @@ iosxr:
       host: 1.2.3.4
       configuration:
         hostname: router-1
+        mpls_ldp_interfaces:
+          - interface_name: GigabitEthernet0/0/0/1
+            discovery_hello_holdtime: 30
+            discovery_hello_interval: 3
+            discovery_hello_dual_stack_tlv: ipv4
+            discovery_quick_start_disable: true
+            igp_sync_delay_on_session_up: 20
+            address_family:
+              - af_name: ipv4
+                discovery_transport_address_ip: "192.168.1.1"
+                igp_auto_config_disable: true
+                mldp_disable: true
+          - interface_name: GigabitEthernet0/0/0/2
+            discovery_hello_holdtime: 45
+            discovery_hello_interval: 5
+            igp_sync_delay_on_session_up_disable: true
+            address_family:
+              - af_name: ipv4
+                discovery_transport_address_interface: true
+                igp_auto_config_disable: false
+                mldp_disable: false
+          # IPv6 configuration example (requires global LDP IPv6 address-family to be enabled first)
+          # - interface_name: GigabitEthernet0/0/0/3
+          #   discovery_hello_holdtime: 45
+          #   discovery_hello_interval: 5
+          #   discovery_hello_dual_stack_tlv: ipv6
+          #   igp_sync_delay_on_session_up_disable: true
+          #   address_family:
+          #     - af_name: ipv6
+          #       discovery_transport_address_interface: true
+          #       igp_auto_config_disable: false
+          #       mldp_disable: false
