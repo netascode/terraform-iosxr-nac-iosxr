@@ -2,14 +2,20 @@ locals {
   router_hsrp_interface_ipv4_group_v2 = flatten([
     for device in local.devices : [
       for hsrp_group in try(local.device_config[device.name].router_hsrp_interface_ipv4_group_v2, []) : {
-        key                            = format("%s/%s/%s", device.name, hsrp_group.interface_name, hsrp_group.group_id)
-        device_name                    = device.name
-        interface_name                 = hsrp_group.interface_name
-        group_id                       = hsrp_group.group_id
-        address                        = try(hsrp_group.address, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.address, null)
-        address_learn                  = try(hsrp_group.address_learn, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.address_learn, null)
-        priority                       = try(hsrp_group.priority, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.priority, null)
-        mac_address                    = try(hsrp_group.mac_address, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.mac_address, null)
+        key            = format("%s/%s/%s", device.name, hsrp_group.interface_name, hsrp_group.group_id)
+        device_name    = device.name
+        interface_name = hsrp_group.interface_name
+        group_id       = hsrp_group.group_id
+        address        = try(hsrp_group.address, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.address, null)
+        address_learn  = try(hsrp_group.address_learn, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.address_learn, null)
+        priority       = try(hsrp_group.priority, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.priority, null)
+        mac_address = try(
+          provider::utils::normalize_mac(
+            try(hsrp_group.mac_address, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.mac_address),
+            "colon"
+          ),
+          null
+        )
         name                           = try(hsrp_group.name, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.name, null)
         preempt_delay                  = try(hsrp_group.preempt_delay, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.preempt_delay, null)
         timers_msec                    = try(hsrp_group.timers_msec, local.defaults.iosxr.devices.configuration.router_hsrp_interface_ipv4_group_v2.timers_msec, null)
