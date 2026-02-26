@@ -39,7 +39,7 @@ module "iosxr" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.0 |
 | <a name="requirement_iosxr"></a> [iosxr](#requirement\_iosxr) | 0.7.0 |
-| <a name="requirement_utils"></a> [utils](#requirement\_utils) | 1.1.0-beta3 |
+| <a name="requirement_utils"></a> [utils](#requirement\_utils) | 1.1.0-beta4 |
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -63,6 +63,7 @@ module "iosxr" {
 |------|------|
 | [iosxr_as_path_set.as_path_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/as_path_set) | resource |
 | [iosxr_banner.banner](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/banner) | resource |
+| [iosxr_bfd.bfd](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/bfd) | resource |
 | [iosxr_bgp_as_format.bgp_as_format](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/bgp_as_format) | resource |
 | [iosxr_bmp_server.bmp_server](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/bmp_server) | resource |
 | [iosxr_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/cdp) | resource |
