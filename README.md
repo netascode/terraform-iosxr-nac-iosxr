@@ -39,7 +39,7 @@ module "iosxr" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.0 |
 | <a name="requirement_iosxr"></a> [iosxr](#requirement\_iosxr) | 0.7.0 |
-| <a name="requirement_utils"></a> [utils](#requirement\_utils) | 1.1.0-beta3 |
+| <a name="requirement_utils"></a> [utils](#requirement\_utils) | 1.1.0-beta4 |
 ## Inputs
 
 | Name | Description | Type | Default | Required |
