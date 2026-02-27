@@ -140,7 +140,13 @@ locals {
           }]
           sla_operation_profile_target_mac_addresses = try(length(domain.sla_operation_profile_target_mac_addresses) == 0, true) ? null : [for sla in domain.sla_operation_profile_target_mac_addresses : {
             profile_name = try(sla.profile_name, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.profile_name, null)
-            mac_address  = try(sla.mac_address, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.mac_address, null)
+            mac_address = try(
+              provider::utils::normalize_mac(
+                try(sla.mac_address, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.mac_address),
+                "colon"
+              ),
+              null
+            )
           }]
         }]
         ethernet_cfm_ais_transmission_up_interval            = try(int.ethernet_cfm.ais_transmission_up_interval, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.ais_transmission_up_interval, null)
@@ -216,22 +222,28 @@ locals {
         lacp_period                                                                        = try(int.lacp_period, local.defaults.iosxr.devices.configuration.interfaces.ethernets.lacp_period, null)
         carrier_delay_up                                                                   = try(int.carrier_delay_up, local.defaults.iosxr.devices.configuration.interfaces.ethernets.carrier_delay_up, null)
         carrier_delay_down                                                                 = try(int.carrier_delay_down, local.defaults.iosxr.devices.configuration.interfaces.ethernets.carrier_delay_down, null)
-        mac_address                                                                        = try(int.mac_address, local.defaults.iosxr.devices.configuration.interfaces.ethernets.mac_address, null)
-        mpls_mtu                                                                           = try(int.mpls_mtu, local.defaults.iosxr.devices.configuration.interfaces.ethernets.mpls_mtu, null)
-        speed                                                                              = try(int.speed, local.defaults.iosxr.devices.configuration.interfaces.ethernets.speed, null)
-        duplex                                                                             = try(int.duplex, local.defaults.iosxr.devices.configuration.interfaces.ethernets.duplex, null)
-        flow_control                                                                       = try(int.flow_control, local.defaults.iosxr.devices.configuration.interfaces.ethernets.flow_control, null)
-        fec                                                                                = try(int.fec, local.defaults.iosxr.devices.configuration.interfaces.ethernets.fec, null)
-        negotiation_auto                                                                   = try(int.negotiation_auto, local.defaults.iosxr.devices.configuration.interfaces.ethernets.negotiation_auto, null)
-        negotiation_auto_allow_overrides                                                   = try(int.negotiation_auto_allow_overrides, local.defaults.iosxr.devices.configuration.interfaces.ethernets.negotiation_auto_allow_overrides, null)
-        lldp                                                                               = try(int.lldp, local.defaults.iosxr.devices.configuration.interfaces.ethernets.lldp, null)
-        lldp_transmit_disable                                                              = try(int.lldp_transmit_disable, local.defaults.iosxr.devices.configuration.interfaces.ethernets.lldp_transmit_disable, null)
-        lldp_receive_disable                                                               = try(int.lldp_receive_disable, local.defaults.iosxr.devices.configuration.interfaces.ethernets.lldp_receive_disable, null)
-        lldp_tagged                                                                        = try(int.lldp_tagged, local.defaults.iosxr.devices.configuration.interfaces.ethernets.lldp_tagged, null)
-        macsec_psk_keychain_name                                                           = try(int.macsec_psk_keychain_name, local.defaults.iosxr.devices.configuration.interfaces.ethernets.macsec_psk_keychain_name, null)
-        macsec_fallback_psk_keychain                                                       = try(int.macsec_fallback_psk_keychain, local.defaults.iosxr.devices.configuration.interfaces.ethernets.macsec_fallback_psk_keychain, null)
-        macsec_policy                                                                      = try(int.macsec_policy, local.defaults.iosxr.devices.configuration.interfaces.ethernets.macsec_policy, null)
-        macsec_eap_policy                                                                  = try(int.macsec_eap_policy, local.defaults.iosxr.devices.configuration.interfaces.ethernets.macsec_eap_policy, null)
+        mac_address = try(
+          provider::utils::normalize_mac(
+            try(int.mac_address, local.defaults.iosxr.devices.configuration.interfaces.ethernets.mac_address),
+            "colon"
+          ),
+          null
+        )
+        mpls_mtu                         = try(int.mpls_mtu, local.defaults.iosxr.devices.configuration.interfaces.ethernets.mpls_mtu, null)
+        speed                            = try(int.speed, local.defaults.iosxr.devices.configuration.interfaces.ethernets.speed, null)
+        duplex                           = try(int.duplex, local.defaults.iosxr.devices.configuration.interfaces.ethernets.duplex, null)
+        flow_control                     = try(int.flow_control, local.defaults.iosxr.devices.configuration.interfaces.ethernets.flow_control, null)
+        fec                              = try(int.fec, local.defaults.iosxr.devices.configuration.interfaces.ethernets.fec, null)
+        negotiation_auto                 = try(int.negotiation_auto, local.defaults.iosxr.devices.configuration.interfaces.ethernets.negotiation_auto, null)
+        negotiation_auto_allow_overrides = try(int.negotiation_auto_allow_overrides, local.defaults.iosxr.devices.configuration.interfaces.ethernets.negotiation_auto_allow_overrides, null)
+        lldp                             = try(int.lldp, local.defaults.iosxr.devices.configuration.interfaces.ethernets.lldp, null)
+        lldp_transmit_disable            = try(int.lldp_transmit_disable, local.defaults.iosxr.devices.configuration.interfaces.ethernets.lldp_transmit_disable, null)
+        lldp_receive_disable             = try(int.lldp_receive_disable, local.defaults.iosxr.devices.configuration.interfaces.ethernets.lldp_receive_disable, null)
+        lldp_tagged                      = try(int.lldp_tagged, local.defaults.iosxr.devices.configuration.interfaces.ethernets.lldp_tagged, null)
+        macsec_psk_keychain_name         = try(int.macsec_psk_keychain_name, local.defaults.iosxr.devices.configuration.interfaces.ethernets.macsec_psk_keychain_name, null)
+        macsec_fallback_psk_keychain     = try(int.macsec_fallback_psk_keychain, local.defaults.iosxr.devices.configuration.interfaces.ethernets.macsec_fallback_psk_keychain, null)
+        macsec_policy                    = try(int.macsec_policy, local.defaults.iosxr.devices.configuration.interfaces.ethernets.macsec_policy, null)
+        macsec_eap_policy                = try(int.macsec_eap_policy, local.defaults.iosxr.devices.configuration.interfaces.ethernets.macsec_eap_policy, null)
         monitor_sessions = try(length(int.monitor_sessions) == 0, true) ? null : [for session in int.monitor_sessions : {
           session_name      = try(session.session_name, local.defaults.iosxr.devices.configuration.interfaces.ethernets.monitor_sessions.session_name, null)
           ethernet          = try(session.ethernet, local.defaults.iosxr.devices.configuration.interfaces.ethernets.monitor_sessions.ethernet, null)
@@ -606,9 +618,10 @@ resource "iosxr_interface_ethernet" "ethernet" {
 
   depends_on = [
     # Future dependencies - uncomment when resource is created:
-    #iosxr_vrf.vrf,
     #iosxr_ipv4_access_list.ipv4_access_list,
     #iosxr_ipv6_access_list.ipv6_access_list,
+    iosxr_vrf.vrf,
+    iosxr_policy_map_qos.policy_map_qos
   ]
 }
 
@@ -847,9 +860,10 @@ resource "iosxr_interface_ethernet" "ethernet_unmanaged" {
 
   depends_on = [
     # Future dependencies - uncomment when resource is created:
-    #iosxr_vrf.vrf,
     #iosxr_ipv4_access_list.ipv4_access_list,
     #iosxr_ipv6_access_list.ipv6_access_list,
+    iosxr_vrf.vrf,
+    iosxr_policy_map_qos.policy_map_qos
   ]
 
   lifecycle {
@@ -997,7 +1011,13 @@ locals {
             }]
             sla_operation_profile_target_mac_addresses = try(length(mep.sla_operation_profile_target_mac_addresses) == 0, true) ? null : [for profile in mep.sla_operation_profile_target_mac_addresses : {
               profile_name = try(profile.profile_name, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.profile_name, null)
-              mac_address  = try(profile.mac_address, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.mac_address, null)
+              mac_address = try(
+                provider::utils::normalize_mac(
+                  try(profile.mac_address, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.mac_address),
+                  "colon"
+                ),
+                null
+              )
             }]
           }]
           ethernet_cfm_ais_transmission_up_interval            = try(subint.ethernet_cfm.ais_transmission_up_interval, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ethernet_cfm.ais_transmission_up_interval, null)
@@ -1385,10 +1405,11 @@ resource "iosxr_interface_ethernet_subinterface" "ethernet_subinterface" {
 
   depends_on = [
     # Future dependencies - uncomment when resource is created:
-    iosxr_interface_ethernet.ethernet
-    #iosxr_vrf.vrf,
+    iosxr_interface_ethernet.ethernet,
     #iosxr_ipv4_access_list.ipv4_access_list,
     #iosxr_ipv6_access_list.ipv6_access_list,
+    iosxr_vrf.vrf,
+    iosxr_policy_map_qos.policy_map_qos
   ]
 }
 
@@ -1524,7 +1545,13 @@ locals {
           }]
           sla_operation_profile_target_mac_addresses = try(length(mep.sla_operation_profile_target_mac_addresses) == 0, true) ? null : [for profile in mep.sla_operation_profile_target_mac_addresses : {
             profile_name = try(profile.profile_name, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.profile_name, null)
-            mac_address  = try(profile.mac_address, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.mac_address, null)
+            mac_address = try(
+              provider::utils::normalize_mac(
+                try(profile.mac_address, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.mac_address),
+                "colon"
+              ),
+              null
+            )
           }]
         }]
         ethernet_cfm_ais_transmission_up_interval            = try(be.ethernet_cfm.ais_transmission_up_interval, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.ais_transmission_up_interval, null)
@@ -1561,45 +1588,51 @@ locals {
           monitor_map_name = try(flow_monitor.monitor_map_name, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.flow_ipv6_egress_monitor_samplers.monitor_map_name, null)
           sampler_map_name = try(flow_monitor.sampler_map_name, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.flow_ipv6_egress_monitor_samplers.sampler_map_name, null)
         }]
-        arp_timeout                                      = try(be.arp_timeout, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.arp_timeout, null)
-        arp_learning_disable                             = try(be.arp_learning_disable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.arp_learning_disable, null)
-        arp_learning_local                               = try(be.arp_learning_local, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.arp_learning_local, null)
-        arp_gratuitous_ignore                            = try(be.arp_gratuitous_ignore, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.arp_gratuitous_ignore, null)
-        arp_cache_limit                                  = try(be.arp_cache_limit, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.arp_cache_limit, null)
-        proxy_arp                                        = try(be.proxy_arp, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.proxy_arp, null)
-        bundle_minimum_active_links                      = try(be.bundle_minimum_active_links, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_minimum_active_links, null)
-        bundle_maximum_active_links                      = try(be.bundle_maximum_active_links, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_maximum_active_links, null)
-        bundle_shutdown                                  = try(be.bundle_shutdown, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_shutdown, null)
-        bundle_load_balancing_hash_src_ip                = try(be.bundle_load_balancing_hash, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_load_balancing_hash, null) == "src_ip" ? true : null
-        bundle_load_balancing_hash_dst_ip                = try(be.bundle_load_balancing_hash, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_load_balancing_hash, null) == "dst_ip" ? true : null
-        bundle_lacp_delay                                = try(be.bundle_lacp_delay, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_lacp_delay, null)
-        bundle_lacp_fallback_timeout                     = try(be.bundle_lacp_fallback_timeout, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_lacp_fallback_timeout, null)
-        lacp_switchover_suppress_flaps                   = try(be.lacp_switchover_suppress_flaps, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_switchover_suppress_flaps, null)
-        lacp_churn_logging                               = try(be.lacp_churn_logging, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_churn_logging, null)
-        lacp_cisco_enable                                = try(be.lacp_cisco_enable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_cisco_enable, null)
-        lacp_cisco_enable_link_order_signaled            = try(be.lacp_cisco_enable_link_order_signaled, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_cisco_enable_link_order_signaled, null)
-        lacp_non_revertive                               = try(be.lacp_non_revertive, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_non_revertive, null)
-        lacp_mode                                        = try(be.lacp_mode, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_mode, null)
-        lacp_system_priority                             = try(be.lacp_system_priority, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_system_priority, null)
-        lacp_system_mac                                  = try(be.lacp_system_mac, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_system_mac, null)
-        lacp_period_short                                = try(be.lacp_period_short, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_period_short, null)
-        lacp_period                                      = try(be.lacp_period, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_period, null)
-        bfd_mode_ietf                                    = try(be.bfd_mode_ietf, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_mode_ietf, null)
-        bfd_mode_cisco                                   = try(be.bfd_mode_cisco, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_mode_cisco, null)
-        bfd_address_family_ipv4_destination              = try(be.bfd_address_family_ipv4_destination, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_destination, null)
-        bfd_address_family_ipv4_minimum_interval         = try(be.bfd_address_family_ipv4_minimum_interval, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_minimum_interval, null)
-        bfd_address_family_ipv4_multiplier               = try(be.bfd_address_family_ipv4_multiplier, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_multiplier, null)
-        bfd_address_family_ipv4_fast_detect              = try(be.bfd_address_family_ipv4_fast_detect, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_fast_detect, null)
-        bfd_address_family_ipv4_echo_minimum_interval    = try(be.bfd_address_family_ipv4_echo_minimum_interval, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_echo_minimum_interval, null)
-        bfd_address_family_ipv4_timers_start             = try(be.bfd_address_family_ipv4_timers_start, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_timers_start, null)
-        bfd_address_family_ipv4_timers_nbr_unconfig      = try(be.bfd_address_family_ipv4_timers_nbr_unconfig, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_timers_nbr_unconfig, null)
-        bfd_address_family_ipv6_destination              = try(be.bfd_address_family_ipv6_destination, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_destination, null)
-        bfd_address_family_ipv6_minimum_interval         = try(be.bfd_address_family_ipv6_minimum_interval, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_minimum_interval, null)
-        bfd_address_family_ipv6_multiplier               = try(be.bfd_address_family_ipv6_multiplier, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_multiplier, null)
-        bfd_address_family_ipv6_fast_detect              = try(be.bfd_address_family_ipv6_fast_detect, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_fast_detect, null)
-        bfd_address_family_ipv6_timers_start             = try(be.bfd_address_family_ipv6_timers_start, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_timers_start, null)
-        bfd_address_family_ipv6_timers_nbr_unconfig      = try(be.bfd_address_family_ipv6_timers_nbr_unconfig, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_timers_nbr_unconfig, null)
-        mac_address                                      = try(be.mac_address, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.mac_address, null)
+        arp_timeout                                   = try(be.arp_timeout, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.arp_timeout, null)
+        arp_learning_disable                          = try(be.arp_learning_disable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.arp_learning_disable, null)
+        arp_learning_local                            = try(be.arp_learning_local, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.arp_learning_local, null)
+        arp_gratuitous_ignore                         = try(be.arp_gratuitous_ignore, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.arp_gratuitous_ignore, null)
+        arp_cache_limit                               = try(be.arp_cache_limit, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.arp_cache_limit, null)
+        proxy_arp                                     = try(be.proxy_arp, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.proxy_arp, null)
+        bundle_minimum_active_links                   = try(be.bundle_minimum_active_links, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_minimum_active_links, null)
+        bundle_maximum_active_links                   = try(be.bundle_maximum_active_links, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_maximum_active_links, null)
+        bundle_shutdown                               = try(be.bundle_shutdown, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_shutdown, null)
+        bundle_load_balancing_hash_src_ip             = try(be.bundle_load_balancing_hash, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_load_balancing_hash, null) == "src_ip" ? true : null
+        bundle_load_balancing_hash_dst_ip             = try(be.bundle_load_balancing_hash, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_load_balancing_hash, null) == "dst_ip" ? true : null
+        bundle_lacp_delay                             = try(be.bundle_lacp_delay, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_lacp_delay, null)
+        bundle_lacp_fallback_timeout                  = try(be.bundle_lacp_fallback_timeout, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bundle_lacp_fallback_timeout, null)
+        lacp_switchover_suppress_flaps                = try(be.lacp_switchover_suppress_flaps, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_switchover_suppress_flaps, null)
+        lacp_churn_logging                            = try(be.lacp_churn_logging, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_churn_logging, null)
+        lacp_cisco_enable                             = try(be.lacp_cisco_enable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_cisco_enable, null)
+        lacp_cisco_enable_link_order_signaled         = try(be.lacp_cisco_enable_link_order_signaled, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_cisco_enable_link_order_signaled, null)
+        lacp_non_revertive                            = try(be.lacp_non_revertive, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_non_revertive, null)
+        lacp_mode                                     = try(be.lacp_mode, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_mode, null)
+        lacp_system_priority                          = try(be.lacp_system_priority, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_system_priority, null)
+        lacp_system_mac                               = try(be.lacp_system_mac, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_system_mac, null)
+        lacp_period_short                             = try(be.lacp_period_short, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_period_short, null)
+        lacp_period                                   = try(be.lacp_period, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.lacp_period, null)
+        bfd_mode_ietf                                 = try(be.bfd_mode_ietf, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_mode_ietf, null)
+        bfd_mode_cisco                                = try(be.bfd_mode_cisco, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_mode_cisco, null)
+        bfd_address_family_ipv4_destination           = try(be.bfd_address_family_ipv4_destination, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_destination, null)
+        bfd_address_family_ipv4_minimum_interval      = try(be.bfd_address_family_ipv4_minimum_interval, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_minimum_interval, null)
+        bfd_address_family_ipv4_multiplier            = try(be.bfd_address_family_ipv4_multiplier, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_multiplier, null)
+        bfd_address_family_ipv4_fast_detect           = try(be.bfd_address_family_ipv4_fast_detect, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_fast_detect, null)
+        bfd_address_family_ipv4_echo_minimum_interval = try(be.bfd_address_family_ipv4_echo_minimum_interval, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_echo_minimum_interval, null)
+        bfd_address_family_ipv4_timers_start          = try(be.bfd_address_family_ipv4_timers_start, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_timers_start, null)
+        bfd_address_family_ipv4_timers_nbr_unconfig   = try(be.bfd_address_family_ipv4_timers_nbr_unconfig, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv4_timers_nbr_unconfig, null)
+        bfd_address_family_ipv6_destination           = try(be.bfd_address_family_ipv6_destination, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_destination, null)
+        bfd_address_family_ipv6_minimum_interval      = try(be.bfd_address_family_ipv6_minimum_interval, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_minimum_interval, null)
+        bfd_address_family_ipv6_multiplier            = try(be.bfd_address_family_ipv6_multiplier, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_multiplier, null)
+        bfd_address_family_ipv6_fast_detect           = try(be.bfd_address_family_ipv6_fast_detect, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_fast_detect, null)
+        bfd_address_family_ipv6_timers_start          = try(be.bfd_address_family_ipv6_timers_start, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_timers_start, null)
+        bfd_address_family_ipv6_timers_nbr_unconfig   = try(be.bfd_address_family_ipv6_timers_nbr_unconfig, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.bundle_ethernets.bfd_address_family_ipv6_timers_nbr_unconfig, null)
+        mac_address = try(
+          provider::utils::normalize_mac(
+            try(be.mac_address, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.mac_address),
+            "colon"
+          ),
+          null
+        )
         mpls_mtu                                         = try(be.mpls_mtu, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.mpls_mtu, null)
         lldp                                             = try(be.lldp, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.lldp, null)
         lldp_transmit_disable                            = try(be.lldp_transmit_disable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.lldp_transmit_disable, null)
@@ -1945,11 +1978,12 @@ resource "iosxr_interface_bundle_ether" "bundle_ether" {
 
   depends_on = [
     # Future dependencies - uncomment when resource is created:
-    #iosxr_vrf.vrf,
     iosxr_interface_ethernet.ethernet,
-    iosxr_interface_ethernet_subinterface.ethernet_subinterface
+    iosxr_interface_ethernet_subinterface.ethernet_subinterface,
     #iosxr_ipv4_access_list.ipv4_access_list,
     #iosxr_ipv6_access_list.ipv6_access_list,
+    iosxr_vrf.vrf,
+    iosxr_policy_map_qos.policy_map_qos
   ]
 }
 
@@ -2091,7 +2125,13 @@ locals {
             }]
             sla_operation_profile_target_mac_addresses = try(length(domain.sla_operation_profile_target_mac_addresses) == 0, true) ? null : [for sla_mac in domain.sla_operation_profile_target_mac_addresses : {
               profile_name = try(sla_mac.profile_name, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.profile_name, null)
-              mac_address  = try(sla_mac.mac_address, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.mac_address, null)
+              mac_address = try(
+                provider::utils::normalize_mac(
+                  try(sla_mac.mac_address, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ethernet_cfm.mep_domains.sla_operation_profile_target_mac_addresses.mac_address),
+                  "colon"
+                ),
+                null
+              )
             }]
           }]
           ethernet_cfm_ais_transmission_up_interval            = try(subint.ethernet_cfm.ais_transmission_up_interval, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ethernet_cfm.ais_transmission_up_interval, null)
@@ -2453,10 +2493,11 @@ resource "iosxr_interface_bundle_ether_subinterface" "bundle_ether_subinterface"
 
   depends_on = [
     # Future dependencies - uncomment when resource is created:
-    #iosxr_vrf.vrf,
-    iosxr_interface_bundle_ether.bundle_ether
+    iosxr_interface_bundle_ether.bundle_ether,
     #iosxr_ipv4_access_list.ipv4_access_list,
     #iosxr_ipv6_access_list.ipv6_access_list,
+    iosxr_vrf.vrf,
+    iosxr_policy_map_qos.policy_map_qos
   ]
 }
 
@@ -2551,33 +2592,39 @@ locals {
           route_tag     = try(eui64.route_tag, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.eui64_addresses.route_tag, null)
           algorithm     = try(eui64.algorithm, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.eui64_addresses.algorithm, null)
         }]
-        ipv6_autoconfig                                  = try(bvi.ipv6.autoconfig, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.autoconfig, null)
-        ipv6_dhcp                                        = try(bvi.ipv6.dhcp, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.dhcp, null)
-        ipv6_mtu                                         = try(bvi.ipv6.mtu, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.mtu, null)
-        ipv6_unreachables_disable                        = try(bvi.ipv6.unreachables_disable, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.unreachables_disable, null)
-        ipv6_tcp_mss_adjust                              = try(bvi.ipv6.tcp_mss_adjust, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.tcp_mss_adjust, null)
-        ipv6_nd_reachable_time                           = try(bvi.ipv6.nd_reachable_time, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_reachable_time, null)
-        ipv6_nd_cache_limit                              = try(bvi.ipv6.nd_cache_limit, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_cache_limit, null)
-        ipv6_nd_dad_attempts                             = try(bvi.ipv6.nd_dad_attempts, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_dad_attempts, null)
-        ipv6_nd_unicast_ra                               = try(bvi.ipv6.nd_unicast_ra, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_unicast_ra, null)
-        ipv6_nd_suppress_ra                              = try(bvi.ipv6.nd_suppress_ra, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_suppress_ra, null)
-        ipv6_nd_managed_config_flag                      = try(bvi.ipv6.nd_managed_config_flag, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_managed_config_flag, null)
-        ipv6_nd_other_config_flag                        = try(bvi.ipv6.nd_other_config_flag, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_other_config_flag, null)
-        ipv6_nd_ns_interval                              = try(bvi.ipv6.nd_ns_interval, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_ns_interval, null)
-        ipv6_nd_ra_interval_max                          = try(bvi.ipv6.nd_ra_interval_max, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_ra_interval_max, null)
-        ipv6_nd_ra_interval_min                          = try(bvi.ipv6.nd_ra_interval_min, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_ra_interval_min, null)
-        ipv6_nd_ra_lifetime                              = try(bvi.ipv6.nd_ra_lifetime, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_ra_lifetime, null)
-        ipv6_nd_redirects                                = try(bvi.ipv6.nd_redirects, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_redirects, null)
-        ipv6_nd_prefix_default_no_adv                    = try(bvi.ipv6.nd_prefix_default_no_adv, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_prefix_default_no_adv, null)
-        ipv6_nd_prefix_default_no_autoconfig             = try(bvi.ipv6.nd_prefix_default_no_autoconfig, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_prefix_default_no_autoconfig, null)
-        arp_timeout                                      = try(bvi.arp_timeout, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_timeout, null)
-        arp_learning_disable                             = try(bvi.arp_learning_disable, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_learning_disable, null)
-        arp_learning_local                               = try(bvi.arp_learning_local, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_learning_local, null)
-        arp_gratuitous_ignore                            = try(bvi.arp_gratuitous_ignore, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_gratuitous_ignore, null)
-        arp_cache_limit                                  = try(bvi.arp_cache_limit, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_cache_limit, null)
-        proxy_arp                                        = try(bvi.proxy_arp, local.defaults.iosxr.devices.configuration.interfaces.bvis.proxy_arp, null)
-        host_routing                                     = try(bvi.host_routing, local.defaults.iosxr.devices.configuration.interfaces.bvis.host_routing, null)
-        mac_address                                      = try(bvi.mac_address, local.defaults.iosxr.devices.configuration.interfaces.bvis.mac_address, null)
+        ipv6_autoconfig                      = try(bvi.ipv6.autoconfig, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.autoconfig, null)
+        ipv6_dhcp                            = try(bvi.ipv6.dhcp, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.dhcp, null)
+        ipv6_mtu                             = try(bvi.ipv6.mtu, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.mtu, null)
+        ipv6_unreachables_disable            = try(bvi.ipv6.unreachables_disable, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.unreachables_disable, null)
+        ipv6_tcp_mss_adjust                  = try(bvi.ipv6.tcp_mss_adjust, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.tcp_mss_adjust, null)
+        ipv6_nd_reachable_time               = try(bvi.ipv6.nd_reachable_time, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_reachable_time, null)
+        ipv6_nd_cache_limit                  = try(bvi.ipv6.nd_cache_limit, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_cache_limit, null)
+        ipv6_nd_dad_attempts                 = try(bvi.ipv6.nd_dad_attempts, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_dad_attempts, null)
+        ipv6_nd_unicast_ra                   = try(bvi.ipv6.nd_unicast_ra, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_unicast_ra, null)
+        ipv6_nd_suppress_ra                  = try(bvi.ipv6.nd_suppress_ra, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_suppress_ra, null)
+        ipv6_nd_managed_config_flag          = try(bvi.ipv6.nd_managed_config_flag, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_managed_config_flag, null)
+        ipv6_nd_other_config_flag            = try(bvi.ipv6.nd_other_config_flag, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_other_config_flag, null)
+        ipv6_nd_ns_interval                  = try(bvi.ipv6.nd_ns_interval, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_ns_interval, null)
+        ipv6_nd_ra_interval_max              = try(bvi.ipv6.nd_ra_interval_max, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_ra_interval_max, null)
+        ipv6_nd_ra_interval_min              = try(bvi.ipv6.nd_ra_interval_min, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_ra_interval_min, null)
+        ipv6_nd_ra_lifetime                  = try(bvi.ipv6.nd_ra_lifetime, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_ra_lifetime, null)
+        ipv6_nd_redirects                    = try(bvi.ipv6.nd_redirects, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_redirects, null)
+        ipv6_nd_prefix_default_no_adv        = try(bvi.ipv6.nd_prefix_default_no_adv, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_prefix_default_no_adv, null)
+        ipv6_nd_prefix_default_no_autoconfig = try(bvi.ipv6.nd_prefix_default_no_autoconfig, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_prefix_default_no_autoconfig, null)
+        arp_timeout                          = try(bvi.arp_timeout, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_timeout, null)
+        arp_learning_disable                 = try(bvi.arp_learning_disable, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_learning_disable, null)
+        arp_learning_local                   = try(bvi.arp_learning_local, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_learning_local, null)
+        arp_gratuitous_ignore                = try(bvi.arp_gratuitous_ignore, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_gratuitous_ignore, null)
+        arp_cache_limit                      = try(bvi.arp_cache_limit, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_cache_limit, null)
+        proxy_arp                            = try(bvi.proxy_arp, local.defaults.iosxr.devices.configuration.interfaces.bvis.proxy_arp, null)
+        host_routing                         = try(bvi.host_routing, local.defaults.iosxr.devices.configuration.interfaces.bvis.host_routing, null)
+        mac_address = try(
+          provider::utils::normalize_mac(
+            try(bvi.mac_address, local.defaults.iosxr.devices.configuration.interfaces.bvis.mac_address),
+            "colon"
+          ),
+          null
+        )
         ptp                                              = try(bvi.ptp.enable, local.defaults.iosxr.devices.configuration.interfaces.bvis.ptp.enable, null)
         ptp_profile                                      = try(bvi.ptp.profile, local.defaults.iosxr.devices.configuration.interfaces.bvis.ptp.profile, null)
         ptp_transport_ipv4                               = try(bvi.ptp.transport_ipv4, local.defaults.iosxr.devices.configuration.interfaces.bvis.ptp.transport_ipv4, null)
@@ -2869,11 +2916,12 @@ resource "iosxr_interface_bvi" "bvi" {
 
   depends_on = [
     # Future dependencies - uncomment when resource is created:
-    #iosxr_vrf.vrf,
     iosxr_interface_ethernet.ethernet,
     iosxr_interface_ethernet_subinterface.ethernet_subinterface,
     #iosxr_ipv4_access_list.ipv4_access_list,
     #iosxr_ipv6_access_list.ipv6_access_list,
+    iosxr_vrf.vrf,
+    iosxr_policy_map_qos.policy_map_qos
   ]
 }
 
@@ -3012,8 +3060,7 @@ resource "iosxr_interface_loopback" "loopback" {
   }
 
   depends_on = [
-    # Future dependencies - uncomment when resource is created:
-    #iosxr_vrf.vrf,
+    iosxr_vrf.vrf
   ]
 }
 
@@ -3151,8 +3198,7 @@ resource "iosxr_interface_tunnel_ip" "tunnel_ip" {
   }
 
   depends_on = [
-    # Future dependencies - uncomment when resource is created:
-    #iosxr_vrf.vrf,
+    iosxr_vrf.vrf
   ]
 }
 
@@ -3398,7 +3444,6 @@ resource "iosxr_interface_tunnel_te" "tunnel_te" {
   }
 
   depends_on = [
-    # Future dependencies - uncomment when resource is created:
-    #iosxr_vrf.vrf,
+    iosxr_vrf.vrf
   ]
 }
