@@ -44,4 +44,9 @@ resource "iosxr_line_console" "line_console" {
       group_name = try(group.group_name, local.defaults.iosxr.devices.configuration.line_console.users_group_defaults.group_name, null)
     }
   ]
+
+  depends_on = [
+    # TODO: Add once AAA resources are implemented
+    # iosxr_aaa.aaa
+  ]
 }
