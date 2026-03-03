@@ -25,21 +25,20 @@ resource "iosxr_line_console" "line_console" {
   telnet_transparent          = try(local.device_config[each.value.name].line_console.telnet_transparent, local.defaults.iosxr.devices.configuration.line_console.telnet_transparent, null)
   timeout_login_response      = try(local.device_config[each.value.name].line_console.timeout_login_response, local.defaults.iosxr.devices.configuration.line_console.timeout_login_response, null)
   timestamp_disable           = try(local.device_config[each.value.name].line_console.timestamp_disable, local.defaults.iosxr.devices.configuration.line_console.timestamp_disable, null)
-  transport_input_all         = try(local.device_config[each.value.name].line_console.transport_input_all, local.defaults.iosxr.devices.configuration.line_console.transport_input_all, null)
-  transport_input_none        = try(local.device_config[each.value.name].line_console.transport_input_none, local.defaults.iosxr.devices.configuration.line_console.transport_input_none, null)
-  transport_input_ssh         = try(local.device_config[each.value.name].line_console.transport_input_ssh, local.defaults.iosxr.devices.configuration.line_console.transport_input_ssh, null)
-  transport_input_ssh_telnet  = try(local.device_config[each.value.name].line_console.transport_input_ssh_telnet, local.defaults.iosxr.devices.configuration.line_console.transport_input_ssh_telnet, null)
-  transport_input_telnet      = try(local.device_config[each.value.name].line_console.transport_input_telnet, local.defaults.iosxr.devices.configuration.line_console.transport_input_telnet, null)
-  transport_output_all        = try(local.device_config[each.value.name].line_console.transport_output_all, local.defaults.iosxr.devices.configuration.line_console.transport_output_all, null)
-  transport_output_none       = try(local.device_config[each.value.name].line_console.transport_output_none, local.defaults.iosxr.devices.configuration.line_console.transport_output_none, null)
-  transport_output_ssh        = try(local.device_config[each.value.name].line_console.transport_output_ssh, local.defaults.iosxr.devices.configuration.line_console.transport_output_ssh, null)
-  transport_output_ssh_telnet = try(local.device_config[each.value.name].line_console.transport_output_ssh_telnet, local.defaults.iosxr.devices.configuration.line_console.transport_output_ssh_telnet, null)
-  transport_output_telnet     = try(local.device_config[each.value.name].line_console.transport_output_telnet, local.defaults.iosxr.devices.configuration.line_console.transport_output_telnet, null)
-  transport_preferred_none    = try(local.device_config[each.value.name].line_console.transport_preferred_none, local.defaults.iosxr.devices.configuration.line_console.transport_preferred_none, null)
-  transport_preferred_ssh     = try(local.device_config[each.value.name].line_console.transport_preferred_ssh, local.defaults.iosxr.devices.configuration.line_console.transport_preferred_ssh, null)
-  transport_preferred_telnet  = try(local.device_config[each.value.name].line_console.transport_preferred_telnet, local.defaults.iosxr.devices.configuration.line_console.transport_preferred_telnet, null)
+  transport_input_all         = try(local.device_config[each.value.name].line_console.transport_input, local.defaults.iosxr.devices.configuration.line_console.transport_input, null) == "all" ? true : null
+  transport_input_none        = try(local.device_config[each.value.name].line_console.transport_input, local.defaults.iosxr.devices.configuration.line_console.transport_input, null) == "none" ? true : null
+  transport_input_ssh         = try(local.device_config[each.value.name].line_console.transport_input, local.defaults.iosxr.devices.configuration.line_console.transport_input, null) == "ssh" ? true : null
+  transport_input_ssh_telnet  = try(local.device_config[each.value.name].line_console.transport_input, local.defaults.iosxr.devices.configuration.line_console.transport_input, null) == "ssh_telnet" ? true : null
+  transport_input_telnet      = try(local.device_config[each.value.name].line_console.transport_input, local.defaults.iosxr.devices.configuration.line_console.transport_input, null) == "telnet" ? true : null
+  transport_output_all        = try(local.device_config[each.value.name].line_console.transport_output, local.defaults.iosxr.devices.configuration.line_console.transport_output, null) == "all" ? true : null
+  transport_output_none       = try(local.device_config[each.value.name].line_console.transport_output, local.defaults.iosxr.devices.configuration.line_console.transport_output, null) == "none" ? true : null
+  transport_output_ssh        = try(local.device_config[each.value.name].line_console.transport_output, local.defaults.iosxr.devices.configuration.line_console.transport_output, null) == "ssh" ? true : null
+  transport_output_ssh_telnet = try(local.device_config[each.value.name].line_console.transport_output, local.defaults.iosxr.devices.configuration.line_console.transport_output, null) == "ssh_telnet" ? true : null
+  transport_output_telnet     = try(local.device_config[each.value.name].line_console.transport_output, local.defaults.iosxr.devices.configuration.line_console.transport_output, null) == "telnet" ? true : null
+  transport_preferred_none    = try(local.device_config[each.value.name].line_console.transport_preferred, local.defaults.iosxr.devices.configuration.line_console.transport_preferred, null) == "none" ? true : null
+  transport_preferred_ssh     = try(local.device_config[each.value.name].line_console.transport_preferred, local.defaults.iosxr.devices.configuration.line_console.transport_preferred, null) == "ssh" ? true : null
+  transport_preferred_telnet  = try(local.device_config[each.value.name].line_console.transport_preferred, local.defaults.iosxr.devices.configuration.line_console.transport_preferred, null) == "telnet" ? true : null
   width                       = try(local.device_config[each.value.name].line_console.width, local.defaults.iosxr.devices.configuration.line_console.width, null)
-
   users_group = try(length(local.device_config[each.value.name].line_console.users_group) == 0, true) ? null : [
     for group in try(local.device_config[each.value.name].line_console.users_group, []) : {
       group_name = try(group.group_name, local.defaults.iosxr.devices.configuration.line_console.users_group_defaults.group_name, null)
