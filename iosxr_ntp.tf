@@ -18,6 +18,15 @@ locals {
         access_group_ipv4_serve_only = try(local.device_config[device.name].ntp.access_group_ipv4_serve_only, local.defaults.iosxr.devices.configuration.ntp.access_group_ipv4_serve_only, null)
         authenticate                 = try(local.device_config[device.name].ntp.authenticate, local.defaults.iosxr.devices.configuration.ntp.authenticate, null)
         broadcastdelay               = try(local.device_config[device.name].ntp.broadcastdelay, local.defaults.iosxr.devices.configuration.ntp.broadcastdelay, null)
+        drift_aging_time             = try(local.device_config[device.name].ntp.drift_aging_time, local.defaults.iosxr.devices.configuration.ntp.drift_aging_time, null)
+        drift_file_bootflash         = try(local.device_config[device.name].ntp.drift_file_bootflash, local.defaults.iosxr.devices.configuration.ntp.drift_file_bootflash, null)
+        drift_file_compactflash      = try(local.device_config[device.name].ntp.drift_file_compactflash, local.defaults.iosxr.devices.configuration.ntp.drift_file_compactflash, null)
+        drift_file_disk0             = try(local.device_config[device.name].ntp.drift_file_disk0, local.defaults.iosxr.devices.configuration.ntp.drift_file_disk0, null)
+        drift_file_disk1             = try(local.device_config[device.name].ntp.drift_file_disk1, local.defaults.iosxr.devices.configuration.ntp.drift_file_disk1, null)
+        drift_file_disk2             = try(local.device_config[device.name].ntp.drift_file_disk2, local.defaults.iosxr.devices.configuration.ntp.drift_file_disk2, null)
+        drift_file_harddisk          = try(local.device_config[device.name].ntp.drift_file_harddisk, local.defaults.iosxr.devices.configuration.ntp.drift_file_harddisk, null)
+        drift_file_usb               = try(local.device_config[device.name].ntp.drift_file_usb, local.defaults.iosxr.devices.configuration.ntp.drift_file_usb, null)
+        drift_filename               = try(local.device_config[device.name].ntp.drift_filename, local.defaults.iosxr.devices.configuration.ntp.drift_filename, null)
         max_associations             = try(local.device_config[device.name].ntp.max_associations, local.defaults.iosxr.devices.configuration.ntp.max_associations, null)
         update_calendar              = try(local.device_config[device.name].ntp.update_calendar, local.defaults.iosxr.devices.configuration.ntp.update_calendar, null)
         log_internal_sync            = try(local.device_config[device.name].ntp.log_internal_sync, local.defaults.iosxr.devices.configuration.ntp.log_internal_sync, null)
@@ -83,6 +92,7 @@ locals {
         interfaces = try(length(local.device_config[device.name].ntp.interfaces) == 0, true) ? null : [
           for interface in local.device_config[device.name].ntp.interfaces : {
             interface_name        = try(interface.interface_name, local.defaults.iosxr.devices.configuration.ntp.interfaces.interface_name, null)
+            broadcast_client      = try(interface.broadcast_client, local.defaults.iosxr.devices.configuration.ntp.interfaces.broadcast_client, null)
             broadcast_destination = try(interface.broadcast_destination, local.defaults.iosxr.devices.configuration.ntp.interfaces.broadcast_destination, null)
             broadcast_key         = try(interface.broadcast_key, local.defaults.iosxr.devices.configuration.ntp.interfaces.broadcast_key, null)
             broadcast_version     = try(interface.broadcast_version, local.defaults.iosxr.devices.configuration.ntp.interfaces.broadcast_version, null)
@@ -101,6 +111,20 @@ locals {
               disable               = try(interface.disable, local.defaults.iosxr.devices.configuration.ntp.interface_vrfs.interfaces.disable, null)
               }
             ]
+          }
+        ]
+        hostname_peers_servers = try(length(local.device_config[device.name].ntp.hostname_peers_servers) == 0, true) ? null : [
+          for server in local.device_config[device.name].ntp.hostname_peers_servers : {
+            fqdn_hostname = try(server.fqdn_hostname, local.defaults.iosxr.devices.configuration.ntp.hostname_peers_servers.fqdn_hostname, null)
+            type          = try(server.type, local.defaults.iosxr.devices.configuration.ntp.hostname_peers_servers.type, null)
+            version       = try(server.version, local.defaults.iosxr.devices.configuration.ntp.hostname_peers_servers.version, null)
+            key           = try(server.key, local.defaults.iosxr.devices.configuration.ntp.hostname_peers_servers.key, null)
+            minpoll       = try(server.minpoll, local.defaults.iosxr.devices.configuration.ntp.hostname_peers_servers.minpoll, null)
+            maxpoll       = try(server.maxpoll, local.defaults.iosxr.devices.configuration.ntp.hostname_peers_servers.maxpoll, null)
+            prefer        = try(server.prefer, local.defaults.iosxr.devices.configuration.ntp.hostname_peers_servers.prefer, null)
+            burst         = try(server.burst, local.defaults.iosxr.devices.configuration.ntp.hostname_peers_servers.burst, null)
+            iburst        = try(server.iburst, local.defaults.iosxr.devices.configuration.ntp.hostname_peers_servers.iburst, null)
+            source        = try(server.source, local.defaults.iosxr.devices.configuration.ntp.hostname_peers_servers.source, null)
           }
         ]
         ipv4_peers_servers = try(length(local.device_config[device.name].ntp.ipv4_peers_servers) == 0, true) ? null : [
@@ -162,6 +186,19 @@ locals {
               ipv6_address = try(server.ipv6_address, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.ipv6_peers_servers.ipv6_address, null)
               }
             ]
+            hostname_peers_servers = try(length(vrf.hostname_peers_servers) == 0, true) ? null : [for server in vrf.hostname_peers_servers : {
+              fqdn_hostname = try(server.fqdn_hostname, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.hostname_peers_servers.fqdn_hostname, null)
+              type          = try(server.type, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.hostname_peers_servers.type, null)
+              version       = try(server.version, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.hostname_peers_servers.version, null)
+              key           = try(server.key, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.hostname_peers_servers.key, null)
+              minpoll       = try(server.minpoll, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.hostname_peers_servers.minpoll, null)
+              maxpoll       = try(server.maxpoll, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.hostname_peers_servers.maxpoll, null)
+              prefer        = try(server.prefer, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.hostname_peers_servers.prefer, null)
+              burst         = try(server.burst, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.hostname_peers_servers.burst, null)
+              iburst        = try(server.iburst, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.hostname_peers_servers.iburst, null)
+              source        = try(server.source, local.defaults.iosxr.devices.configuration.ntp.peers_servers_vrfs.hostname_peers_servers.source, null)
+              }
+            ]
           }
         ]
       }
@@ -186,6 +223,15 @@ resource "iosxr_ntp" "ntp" {
   access_group_ipv4_serve_only  = each.value.access_group_ipv4_serve_only
   authenticate                  = each.value.authenticate
   broadcastdelay                = each.value.broadcastdelay
+  drift_aging_time              = each.value.drift_aging_time
+  drift_file_bootflash          = each.value.drift_file_bootflash
+  drift_file_compactflash       = each.value.drift_file_compactflash
+  drift_file_disk0              = each.value.drift_file_disk0
+  drift_file_disk1              = each.value.drift_file_disk1
+  drift_file_disk2              = each.value.drift_file_disk2
+  drift_file_harddisk           = each.value.drift_file_harddisk
+  drift_file_usb                = each.value.drift_file_usb
+  drift_filename                = each.value.drift_filename
   max_associations              = each.value.max_associations
   update_calendar               = each.value.update_calendar
   log_internal_sync             = each.value.log_internal_sync
@@ -209,6 +255,7 @@ resource "iosxr_ntp" "ntp" {
   hmac_sha2_authentication_keys = each.value.hmac_sha2_authentication_keys
   interfaces                    = each.value.interfaces
   interface_vrfs                = each.value.interface_vrfs
+  hostname_peers_servers        = each.value.hostname_peers_servers
   ipv4_peers_servers            = each.value.ipv4_peers_servers
   ipv6_peers_servers            = each.value.ipv6_peers_servers
   peers_servers_vrfs            = each.value.peers_servers_vrfs
