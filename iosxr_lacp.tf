@@ -3,10 +3,10 @@ resource "iosxr_lacp" "lacp" {
   device   = each.value.name
   mac = try(
     provider::utils::normalize_mac(
-      try(local.device_config[each.value.name].lacp.mac, local.defaults.iosxr.devices.configuration.lacp.mac),
+      try(local.device_config[each.value.name].lacp.system_mac, local.defaults.iosxr.devices.configuration.lacp.system_mac),
       "colon"
     ),
     null
   )
-  priority = try(local.device_config[each.value.name].lacp.priority, local.defaults.iosxr.devices.configuration.lacp.priority, null)
+  priority = try(local.device_config[each.value.name].lacp.system_priority, local.defaults.iosxr.devices.configuration.lacp.system_priority, null)
 }
