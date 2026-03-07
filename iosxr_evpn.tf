@@ -207,30 +207,42 @@ resource "iosxr_evpn_evi" "evpn_evi" {
   etree                            = each.value.etree
   etree_leaf                       = each.value.etree_leaf
   etree_rt_leaf                    = each.value.etree_rt_leaf
-  bgp_route_target_import_two_byte_as_format = try(length([for rt in each.value.bgp_route_target_import : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [for rt in each.value.bgp_route_target_import : {
-    as_number       = rt.as_number
-    assigned_number = rt.assigned_number
-  } if rt.format == "two_byte_as"]
-  bgp_route_target_import_four_byte_as_format = try(length([for rt in each.value.bgp_route_target_import : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [for rt in each.value.bgp_route_target_import : {
-    as_number       = rt.as_number
-    assigned_number = rt.assigned_number
-  } if rt.format == "four_byte_as"]
-  bgp_route_target_import_ipv4_address_format = try(length([for rt in each.value.bgp_route_target_import : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [for rt in each.value.bgp_route_target_import : {
-    ipv4_address    = rt.ipv4_address
-    assigned_number = rt.assigned_number
-  } if rt.format == "ipv4_address"]
-  bgp_route_target_export_two_byte_as_format = try(length([for rt in each.value.bgp_route_target_export : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [for rt in each.value.bgp_route_target_export : {
-    as_number       = rt.as_number
-    assigned_number = rt.assigned_number
-  } if rt.format == "two_byte_as"]
-  bgp_route_target_export_four_byte_as_format = try(length([for rt in each.value.bgp_route_target_export : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [for rt in each.value.bgp_route_target_export : {
-    as_number       = rt.as_number
-    assigned_number = rt.assigned_number
-  } if rt.format == "four_byte_as"]
-  bgp_route_target_export_ipv4_address_format = try(length([for rt in each.value.bgp_route_target_export : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [for rt in each.value.bgp_route_target_export : {
-    ipv4_address    = rt.ipv4_address
-    assigned_number = rt.assigned_number
-  } if rt.format == "ipv4_address"]
+  bgp_route_target_import_two_byte_as_format = try(length([for rt in each.value.bgp_route_target_import : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_import : {
+      as_number       = rt.as_number
+      assigned_number = rt.assigned_number
+    } if rt.format == "two_byte_as"
+  ]
+  bgp_route_target_import_four_byte_as_format = try(length([for rt in each.value.bgp_route_target_import : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_import : {
+      as_number       = rt.as_number
+      assigned_number = rt.assigned_number
+    } if rt.format == "four_byte_as"
+  ]
+  bgp_route_target_import_ipv4_address_format = try(length([for rt in each.value.bgp_route_target_import : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_import : {
+      ipv4_address    = rt.ipv4_address
+      assigned_number = rt.assigned_number
+    } if rt.format == "ipv4_address"
+  ]
+  bgp_route_target_export_two_byte_as_format = try(length([for rt in each.value.bgp_route_target_export : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_export : {
+      as_number       = rt.as_number
+      assigned_number = rt.assigned_number
+    } if rt.format == "two_byte_as"
+  ]
+  bgp_route_target_export_four_byte_as_format = try(length([for rt in each.value.bgp_route_target_export : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_export : {
+      as_number       = rt.as_number
+      assigned_number = rt.assigned_number
+    } if rt.format == "four_byte_as"
+  ]
+  bgp_route_target_export_ipv4_address_format = try(length([for rt in each.value.bgp_route_target_export : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_export : {
+      ipv4_address    = rt.ipv4_address
+      assigned_number = rt.assigned_number
+    } if rt.format == "ipv4_address"
+  ]
 
   depends_on = [
     iosxr_evpn.evpn
