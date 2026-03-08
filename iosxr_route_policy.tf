@@ -1,11 +1,11 @@
 locals {
   route_policies = flatten([
     for device in local.devices : [
-      for route_policy in try(local.device_config[device.name].route_policy, []) : {
+      for route_policy in try(local.device_config[device.name].route_policies, []) : {
         key               = format("%s/%s", device.name, route_policy.route_policy_name)
         device_name       = device.name
-        route_policy_name = try(route_policy.route_policy_name, local.defaults.iosxr.devices.configuration.route_policy.route_policy_name, null)
-        rpl               = try(route_policy.rpl, local.defaults.iosxr.devices.configuration.route_policy.rpl, null)
+        route_policy_name = try(route_policy.route_policy_name, local.defaults.iosxr.devices.configuration.route_policies.route_policy_name, null)
+        rpl               = try(route_policy.rpl, local.defaults.iosxr.devices.configuration.route_policies.rpl, null)
       }
     ]
   ])
