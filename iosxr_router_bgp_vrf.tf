@@ -52,7 +52,7 @@ locals {
           bgp_origin_as_validation_time                        = try(vrf.bgp_origin_as_validation_time, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.bgp_origin_as_validation_time, null)
           bfd_minimum_interval                                 = try(vrf.bfd_minimum_interval, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.bfd_minimum_interval, null)
           bfd_multiplier                                       = try(vrf.bfd_multiplier, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.bfd_multiplier, null)
-          rd = try(vrf.rd, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd, null) != null ? provider::utils::parse_bgp_rd_rt(
+          rd = try(vrf.rd, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd, null) != null ? provider::utils::normalize_bgp_rd(
             try(vrf.rd, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd)
           ) : null
           neighbors = try(length(vrf.neighbors) == 0, true) ? null : [for neighbor in vrf.neighbors : {

@@ -70,7 +70,7 @@ locals {
             import_stitching_rt_re_originate_stitching_rt      = try(af.import_stitching_rt_re_originate_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.af_groups.address_family.import_stitching_rt_re_originate_stitching_rt, null)
             import_re_originate                                = try(af.import_re_originate, local.defaults.iosxr.devices.configuration.routing.bgp.af_groups.address_family.import_re_originate, null)
             allowas_in                                         = try(af.allowas_in, local.defaults.iosxr.devices.configuration.routing.bgp.af_groups.address_family.allowas_in, null)
-            site_of_origin = try(af.site_of_origin, local.defaults.iosxr.devices.configuration.routing.bgp.af_groups.address_family.site_of_origin, null) != null ? provider::utils::parse_bgp_rd_rt(
+            site_of_origin = try(af.site_of_origin, local.defaults.iosxr.devices.configuration.routing.bgp.af_groups.address_family.site_of_origin, null) != null ? provider::utils::normalize_bgp_rd(
               try(af.site_of_origin, local.defaults.iosxr.devices.configuration.routing.bgp.af_groups.address_family.site_of_origin)
             ) : null
             as_override                                             = try(af.as_override, local.defaults.iosxr.devices.configuration.routing.bgp.af_groups.address_family.as_override, null)
