@@ -2,7 +2,7 @@ locals {
   router_isis_address_family_ipv4_unicast = flatten([
     for device in local.devices : [
       for isis_process in try(local.device_config[device.name].routing.isis_processes, []) :
-      contains(keys(try(isis_process.address_family, {})), "ipv4_unicast") ? [{
+      try(isis_process.address_family.ipv4_unicast, null) != null ? [{
         key                                                             = format("%s/%s/ipv4-unicast", device.name, isis_process.id)
         device_name                                                     = device.name
         process_id                                                      = try(isis_process.id, local.defaults.iosxr.devices.configuration.routing.isis_processes.id, null)
@@ -436,7 +436,7 @@ locals {
   router_isis_address_family_ipv6_unicast = flatten([
     for device in local.devices : [
       for isis_process in try(local.device_config[device.name].routing.isis_processes, []) :
-      contains(keys(try(isis_process.address_family, {})), "ipv6_unicast") ? [{
+      try(isis_process.address_family.ipv6_unicast, null) != null ? [{
         key                                                             = format("%s/%s/ipv6-unicast", device.name, isis_process.id)
         device_name                                                     = device.name
         process_id                                                      = try(isis_process.id, local.defaults.iosxr.devices.configuration.routing.isis_processes.id, null)
@@ -859,7 +859,7 @@ locals {
   router_isis_address_family_ipv4_multicast = flatten([
     for device in local.devices : [
       for isis_process in try(local.device_config[device.name].routing.isis_processes, []) :
-      contains(keys(try(isis_process.address_family, {})), "ipv4_multicast") ? [{
+      try(isis_process.address_family.ipv4_multicast, null) != null ? [{
         key                                              = format("%s/%s/ipv4-multicast", device.name, isis_process.id)
         device_name                                      = device.name
         process_id                                       = try(isis_process.id, local.defaults.iosxr.devices.configuration.routing.isis_processes.id, null)
@@ -1113,7 +1113,7 @@ locals {
   router_isis_address_family_ipv6_multicast = flatten([
     for device in local.devices : [
       for isis_process in try(local.device_config[device.name].routing.isis_processes, []) :
-      contains(keys(try(isis_process.address_family, {})), "ipv6_multicast") ? [{
+      try(isis_process.address_family.ipv6_multicast, null) != null ? [{
         key                                              = format("%s/%s/ipv6-multicast", device.name, isis_process.id)
         device_name                                      = device.name
         process_id                                       = try(isis_process.id, local.defaults.iosxr.devices.configuration.routing.isis_processes.id, null)
