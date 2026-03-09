@@ -120,8 +120,7 @@ locals {
   logging_vrfs = flatten([
     for device in local.devices : [
       for vrf_name in distinct([
-        for h in try(local.device_config[device.name].logging.hosts, []) : try(h.vrf, local.defaults.iosxr.devices.configuration.logging.hosts.vrf, null)
-        ]) : {
+        for h in try(local.device_config[device.name].logging.hosts, []) : try(h.vrf, local.defaults.iosxr.devices.configuration.logging.hosts.vrf, null)]) : {
         key         = format("%s/%s", device.name, vrf_name)
         device_name = device.name
         vrf_name    = vrf_name
@@ -130,14 +129,13 @@ locals {
           h if try(h.vrf, local.defaults.iosxr.devices.configuration.logging.hosts.vrf, null) == vrf_name
           && can(regex(":", try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, ""))) == false
           && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, ""))) == false
-          ]) == 0, true) ? null : [
-          for h in try(local.device_config[device.name].logging.hosts, []) : {
-            name                    = try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, null)
-            severity                = try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null)
-            port                    = try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)
-            operator                = try(h.operator, local.defaults.iosxr.devices.configuration.logging.hosts.operator, null)
-            facility                = try(h.facility, local.defaults.iosxr.devices.configuration.logging.hosts.facility, null)
-            hostname_source_address = try(h.source_address, local.defaults.iosxr.devices.configuration.logging.hosts.source_address, null)
+          ]) == 0, true) ? null : [for h in try(local.device_config[device.name].logging.hosts, []) : {
+          name                    = try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, null)
+          severity                = try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null)
+          port                    = try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)
+          operator                = try(h.operator, local.defaults.iosxr.devices.configuration.logging.hosts.operator, null)
+          facility                = try(h.facility, local.defaults.iosxr.devices.configuration.logging.hosts.facility, null)
+          hostname_source_address = try(h.source_address, local.defaults.iosxr.devices.configuration.logging.hosts.source_address, null)
           }
           if try(h.vrf, local.defaults.iosxr.devices.configuration.logging.hosts.vrf, null) == vrf_name
           && can(regex(":", try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, ""))) == false
