@@ -1,22 +1,4 @@
 locals {
-  dscp_map = {
-    "0"  = "default", "8" = "cs1", "10" = "af11",
-    "12" = "af12", "14" = "af13", "16" = "cs2",
-    "18" = "af21", "20" = "af22", "22" = "af23",
-    "24" = "cs3", "26" = "af31", "28" = "af32",
-    "30" = "af33", "32" = "cs4", "34" = "af41",
-    "36" = "af42", "38" = "af43", "40" = "cs5",
-    "46" = "ef", "48" = "cs6", "56" = "cs7"
-  }
-  precedence_map = {
-    "0" = "routine", "1" = "priority",
-    "2" = "immediate", "3" = "flash",
-    "4" = "flash-override", "5" = "critical",
-    "6" = "internet", "7" = "network"
-  }
-}
-
-locals {
   ntp = flatten([
     for device in local.devices : [
       {
@@ -77,25 +59,25 @@ locals {
         authentication_keys = try(length(local.device_config[device.name].ntp.authentication_keys) == 0, true) ? null : [
           for key in local.device_config[device.name].ntp.authentication_keys : {
             key_number    = try(key.number, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.number, null)
-            md5_encrypted = try(key.key_encrypted, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.key_encrypted, null)
+            md5_encrypted = try(key.key, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.key, null)
           } if try(key.mode, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.mode, null) == "md5"
         ]
         cmac_authentication_keys = try(length(local.device_config[device.name].ntp.authentication_keys) == 0, true) ? null : [
           for key in local.device_config[device.name].ntp.authentication_keys : {
             key_number     = try(key.number, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.number, null)
-            cmac_encrypted = try(key.key_encrypted, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.key_encrypted, null)
+            cmac_encrypted = try(key.key, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.key, null)
           } if try(key.mode, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.mode, null) == "cmac"
         ]
         hmac_sha1_authentication_keys = try(length(local.device_config[device.name].ntp.authentication_keys) == 0, true) ? null : [
           for key in local.device_config[device.name].ntp.authentication_keys : {
             key_number          = try(key.number, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.number, null)
-            hmac_sha1_encrypted = try(key.key_encrypted, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.key_encrypted, null)
+            hmac_sha1_encrypted = try(key.key, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.key, null)
           } if try(key.mode, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.mode, null) == "hmac_sha1"
         ]
         hmac_sha2_authentication_keys = try(length(local.device_config[device.name].ntp.authentication_keys) == 0, true) ? null : [
           for key in local.device_config[device.name].ntp.authentication_keys : {
             key_number          = try(key.number, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.number, null)
-            hmac_sha2_encrypted = try(key.key_encrypted, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.key_encrypted, null)
+            hmac_sha2_encrypted = try(key.key, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.key, null)
           } if try(key.mode, local.defaults.iosxr.devices.configuration.ntp.authentication_keys.mode, null) == "hmac_sha2"
         ]
         source_vrfs = try(length(local.device_config[device.name].ntp.vrfs) == 0, true) ? null : [
