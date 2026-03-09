@@ -37,6 +37,15 @@ locals {
         access_group_ipv6_serve_only = try(local.device_config[device.name].ntp.access_groups.ipv6_serve_only, local.defaults.iosxr.devices.configuration.ntp.access_groups.ipv6_serve_only, null)
         authenticate                 = try(local.device_config[device.name].ntp.authenticate, local.defaults.iosxr.devices.configuration.ntp.authenticate, null)
         broadcastdelay               = try(local.device_config[device.name].ntp.broadcastdelay, local.defaults.iosxr.devices.configuration.ntp.broadcastdelay, null)
+        drift_aging_time             = try(local.device_config[device.name].ntp.drift_aging_time, local.defaults.iosxr.devices.configuration.ntp.drift_aging_time, null)
+        drift_file_bootflash         = try(local.device_config[device.name].ntp.drift_file, local.defaults.iosxr.devices.configuration.ntp.drift_file, null) == "bootflash" ? true : null
+        drift_file_compactflash      = try(local.device_config[device.name].ntp.drift_file, local.defaults.iosxr.devices.configuration.ntp.drift_file, null) == "compactflash" ? true : null
+        drift_file_disk0             = try(local.device_config[device.name].ntp.drift_file, local.defaults.iosxr.devices.configuration.ntp.drift_file, null) == "disk0" ? true : null
+        drift_file_disk1             = try(local.device_config[device.name].ntp.drift_file, local.defaults.iosxr.devices.configuration.ntp.drift_file, null) == "disk1" ? true : null
+        drift_file_disk2             = try(local.device_config[device.name].ntp.drift_file, local.defaults.iosxr.devices.configuration.ntp.drift_file, null) == "disk2" ? true : null
+        drift_file_harddisk          = try(local.device_config[device.name].ntp.drift_file, local.defaults.iosxr.devices.configuration.ntp.drift_file, null) == "harddisk" ? true : null
+        drift_file_usb               = try(local.device_config[device.name].ntp.drift_file, local.defaults.iosxr.devices.configuration.ntp.drift_file, null) == "usb" ? true : null
+        drift_filename               = try(local.device_config[device.name].ntp.drift_filename, local.defaults.iosxr.devices.configuration.ntp.drift_filename, null)
         max_associations             = try(local.device_config[device.name].ntp.max_associations, local.defaults.iosxr.devices.configuration.ntp.max_associations, null)
         update_calendar              = try(local.device_config[device.name].ntp.update_calendar, local.defaults.iosxr.devices.configuration.ntp.update_calendar, null)
         log_internal_sync            = try(local.device_config[device.name].ntp.log_internal_sync, local.defaults.iosxr.devices.configuration.ntp.log_internal_sync, null)
@@ -108,7 +117,7 @@ locals {
             burst   = try(entry.burst, local.defaults.iosxr.devices.configuration.ntp.peers.burst, null)
             iburst  = try(entry.iburst, local.defaults.iosxr.devices.configuration.ntp.peers.iburst, null)
             source  = try(entry.source, local.defaults.iosxr.devices.configuration.ntp.peers.source, null)
-          } if can(regex(":", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.peers.address, ""))) == false],
+          } if can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.peers.address, "")))],
           [for entry in try(local.device_config[device.name].ntp.servers, []) : {
             address = try(entry.address, local.defaults.iosxr.devices.configuration.ntp.servers.address, null)
             type    = "server"
@@ -120,7 +129,7 @@ locals {
             burst   = try(entry.burst, local.defaults.iosxr.devices.configuration.ntp.servers.burst, null)
             iburst  = try(entry.iburst, local.defaults.iosxr.devices.configuration.ntp.servers.iburst, null)
             source  = try(entry.source, local.defaults.iosxr.devices.configuration.ntp.servers.source, null)
-          } if can(regex(":", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.servers.address, ""))) == false]
+          } if can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.servers.address, "")))]
         )
         ipv6_peers_servers = try(length(concat(try(local.device_config[device.name].ntp.peers, []), try(local.device_config[device.name].ntp.servers, []))) == 0, true) ? null : concat(
           [for entry in try(local.device_config[device.name].ntp.peers, []) : {
@@ -149,6 +158,32 @@ locals {
             iburst       = try(entry.iburst, local.defaults.iosxr.devices.configuration.ntp.servers.iburst, null)
             source       = try(entry.source, local.defaults.iosxr.devices.configuration.ntp.servers.source, null)
           } if can(regex(":", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.servers.address, ""))) == true]
+        )
+        hostname_peers_servers = try(length(concat(try(local.device_config[device.name].ntp.peers, []), try(local.device_config[device.name].ntp.servers, []))) == 0, true) ? null : concat(
+          [for entry in try(local.device_config[device.name].ntp.peers, []) : {
+            fqdn_hostname = try(entry.address, local.defaults.iosxr.devices.configuration.ntp.peers.address, null)
+            type          = "peer"
+            version       = try(entry.version, local.defaults.iosxr.devices.configuration.ntp.peers.version, null)
+            key           = try(entry.key, local.defaults.iosxr.devices.configuration.ntp.peers.key, null)
+            minpoll       = try(entry.minpoll, local.defaults.iosxr.devices.configuration.ntp.peers.minpoll, null)
+            maxpoll       = try(entry.maxpoll, local.defaults.iosxr.devices.configuration.ntp.peers.maxpoll, null)
+            prefer        = try(entry.prefer, local.defaults.iosxr.devices.configuration.ntp.peers.prefer, null)
+            burst         = try(entry.burst, local.defaults.iosxr.devices.configuration.ntp.peers.burst, null)
+            iburst        = try(entry.iburst, local.defaults.iosxr.devices.configuration.ntp.peers.iburst, null)
+            source        = try(entry.source, local.defaults.iosxr.devices.configuration.ntp.peers.source, null)
+          } if can(regex(":", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.peers.address, ""))) == false && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.peers.address, ""))) == false],
+          [for entry in try(local.device_config[device.name].ntp.servers, []) : {
+            fqdn_hostname = try(entry.address, local.defaults.iosxr.devices.configuration.ntp.servers.address, null)
+            type          = "server"
+            version       = try(entry.version, local.defaults.iosxr.devices.configuration.ntp.servers.version, null)
+            key           = try(entry.key, local.defaults.iosxr.devices.configuration.ntp.servers.key, null)
+            minpoll       = try(entry.minpoll, local.defaults.iosxr.devices.configuration.ntp.servers.minpoll, null)
+            maxpoll       = try(entry.maxpoll, local.defaults.iosxr.devices.configuration.ntp.servers.maxpoll, null)
+            prefer        = try(entry.prefer, local.defaults.iosxr.devices.configuration.ntp.servers.prefer, null)
+            burst         = try(entry.burst, local.defaults.iosxr.devices.configuration.ntp.servers.burst, null)
+            iburst        = try(entry.iburst, local.defaults.iosxr.devices.configuration.ntp.servers.iburst, null)
+            source        = try(entry.source, local.defaults.iosxr.devices.configuration.ntp.servers.source, null)
+          } if can(regex(":", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.servers.address, ""))) == false && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.servers.address, ""))) == false]
         )
         access_group_vrfs = try(length(local.device_config[device.name].ntp.vrfs) == 0, true) ? null : [
           for vrf in local.device_config[device.name].ntp.vrfs : {
@@ -192,7 +227,7 @@ locals {
                 burst   = try(entry.burst, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.burst, null)
                 iburst  = try(entry.iburst, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.iburst, null)
                 source  = try(entry.source, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.source, null)
-              } if can(regex(":", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.address, ""))) == false],
+              } if can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.address, "")))],
               [for entry in try(vrf.servers, []) : {
                 address = try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.address, null)
                 type    = "server"
@@ -204,7 +239,7 @@ locals {
                 burst   = try(entry.burst, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.burst, null)
                 iburst  = try(entry.iburst, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.iburst, null)
                 source  = try(entry.source, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.source, null)
-              } if can(regex(":", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.address, ""))) == false]
+              } if can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.address, "")))]
             )
             ipv6_peers_servers = try(length(concat(try(vrf.peers, []), try(vrf.servers, []))) == 0, true) ? null : concat(
               [for entry in try(vrf.peers, []) : {
@@ -234,6 +269,32 @@ locals {
                 source       = try(entry.source, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.source, null)
               } if can(regex(":", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.address, ""))) == true]
             )
+            hostname_peers_servers = try(length(concat(try(vrf.peers, []), try(vrf.servers, []))) == 0, true) ? null : concat(
+              [for entry in try(vrf.peers, []) : {
+                fqdn_hostname = try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.address, null)
+                type          = "peer"
+                version       = try(entry.version, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.version, null)
+                key           = try(entry.key, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.key, null)
+                minpoll       = try(entry.minpoll, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.minpoll, null)
+                maxpoll       = try(entry.maxpoll, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.maxpoll, null)
+                prefer        = try(entry.prefer, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.prefer, null)
+                burst         = try(entry.burst, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.burst, null)
+                iburst        = try(entry.iburst, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.iburst, null)
+                source        = try(entry.source, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.source, null)
+              } if can(regex(":", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.address, ""))) == false && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers.address, ""))) == false],
+              [for entry in try(vrf.servers, []) : {
+                fqdn_hostname = try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.address, null)
+                type          = "server"
+                version       = try(entry.version, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.version, null)
+                key           = try(entry.key, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.key, null)
+                minpoll       = try(entry.minpoll, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.minpoll, null)
+                maxpoll       = try(entry.maxpoll, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.maxpoll, null)
+                prefer        = try(entry.prefer, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.prefer, null)
+                burst         = try(entry.burst, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.burst, null)
+                iburst        = try(entry.iburst, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.iburst, null)
+                source        = try(entry.source, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.source, null)
+              } if can(regex(":", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.address, ""))) == false && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(entry.address, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers.address, ""))) == false]
+            )
           } if try(vrf.peers, local.defaults.iosxr.devices.configuration.ntp.vrfs.peers, null) != null || try(vrf.servers, local.defaults.iosxr.devices.configuration.ntp.vrfs.servers, null) != null
         ]
       }
@@ -258,6 +319,15 @@ resource "iosxr_ntp" "ntp" {
   access_group_ipv6_serve_only  = each.value.access_group_ipv6_serve_only
   authenticate                  = each.value.authenticate
   broadcastdelay                = each.value.broadcastdelay
+  drift_aging_time              = each.value.drift_aging_time
+  drift_file_bootflash          = each.value.drift_file_bootflash
+  drift_file_compactflash       = each.value.drift_file_compactflash
+  drift_file_disk0              = each.value.drift_file_disk0
+  drift_file_disk1              = each.value.drift_file_disk1
+  drift_file_disk2              = each.value.drift_file_disk2
+  drift_file_harddisk           = each.value.drift_file_harddisk
+  drift_file_usb                = each.value.drift_file_usb
+  drift_filename                = each.value.drift_filename
   max_associations              = each.value.max_associations
   update_calendar               = each.value.update_calendar
   log_internal_sync             = each.value.log_internal_sync
@@ -283,5 +353,6 @@ resource "iosxr_ntp" "ntp" {
   interface_vrfs                = each.value.interface_vrfs
   ipv4_peers_servers            = each.value.ipv4_peers_servers
   ipv6_peers_servers            = each.value.ipv6_peers_servers
+  hostname_peers_servers        = each.value.hostname_peers_servers
   peers_servers_vrfs            = each.value.peers_servers_vrfs
 }
