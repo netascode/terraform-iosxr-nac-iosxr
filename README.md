@@ -116,6 +116,7 @@ module "iosxr" {
 | [iosxr_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/lldp) | resource |
 | [iosxr_logging.logging](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/logging) | resource |
 | [iosxr_logging_vrf.logging_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/logging_vrf) | resource |
+| [iosxr_mpls_ldp_mldp.mpls_ldp_mldp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/mpls_ldp_mldp) | resource |
 | [iosxr_mpls_oam.mpls_oam](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/mpls_oam) | resource |
 | [iosxr_mpls_traffic_eng.mpls_traffic_eng](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/mpls_traffic_eng) | resource |
 | [iosxr_ntp.ntp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/ntp) | resource |
