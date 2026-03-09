@@ -52,13 +52,9 @@ locals {
           bgp_origin_as_validation_time                        = try(vrf.bgp_origin_as_validation_time, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.bgp_origin_as_validation_time, null)
           bfd_minimum_interval                                 = try(vrf.bfd_minimum_interval, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.bfd_minimum_interval, null)
           bfd_multiplier                                       = try(vrf.bfd_multiplier, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.bfd_multiplier, null)
-          rd_auto                                              = try(vrf.rd_auto, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd_auto, null)
-          rd_two_byte_as_number                                = try(vrf.rd_two_byte_as_number, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd_two_byte_as_number, null)
-          rd_two_byte_as_index                                 = try(vrf.rd_two_byte_as_index, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd_two_byte_as_index, null)
-          rd_four_byte_as_number                               = try(vrf.rd_four_byte_as_number, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd_four_byte_as_number, null)
-          rd_four_byte_as_index                                = try(vrf.rd_four_byte_as_index, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd_four_byte_as_index, null)
-          rd_ipv4_address_address                              = try(vrf.rd_ipv4_address_address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd_ipv4_address_address, null)
-          rd_ipv4_address_index                                = try(vrf.rd_ipv4_address_index, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd_ipv4_address_index, null)
+          rd = try(vrf.rd, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd, null) != null ? provider::utils::normalize_bgp_rd(
+            try(vrf.rd, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.rd)
+          ) : null
           neighbors = try(length(vrf.neighbors) == 0, true) ? null : [for neighbor in vrf.neighbors : {
             address                                   = try(neighbor.ip, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ip, null)
             evpn_link_bandwidth                       = try(neighbor.evpn_link_bandwidth, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.evpn_link_bandwidth, null)
@@ -86,61 +82,69 @@ locals {
               server_number = try(server.server_number, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bmp_activate_servers.server_number, null)
               }
             ]
-            bfd_minimum_interval                                              = try(neighbor.bfd_minimum_interval, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_minimum_interval, null)
-            bfd_multiplier                                                    = try(neighbor.bfd_multiplier, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_multiplier, null)
-            bfd_fast_detect                                                   = try(neighbor.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_fast_detect, null) == "enable" ? true : null
-            bfd_fast_detect_strict_mode                                       = try(neighbor.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_fast_detect, null) == "strict-mode" ? true : null
-            bfd_fast_detect_disable                                           = try(neighbor.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_fast_detect, null) == "disable" ? true : null
-            bfd_fast_detect_strict_mode_negotiate                             = try(neighbor.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_fast_detect, null) == "strict-mode-negotiate" ? true : null
-            bfd_fast_detect_strict_mode_negotiate_override                    = try(neighbor.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_fast_detect, null) == "strict-mode-negotiate-override" ? true : null
-            keychain_name                                                     = try(neighbor.keychain_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.keychain_name, null)
-            keychain_inheritance_disable                                      = try(neighbor.keychain_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.keychain_inheritance_disable, null)
-            local_as_inheritance_disable                                      = try(neighbor.local_as_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_as_inheritance_disable, null)
-            local_as                                                          = try(neighbor.local_as, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_as, null)
-            local_as_no_prepend                                               = try(neighbor.local_as_no_prepend, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_as_no_prepend, null)
-            local_as_no_prepend_replace_as                                    = try(neighbor.local_as_no_prepend_replace_as, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_as_no_prepend_replace_as, null)
-            local_as_no_prepend_replace_as_dual_as                            = try(neighbor.local_as_no_prepend_replace_as_dual_as, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_as_no_prepend_replace_as_dual_as, null)
-            password                                                          = try(neighbor.password, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.password, null)
-            password_inheritance_disable                                      = try(neighbor.password_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.password_inheritance_disable, null)
-            receive_buffer_size                                               = try(neighbor.receive_buffer_size, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.receive_buffer_size, null)
-            receive_buffer_size_read                                          = try(neighbor.receive_buffer_size_read, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.receive_buffer_size_read, null)
-            send_buffer_size                                                  = try(neighbor.send_buffer_size, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.send_buffer_size, null)
-            send_buffer_size_write                                            = try(neighbor.send_buffer_size_write, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.send_buffer_size_write, null)
-            fast_fallover                                                     = try(neighbor.fast_fallover, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.fast_fallover, null)
-            fast_fallover_inheritance_disable                                 = try(neighbor.fast_fallover_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.fast_fallover_inheritance_disable, null)
-            shutdown                                                          = try(neighbor.shutdown, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.shutdown, null)
-            timers_keepalive_interval                                         = try(neighbor.timers_keepalive_interval, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_keepalive_interval, null)
-            timers_holddown_zero                                              = try(neighbor.timers_holddown_zero, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_holddown_zero, null)
-            timers_holddown_zero_minimum_acceptable_zero                      = try(neighbor.timers_holddown_zero_minimum_acceptable_zero, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_holddown_zero_minimum_acceptable_zero, null)
-            timers_holddown_zero_minimum_acceptable_holdtime                  = try(neighbor.timers_holddown_zero_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_holddown_zero_minimum_acceptable_holdtime, null)
-            timers_holdtime                                                   = try(neighbor.timers_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_holdtime, null)
-            timers_holdtime_minimum_acceptable_holdtime                       = try(neighbor.timers_holdtime_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_holdtime_minimum_acceptable_holdtime, null)
-            local_address                                                     = try(neighbor.local_address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_address, null)
-            local_address_inheritance_disable                                 = try(neighbor.local_address_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_address_inheritance_disable, null)
-            log_neighbor_changes_detail                                       = try(neighbor.log_neighbor_changes, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_neighbor_changes, null) == "detail" ? true : null
-            log_neighbor_changes_disable                                      = try(neighbor.log_neighbor_changes, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_neighbor_changes, null) == "disable" ? true : null
-            log_neighbor_changes_inheritance_disable                          = try(neighbor.log_neighbor_changes, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_neighbor_changes, null) == "inheritance-disable" ? true : null
-            log_message_in_size                                               = try(neighbor.log_message_in_size, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_in_size, null)
-            log_message_in_disable                                            = try(neighbor.log_message_in_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_in_disable, null)
-            log_message_in_inheritance_disable                                = try(neighbor.log_message_in_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_in_inheritance_disable, null)
-            log_message_out_size                                              = try(neighbor.log_message_out_size, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_out_size, null)
-            log_message_out_disable                                           = try(neighbor.log_message_out_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_out_disable, null)
-            log_message_out_inheritance_disable                               = try(neighbor.log_message_out_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_out_inheritance_disable, null)
-            update_source                                                     = try(neighbor.update_source, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.update_source, null)
-            local_address_subnet_prefix                                       = try(neighbor.local_address_subnet_prefix, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_address_subnet_prefix, null)
-            local_address_subnet_mask                                         = try(neighbor.local_address_subnet_mask, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_address_subnet_mask, null)
-            dmz_link_bandwidth                                                = try(neighbor.dmz_link_bandwidth, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.dmz_link_bandwidth, null)
-            dmz_link_bandwidth_inheritance_disable                            = try(neighbor.dmz_link_bandwidth_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.dmz_link_bandwidth_inheritance_disable, null)
-            ebgp_recv_extcommunity_dmz                                        = try(neighbor.ebgp_recv_extcommunity_dmz, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ebgp_recv_extcommunity_dmz, null)
-            ebgp_recv_extcommunity_dmz_inheritance_disable                    = try(neighbor.ebgp_recv_extcommunity_dmz_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ebgp_recv_extcommunity_dmz_inheritance_disable, null)
-            ebgp_send_extcommunity_dmz                                        = try(neighbor.ebgp_send_extcommunity_dmz, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ebgp_send_extcommunity_dmz, null)
-            ebgp_send_extcommunity_dmz_cumulative                             = try(neighbor.ebgp_send_extcommunity_dmz_cumulative, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ebgp_send_extcommunity_dmz_cumulative, null)
-            ebgp_send_extcommunity_dmz_inheritance_disable                    = try(neighbor.ebgp_send_extcommunity_dmz_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ebgp_send_extcommunity_dmz_inheritance_disable, null)
-            ttl_security                                                      = try(neighbor.ttl_security, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ttl_security, null)
-            ttl_security_inheritance_disable                                  = try(neighbor.ttl_security_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ttl_security_inheritance_disable, null)
-            session_open_mode                                                 = try(neighbor.session_open_mode, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.session_open_mode, null)
-            dscp                                                              = try(neighbor.dscp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.dscp, null)
-            precedence                                                        = try(neighbor.precedence, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.precedence, null)
+            bfd_minimum_interval                             = try(neighbor.bfd_minimum_interval, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_minimum_interval, null)
+            bfd_multiplier                                   = try(neighbor.bfd_multiplier, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_multiplier, null)
+            bfd_fast_detect                                  = try(neighbor.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_fast_detect, null) == "enable" ? true : null
+            bfd_fast_detect_strict_mode                      = try(neighbor.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_fast_detect, null) == "strict-mode" ? true : null
+            bfd_fast_detect_disable                          = try(neighbor.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_fast_detect, null) == "disable" ? true : null
+            bfd_fast_detect_strict_mode_negotiate            = try(neighbor.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_fast_detect, null) == "strict-mode-negotiate" ? true : null
+            bfd_fast_detect_strict_mode_negotiate_override   = try(neighbor.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.bfd_fast_detect, null) == "strict-mode-negotiate-override" ? true : null
+            keychain_name                                    = try(neighbor.keychain_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.keychain_name, null)
+            keychain_inheritance_disable                     = try(neighbor.keychain_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.keychain_inheritance_disable, null)
+            local_as_inheritance_disable                     = try(neighbor.local_as_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_as_inheritance_disable, null)
+            local_as                                         = try(neighbor.local_as, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_as, null)
+            local_as_no_prepend                              = try(neighbor.local_as_mode, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_as_mode, null) == "no-prepend" ? true : null
+            local_as_no_prepend_replace_as                   = try(neighbor.local_as_mode, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_as_mode, null) == "no-prepend-replace-as" ? true : null
+            local_as_no_prepend_replace_as_dual_as           = try(neighbor.local_as_mode, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_as_mode, null) == "no-prepend-replace-as-dual-as" ? true : null
+            password                                         = try(neighbor.password, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.password, null)
+            password_inheritance_disable                     = try(neighbor.password_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.password_inheritance_disable, null)
+            receive_buffer_size                              = try(neighbor.receive_buffer_size, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.receive_buffer_size, null)
+            receive_buffer_size_read                         = try(neighbor.receive_buffer_size_read, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.receive_buffer_size_read, null)
+            send_buffer_size                                 = try(neighbor.send_buffer_size, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.send_buffer_size, null)
+            send_buffer_size_write                           = try(neighbor.send_buffer_size_write, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.send_buffer_size_write, null)
+            fast_fallover                                    = try(neighbor.fast_fallover, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.fast_fallover, null)
+            fast_fallover_inheritance_disable                = try(neighbor.fast_fallover_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.fast_fallover_inheritance_disable, null)
+            shutdown                                         = try(neighbor.shutdown, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.shutdown, null)
+            timers_keepalive_interval                        = try(neighbor.timers_keepalive_interval, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_keepalive_interval, null)
+            timers_holddown_zero                             = try(neighbor.timers_holddown_zero, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_holddown_zero, null)
+            timers_holddown_zero_minimum_acceptable_zero     = try(neighbor.timers_holddown_zero_minimum_acceptable_zero, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_holddown_zero_minimum_acceptable_zero, null)
+            timers_holddown_zero_minimum_acceptable_holdtime = try(neighbor.timers_holddown_zero_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_holddown_zero_minimum_acceptable_holdtime, null)
+            timers_holdtime                                  = try(neighbor.timers_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_holdtime, null)
+            timers_holdtime_minimum_acceptable_holdtime      = try(neighbor.timers_holdtime_minimum_acceptable_holdtime, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.timers_holdtime_minimum_acceptable_holdtime, null)
+            local_address                                    = try(neighbor.local_address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_address, null)
+            local_address_inheritance_disable                = try(neighbor.local_address_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_address_inheritance_disable, null)
+            log_neighbor_changes_detail                      = try(neighbor.log_neighbor_changes, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_neighbor_changes, null) == "detail" ? true : null
+            log_neighbor_changes_disable                     = try(neighbor.log_neighbor_changes, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_neighbor_changes, null) == "disable" ? true : null
+            log_neighbor_changes_inheritance_disable         = try(neighbor.log_neighbor_changes, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_neighbor_changes, null) == "inheritance-disable" ? true : null
+            log_message_in_size                              = try(neighbor.log_message_in_size, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_in_size, null)
+            log_message_in_disable                           = try(neighbor.log_message_in_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_in_disable, null)
+            log_message_in_inheritance_disable               = try(neighbor.log_message_in_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_in_inheritance_disable, null)
+            log_message_out_size                             = try(neighbor.log_message_out_size, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_out_size, null)
+            log_message_out_disable                          = try(neighbor.log_message_out_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_out_disable, null)
+            log_message_out_inheritance_disable              = try(neighbor.log_message_out_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.log_message_out_inheritance_disable, null)
+            update_source                                    = try(neighbor.update_source, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.update_source, null)
+            local_address_subnet_prefix                      = try(neighbor.local_address_subnet_prefix, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_address_subnet_prefix, null)
+            local_address_subnet_mask                        = try(neighbor.local_address_subnet_mask, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.local_address_subnet_mask, null)
+            dmz_link_bandwidth                               = try(neighbor.dmz_link_bandwidth, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.dmz_link_bandwidth, null)
+            dmz_link_bandwidth_inheritance_disable           = try(neighbor.dmz_link_bandwidth_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.dmz_link_bandwidth_inheritance_disable, null)
+            ebgp_recv_extcommunity_dmz                       = try(neighbor.ebgp_recv_extcommunity_dmz, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ebgp_recv_extcommunity_dmz, null)
+            ebgp_recv_extcommunity_dmz_inheritance_disable   = try(neighbor.ebgp_recv_extcommunity_dmz_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ebgp_recv_extcommunity_dmz_inheritance_disable, null)
+            ebgp_send_extcommunity_dmz                       = try(neighbor.ebgp_send_extcommunity_dmz, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ebgp_send_extcommunity_dmz, null)
+            ebgp_send_extcommunity_dmz_cumulative            = try(neighbor.ebgp_send_extcommunity_dmz_cumulative, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ebgp_send_extcommunity_dmz_cumulative, null)
+            ebgp_send_extcommunity_dmz_inheritance_disable   = try(neighbor.ebgp_send_extcommunity_dmz_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ebgp_send_extcommunity_dmz_inheritance_disable, null)
+            ttl_security                                     = try(neighbor.ttl_security, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ttl_security, null)
+            ttl_security_inheritance_disable                 = try(neighbor.ttl_security_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ttl_security_inheritance_disable, null)
+            session_open_mode                                = try(neighbor.session_open_mode, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.session_open_mode, null)
+            dscp = try(lookup(local.dscp_map,
+              tostring(try(neighbor.dscp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.dscp)),
+              tostring(try(neighbor.dscp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.dscp))
+              ), null
+            )
+            precedence = try(lookup(local.precedence_map,
+              tostring(try(neighbor.precedence, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.precedence)),
+              tostring(try(neighbor.precedence, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.precedence))
+              ), null
+            )
             capability_additional_paths_send                                  = try(neighbor.capability_additional_paths_send, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.capability_additional_paths_send, null)
             capability_additional_paths_send_disable                          = try(neighbor.capability_additional_paths_send_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.capability_additional_paths_send_disable, null)
             capability_additional_paths_receive                               = try(neighbor.capability_additional_paths_receive, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.capability_additional_paths_receive, null)
@@ -254,19 +258,20 @@ resource "iosxr_router_bgp_vrf" "router_bgp_vrf" {
   bgp_origin_as_validation_time                        = each.value.bgp_origin_as_validation_time
   bfd_minimum_interval                                 = each.value.bfd_minimum_interval
   bfd_multiplier                                       = each.value.bfd_multiplier
-  rd_auto                                              = each.value.rd_auto
-  rd_two_byte_as_number                                = each.value.rd_two_byte_as_number
-  rd_two_byte_as_index                                 = each.value.rd_two_byte_as_index
-  rd_four_byte_as_number                               = each.value.rd_four_byte_as_number
-  rd_four_byte_as_index                                = each.value.rd_four_byte_as_index
-  rd_ipv4_address_address                              = each.value.rd_ipv4_address_address
-  rd_ipv4_address_index                                = each.value.rd_ipv4_address_index
+  rd_auto                                              = try(each.value.rd.format == "auto" ? true : null, null)
+  rd_two_byte_as_number                                = try(each.value.rd.format == "two_byte_as" ? each.value.rd.as_number : null, null)
+  rd_two_byte_as_index                                 = try(each.value.rd.format == "two_byte_as" ? each.value.rd.assigned_number : null, null)
+  rd_four_byte_as_number                               = try(each.value.rd.format == "four_byte_as" ? each.value.rd.as_number : null, null)
+  rd_four_byte_as_index                                = try(each.value.rd.format == "four_byte_as" ? each.value.rd.assigned_number : null, null)
+  rd_ipv4_address_address                              = try(each.value.rd.format == "ipv4_address" ? each.value.rd.ipv4_address : null, null)
+  rd_ipv4_address_index                                = try(each.value.rd.format == "ipv4_address" ? each.value.rd.assigned_number : null, null)
   neighbors                                            = each.value.neighbors
 
   depends_on = [
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     iosxr_bmp_server.bmp_server,
+    iosxr_vrf.vrf,
     iosxr_router_bgp.router_bgp,
     iosxr_router_bgp_address_family.ipv4_unicast,
     iosxr_router_bgp_address_family.ipv6_unicast,
