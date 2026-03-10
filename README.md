@@ -38,8 +38,8 @@ module "iosxr" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.0 |
-| <a name="requirement_iosxr"></a> [iosxr](#requirement\_iosxr) | 0.7.0 |
-| <a name="requirement_utils"></a> [utils](#requirement\_utils) | 1.1.0-beta3 |
+| <a name="requirement_iosxr"></a> [iosxr](#requirement\_iosxr) | = 0.7.0 |
+| <a name="requirement_utils"></a> [utils](#requirement\_utils) | = 1.1.0-beta5 |
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -63,6 +63,7 @@ module "iosxr" {
 |------|------|
 | [iosxr_as_path_set.as_path_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/as_path_set) | resource |
 | [iosxr_banner.banner](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/banner) | resource |
+| [iosxr_bfd.bfd](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/bfd) | resource |
 | [iosxr_bgp_as_format.bgp_as_format](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/bgp_as_format) | resource |
 | [iosxr_bmp_server.bmp_server](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/bmp_server) | resource |
 | [iosxr_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/cdp) | resource |
@@ -109,6 +110,9 @@ module "iosxr" {
 | [iosxr_l2vpn_bridge_group_bridge_domain.l2vpn_bridge_group_bridge_domain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/l2vpn_bridge_group_bridge_domain) | resource |
 | [iosxr_l2vpn_pw_class.l2vpn_pw_class](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/l2vpn_pw_class) | resource |
 | [iosxr_lacp.lacp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/lacp) | resource |
+| [iosxr_line_console.line_console](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/line_console) | resource |
+| [iosxr_line_default.line_default](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/line_default) | resource |
+| [iosxr_line_template.line_template](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/line_template) | resource |
 | [iosxr_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/lldp) | resource |
 | [iosxr_logging.logging](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/logging) | resource |
 | [iosxr_logging_vrf.logging_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/logging_vrf) | resource |
@@ -163,6 +167,7 @@ module "iosxr" {
 | [iosxr_router_static_vrf_ipv6_multicast.router_static_vrf_ipv6_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/router_static_vrf_ipv6_multicast) | resource |
 | [iosxr_router_static_vrf_ipv6_unicast.router_static_vrf_ipv6_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/router_static_vrf_ipv6_unicast) | resource |
 | [iosxr_router_vrrp_interface.router_vrrp_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/router_vrrp_interface) | resource |
+| [iosxr_router_vrrp_interface_ipv4.router_vrrp_interface_ipv4](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/router_vrrp_interface_ipv4) | resource |
 | [iosxr_router_vrrp_interface_ipv6.router_vrrp_interface_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/router_vrrp_interface_ipv6) | resource |
 | [iosxr_segment_routing.segment_routing](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/segment_routing) | resource |
 | [iosxr_segment_routing_te.segment_routing_te](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/segment_routing_te) | resource |
@@ -176,6 +181,7 @@ module "iosxr" {
 | [iosxr_tag_set.tag_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/tag_set) | resource |
 | [iosxr_telnet.telnet](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/telnet) | resource |
 | [iosxr_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/vrf) | resource |
+| [iosxr_vty_pool.vty_pool](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/vty_pool) | resource |
 ## Modules
 
 | Name | Source | Version |

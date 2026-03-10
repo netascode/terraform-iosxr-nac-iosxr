@@ -5,79 +5,76 @@ locals {
         for vrf in try(bgp_process.vrfs, []) : [
           for neighbor in try(vrf.neighbors, []) : [
             for af in try(neighbor.address_family, []) : {
-              key                                                     = format("%s/%s/%s/%s/%s", device.name, bgp_process.as_number, vrf.vrf_name, neighbor.ip, af.af_name)
-              device_name                                             = device.name
-              as_number                                               = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
-              vrf_name                                                = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.vrf_name, null)
-              address                                                 = try(neighbor.ip, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ip, null)
-              af_name                                                 = try(af.af_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.af_name, null)
-              encapsulation_type                                      = try(af.encapsulation_type, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.encapsulation_type, null)
-              weight                                                  = try(af.weight, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.weight, null)
-              multipath                                               = try(af.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.multipath, null)
-              use_af_group                                            = try(af.use_af_group, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.use_af_group, null)
-              capability_orf_prefix                                   = try(af.capability_orf_prefix, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.capability_orf_prefix, null)
-              additional_paths_send                                   = try(af.additional_paths_send, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.additional_paths_send, null)
-              additional_paths_send_disable                           = try(af.additional_paths_send_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.additional_paths_send_disable, null)
-              additional_paths_receive                                = try(af.additional_paths_receive, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.additional_paths_receive, null)
-              additional_paths_receive_disable                        = try(af.additional_paths_receive_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.additional_paths_receive_disable, null)
-              default_originate                                       = try(af.default_originate, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.default_originate, null)
-              default_originate_route_policy                          = try(af.default_originate_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.default_originate_route_policy, null)
-              default_originate_inheritance_disable                   = try(af.default_originate_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.default_originate_inheritance_disable, null)
-              maximum_prefix_limit                                    = try(af.maximum_prefix_limit, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.maximum_prefix_limit, null)
-              maximum_prefix_threshold                                = try(af.maximum_prefix_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.maximum_prefix_threshold, can(af.maximum_prefix_limit) ? 75 : null)
-              maximum_prefix_restart                                  = try(af.maximum_prefix_restart, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.maximum_prefix_restart, null)
-              maximum_prefix_discard_extra_paths                      = try(af.maximum_prefix_discard_extra_paths, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.maximum_prefix_discard_extra_paths, null)
-              maximum_prefix_warning_only                             = try(af.maximum_prefix_warning_only, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.maximum_prefix_warning_only, null)
-              next_hop_self                                           = try(af.next_hop_self, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.next_hop_self, null)
-              next_hop_self_inheritance_disable                       = try(af.next_hop_self_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.next_hop_self_inheritance_disable, null)
-              next_hop_unchanged                                      = try(af.next_hop_unchanged, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.next_hop_unchanged, null)
-              next_hop_unchanged_multipath                            = try(af.next_hop_unchanged_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.next_hop_unchanged_multipath, null)
-              next_hop_unchanged_inheritance_disable                  = try(af.next_hop_unchanged_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.next_hop_unchanged_inheritance_disable, null)
-              route_policy_in                                         = try(af.route_policy_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.route_policy_in, null)
-              route_policy_out                                        = try(af.route_policy_out, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.route_policy_out, null)
-              orf_route_policy                                        = try(af.orf_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.orf_route_policy, null)
-              cluster_id_allow_equal                                  = try(af.cluster_id_allow_equal, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.cluster_id_allow_equal, null)
-              cluster_id_allow_equal_disable                          = try(af.cluster_id_allow_equal_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.cluster_id_allow_equal_disable, null)
-              replace_private_as                                      = try(af.replace_private_as, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.replace_private_as, null)
-              replace_private_as_internal                             = try(af.replace_private_as_internal, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.replace_private_as_internal, null)
-              remove_private_as_inbound                               = try(af.remove_private_as_inbound, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as_inbound, null)
-              remove_private_as_inbound_entire_aspath                 = try(af.remove_private_as_inbound_entire_aspath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as_inbound_entire_aspath, null)
-              remove_private_as_inbound_inheritance_disable           = try(af.remove_private_as_inbound_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as_inbound_inheritance_disable, null)
-              remove_private_as                                       = try(af.remove_private_as, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as, null)
-              remove_private_as_entire_aspath                         = try(af.remove_private_as_entire_aspath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as_entire_aspath, null)
-              remove_private_as_internal                              = try(af.remove_private_as_internal, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as_internal, null)
-              route_reflector_client                                  = try(af.route_reflector_client, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.route_reflector_client, null)
-              route_reflector_client_inheritance_disable              = try(af.route_reflector_client_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.route_reflector_client_inheritance_disable, null)
-              send_community_ebgp                                     = try(af.send_community_ebgp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_community_ebgp, null)
-              send_community_ebgp_inheritance_disable                 = try(af.send_community_ebgp_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_community_ebgp_inheritance_disable, null)
-              send_community_gshut_ebgp                               = try(af.send_community_gshut_ebgp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_community_gshut_ebgp, null)
-              send_community_gshut_ebgp_inheritance_disable           = try(af.send_community_gshut_ebgp_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_community_gshut_ebgp_inheritance_disable, null)
-              send_extended_community_ebgp                            = try(af.send_extended_community_ebgp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_extended_community_ebgp, null)
-              send_extended_community_ebgp_inheritance_disable        = try(af.send_extended_community_ebgp_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_extended_community_ebgp_inheritance_disable, null)
-              soft_reconfiguration_inbound                            = try(af.soft_reconfiguration_inbound, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.soft_reconfiguration_inbound, null)
-              soft_reconfiguration_inbound_always                     = try(af.soft_reconfiguration_inbound_always, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.soft_reconfiguration_inbound_always, null)
-              update_out_originator_loopcheck                         = try(af.update_out_originator_loopcheck, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.update_out_originator_loopcheck, null)
-              update_out_originator_loopcheck_disable                 = try(af.update_out_originator_loopcheck_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.update_out_originator_loopcheck_disable, null)
-              advertise_vpnv4_unicast                                 = try(af.advertise_vpnv4_unicast, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv4_unicast, null)
-              advertise_vpnv4_unicast_re_originated                   = try(af.advertise_vpnv4_unicast_re_originated, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv4_unicast_re_originated, null)
-              advertise_vpnv4_unicast_re_originated_stitching_rt      = try(af.advertise_vpnv4_unicast_re_originated_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv4_unicast_re_originated_stitching_rt, null)
-              advertise_vpnv6_unicast                                 = try(af.advertise_vpnv6_unicast, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv6_unicast, null)
-              advertise_vpnv6_unicast_re_originated                   = try(af.advertise_vpnv6_unicast_re_originated, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv6_unicast_re_originated, null)
-              advertise_vpnv6_unicast_re_originated_stitching_rt      = try(af.advertise_vpnv6_unicast_re_originated_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv6_unicast_re_originated_stitching_rt, null)
-              advertise_l2vpn_evpn_re_originated                      = try(af.advertise_l2vpn_evpn_re_originated, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_l2vpn_evpn_re_originated, null)
-              advertise_l2vpn_evpn_re_originated_stitching_rt         = try(af.advertise_l2vpn_evpn_re_originated_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_l2vpn_evpn_re_originated_stitching_rt, null)
-              segment_routing_srv6_prefix_sid_type4                   = try(af.segment_routing_srv6_prefix_sid_type4, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.segment_routing_srv6_prefix_sid_type4, null)
-              import_stitching_rt                                     = try(af.import_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.import_stitching_rt, null)
-              import_stitching_rt_re_originate                        = try(af.import_stitching_rt_re_originate, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.import_stitching_rt_re_originate, null)
-              import_stitching_rt_re_originate_stitching_rt           = try(af.import_stitching_rt_re_originate_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.import_stitching_rt_re_originate_stitching_rt, null)
-              import_re_originate                                     = try(af.import_re_originate, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.import_re_originate, null)
-              allowas_in                                              = try(af.allowas_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.allowas_in, null)
-              site_of_origin_two_byte_as_number                       = try(af.site_of_origin_two_byte_as_number, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.site_of_origin_two_byte_as_number, null)
-              site_of_origin_two_byte_as_index                        = try(af.site_of_origin_two_byte_as_index, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.site_of_origin_two_byte_as_index, null)
-              site_of_origin_four_byte_as_number                      = try(af.site_of_origin_four_byte_as_number, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.site_of_origin_four_byte_as_number, null)
-              site_of_origin_four_byte_as_index                       = try(af.site_of_origin_four_byte_as_index, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.site_of_origin_four_byte_as_index, null)
-              site_of_origin_ipv4_address                             = try(af.site_of_origin_ipv4_address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.site_of_origin_ipv4_address, null)
-              site_of_origin_ipv4_address_index                       = try(af.site_of_origin_ipv4_address_index, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.site_of_origin_ipv4_address_index, null)
+              key                                                = format("%s/%s/%s/%s/%s", device.name, bgp_process.as_number, vrf.vrf_name, neighbor.ip, af.af_name)
+              device_name                                        = device.name
+              as_number                                          = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
+              vrf_name                                           = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.vrf_name, null)
+              address                                            = try(neighbor.ip, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.ip, null)
+              af_name                                            = try(af.af_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.af_name, null)
+              encapsulation_type                                 = try(af.encapsulation_type, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.encapsulation_type, null)
+              weight                                             = try(af.weight, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.weight, null)
+              multipath                                          = try(af.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.multipath, null)
+              use_af_group                                       = try(af.use_af_group, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.use_af_group, null)
+              capability_orf_prefix                              = try(af.capability_orf_prefix, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.capability_orf_prefix, null)
+              additional_paths_send                              = try(af.additional_paths_send, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.additional_paths_send, null)
+              additional_paths_send_disable                      = try(af.additional_paths_send_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.additional_paths_send_disable, null)
+              additional_paths_receive                           = try(af.additional_paths_receive, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.additional_paths_receive, null)
+              additional_paths_receive_disable                   = try(af.additional_paths_receive_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.additional_paths_receive_disable, null)
+              default_originate                                  = try(af.default_originate, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.default_originate, null)
+              default_originate_route_policy                     = try(af.default_originate_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.default_originate_route_policy, null)
+              default_originate_inheritance_disable              = try(af.default_originate_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.default_originate_inheritance_disable, null)
+              maximum_prefix_limit                               = try(af.maximum_prefix_limit, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.maximum_prefix_limit, null)
+              maximum_prefix_threshold                           = try(af.maximum_prefix_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.maximum_prefix_threshold, can(af.maximum_prefix_limit) ? 75 : null)
+              maximum_prefix_restart                             = try(af.maximum_prefix_restart, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.maximum_prefix_restart, null)
+              maximum_prefix_discard_extra_paths                 = try(af.maximum_prefix_discard_extra_paths, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.maximum_prefix_discard_extra_paths, null)
+              maximum_prefix_warning_only                        = try(af.maximum_prefix_warning_only, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.maximum_prefix_warning_only, null)
+              next_hop_self                                      = try(af.next_hop_self, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.next_hop_self, null)
+              next_hop_self_inheritance_disable                  = try(af.next_hop_self_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.next_hop_self_inheritance_disable, null)
+              next_hop_unchanged                                 = try(af.next_hop_unchanged, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.next_hop_unchanged, null)
+              next_hop_unchanged_multipath                       = try(af.next_hop_unchanged_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.next_hop_unchanged_multipath, null)
+              next_hop_unchanged_inheritance_disable             = try(af.next_hop_unchanged_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.next_hop_unchanged_inheritance_disable, null)
+              route_policy_in                                    = try(af.route_policy_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.route_policy_in, null)
+              route_policy_out                                   = try(af.route_policy_out, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.route_policy_out, null)
+              orf_route_policy                                   = try(af.orf_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.orf_route_policy, null)
+              cluster_id_allow_equal                             = try(af.cluster_id_allow_equal, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.cluster_id_allow_equal, null)
+              cluster_id_allow_equal_disable                     = try(af.cluster_id_allow_equal_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.cluster_id_allow_equal_disable, null)
+              replace_private_as                                 = try(af.replace_private_as, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.replace_private_as, null)
+              replace_private_as_internal                        = try(af.replace_private_as_internal, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.replace_private_as_internal, null)
+              remove_private_as_inbound                          = try(af.remove_private_as_inbound, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as_inbound, null)
+              remove_private_as_inbound_entire_aspath            = try(af.remove_private_as_inbound_entire_aspath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as_inbound_entire_aspath, null)
+              remove_private_as_inbound_inheritance_disable      = try(af.remove_private_as_inbound_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as_inbound_inheritance_disable, null)
+              remove_private_as                                  = try(af.remove_private_as, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as, null)
+              remove_private_as_entire_aspath                    = try(af.remove_private_as_entire_aspath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as_entire_aspath, null)
+              remove_private_as_internal                         = try(af.remove_private_as_internal, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.remove_private_as_internal, null)
+              route_reflector_client                             = try(af.route_reflector_client, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.route_reflector_client, null)
+              route_reflector_client_inheritance_disable         = try(af.route_reflector_client_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.route_reflector_client_inheritance_disable, null)
+              send_community_ebgp                                = try(af.send_community_ebgp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_community_ebgp, null)
+              send_community_ebgp_inheritance_disable            = try(af.send_community_ebgp_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_community_ebgp_inheritance_disable, null)
+              send_community_gshut_ebgp                          = try(af.send_community_gshut_ebgp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_community_gshut_ebgp, null)
+              send_community_gshut_ebgp_inheritance_disable      = try(af.send_community_gshut_ebgp_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_community_gshut_ebgp_inheritance_disable, null)
+              send_extended_community_ebgp                       = try(af.send_extended_community_ebgp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_extended_community_ebgp, null)
+              send_extended_community_ebgp_inheritance_disable   = try(af.send_extended_community_ebgp_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_extended_community_ebgp_inheritance_disable, null)
+              soft_reconfiguration_inbound                       = try(af.soft_reconfiguration_inbound, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.soft_reconfiguration_inbound, null)
+              soft_reconfiguration_inbound_always                = try(af.soft_reconfiguration_inbound_always, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.soft_reconfiguration_inbound_always, null)
+              update_out_originator_loopcheck                    = try(af.update_out_originator_loopcheck, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.update_out_originator_loopcheck, null)
+              update_out_originator_loopcheck_disable            = try(af.update_out_originator_loopcheck_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.update_out_originator_loopcheck_disable, null)
+              advertise_vpnv4_unicast                            = try(af.advertise_vpnv4_unicast, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv4_unicast, null)
+              advertise_vpnv4_unicast_re_originated              = try(af.advertise_vpnv4_unicast_re_originated, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv4_unicast_re_originated, null)
+              advertise_vpnv4_unicast_re_originated_stitching_rt = try(af.advertise_vpnv4_unicast_re_originated_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv4_unicast_re_originated_stitching_rt, null)
+              advertise_vpnv6_unicast                            = try(af.advertise_vpnv6_unicast, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv6_unicast, null)
+              advertise_vpnv6_unicast_re_originated              = try(af.advertise_vpnv6_unicast_re_originated, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv6_unicast_re_originated, null)
+              advertise_vpnv6_unicast_re_originated_stitching_rt = try(af.advertise_vpnv6_unicast_re_originated_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_vpnv6_unicast_re_originated_stitching_rt, null)
+              advertise_l2vpn_evpn_re_originated                 = try(af.advertise_l2vpn_evpn_re_originated, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_l2vpn_evpn_re_originated, null)
+              advertise_l2vpn_evpn_re_originated_stitching_rt    = try(af.advertise_l2vpn_evpn_re_originated_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.advertise_l2vpn_evpn_re_originated_stitching_rt, null)
+              segment_routing_srv6_prefix_sid_type4              = try(af.segment_routing_srv6_prefix_sid_type4, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.segment_routing_srv6_prefix_sid_type4, null)
+              import_stitching_rt                                = try(af.import_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.import_stitching_rt, null)
+              import_stitching_rt_re_originate                   = try(af.import_stitching_rt_re_originate, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.import_stitching_rt_re_originate, null)
+              import_stitching_rt_re_originate_stitching_rt      = try(af.import_stitching_rt_re_originate_stitching_rt, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.import_stitching_rt_re_originate_stitching_rt, null)
+              import_re_originate                                = try(af.import_re_originate, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.import_re_originate, null)
+              allowas_in                                         = try(af.allowas_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.allowas_in, null)
+              site_of_origin = try(af.site_of_origin, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.site_of_origin, null) != null ? provider::utils::normalize_bgp_rd(
+                try(af.site_of_origin, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.site_of_origin)
+              ) : null
               as_override                                             = try(af.as_override, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.as_override, null)
               as_override_inheritance_disable                         = try(af.as_override_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.as_override_inheritance_disable, null)
               aigp                                                    = try(af.aigp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp, null)
@@ -176,12 +173,12 @@ resource "iosxr_router_bgp_vrf_neighbor_address_family" "router_bgp_vrf_neighbor
   import_stitching_rt_re_originate_stitching_rt           = each.value.import_stitching_rt_re_originate_stitching_rt
   import_re_originate                                     = each.value.import_re_originate
   allowas_in                                              = each.value.allowas_in
-  site_of_origin_two_byte_as_number                       = each.value.site_of_origin_two_byte_as_number
-  site_of_origin_two_byte_as_index                        = each.value.site_of_origin_two_byte_as_index
-  site_of_origin_four_byte_as_number                      = each.value.site_of_origin_four_byte_as_number
-  site_of_origin_four_byte_as_index                       = each.value.site_of_origin_four_byte_as_index
-  site_of_origin_ipv4_address                             = each.value.site_of_origin_ipv4_address
-  site_of_origin_ipv4_address_index                       = each.value.site_of_origin_ipv4_address_index
+  site_of_origin_two_byte_as_number                       = try(each.value.site_of_origin.format == "two_byte_as" ? tostring(each.value.site_of_origin.as_number) : null, null)
+  site_of_origin_two_byte_as_index                        = try(each.value.site_of_origin.format == "two_byte_as" ? each.value.site_of_origin.assigned_number : null, null)
+  site_of_origin_four_byte_as_number                      = try(each.value.site_of_origin.format == "four_byte_as" ? tostring(each.value.site_of_origin.as_number) : null, null)
+  site_of_origin_four_byte_as_index                       = try(each.value.site_of_origin.format == "four_byte_as" ? each.value.site_of_origin.assigned_number : null, null)
+  site_of_origin_ipv4_address                             = try(each.value.site_of_origin.format == "ipv4_address" ? each.value.site_of_origin.ipv4_address : null, null)
+  site_of_origin_ipv4_address_index                       = try(each.value.site_of_origin.format == "ipv4_address" ? each.value.site_of_origin.assigned_number : null, null)
   as_override                                             = each.value.as_override
   as_override_inheritance_disable                         = each.value.as_override_inheritance_disable
   aigp                                                    = each.value.aigp
@@ -205,14 +202,12 @@ resource "iosxr_router_bgp_vrf_neighbor_address_family" "router_bgp_vrf_neighbor
   origin_as_validation_disable                            = each.value.origin_as_validation_disable
   bestpath_origin_as_allow_invalid                        = each.value.bestpath_origin_as_allow_invalid
 
-  lifecycle {
-    replace_triggered_by = [
-      iosxr_router_bgp_vrf_address_family.ipv4_unicast,
-      iosxr_router_bgp_vrf_address_family.ipv6_unicast,
-      iosxr_router_bgp_vrf_address_family.ipv4_multicast,
-      iosxr_router_bgp_vrf_address_family.ipv6_multicast
-    ]
-  }
+  # lifecycle {
+  #   replace_triggered_by = [
+  #     iosxr_router_bgp_vrf_address_family.ipv4_unicast,
+  #     iosxr_router_bgp_vrf_address_family.ipv6_unicast,
+  #   ]
+  # }
 
   depends_on = [
     iosxr_key_chain.key_chain,

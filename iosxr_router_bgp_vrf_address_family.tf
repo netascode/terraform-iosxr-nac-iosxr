@@ -3,7 +3,7 @@ locals {
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for vrf in try(bgp_process.vrfs, []) :
-        contains(keys(try(vrf.address_family, {})), "ipv4_unicast") ? [{
+        try(vrf.address_family.ipv4_unicast, null) != null ? [{
           key                                                      = format("%s/%s/%s/ipv4-unicast", device.name, bgp_process.as_number, vrf.vrf_name)
           device_name                                              = device.name
           as_number                                                = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
@@ -250,11 +250,11 @@ resource "iosxr_router_bgp_vrf_address_family" "ipv4_unicast" {
   redistribute_eigrp                                       = each.value.redistribute_eigrp
   redistribute_isis                                        = each.value.redistribute_isis
 
-  lifecycle {
-    replace_triggered_by = [
-      iosxr_router_bgp_vrf.router_bgp_vrf
-    ]
-  }
+  # lifecycle {
+  #   replace_triggered_by = [
+  #     iosxr_router_bgp_vrf.router_bgp_vrf
+  #   ]
+  # }
 
   depends_on = [
     iosxr_key_chain.key_chain,
@@ -279,7 +279,7 @@ locals {
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for vrf in try(bgp_process.vrfs, []) :
-        contains(keys(try(vrf.address_family, {})), "ipv6_unicast") ? [{
+        try(vrf.address_family.ipv6_unicast, null) != null ? [{
           key                                                      = format("%s/%s/%s/ipv6-unicast", device.name, bgp_process.as_number, vrf.vrf_name)
           device_name                                              = device.name
           as_number                                                = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
@@ -525,11 +525,11 @@ resource "iosxr_router_bgp_vrf_address_family" "ipv6_unicast" {
   redistribute_eigrp                                       = each.value.redistribute_eigrp
   redistribute_isis                                        = each.value.redistribute_isis
 
-  lifecycle {
-    replace_triggered_by = [
-      iosxr_router_bgp_vrf.router_bgp_vrf
-    ]
-  }
+  # lifecycle {
+  #   replace_triggered_by = [
+  #     iosxr_router_bgp_vrf.router_bgp_vrf
+  #   ]
+  # }
 
   depends_on = [
     iosxr_key_chain.key_chain,
@@ -554,7 +554,7 @@ locals {
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for vrf in try(bgp_process.vrfs, []) :
-        contains(keys(try(vrf.address_family, {})), "ipv4_multicast") ? [{
+        try(vrf.address_family.ipv4_multicast, null) != null ? [{
           key                                           = format("%s/%s/%s/ipv4-multicast", device.name, bgp_process.as_number, vrf.vrf_name)
           device_name                                   = device.name
           as_number                                     = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
@@ -734,11 +734,11 @@ resource "iosxr_router_bgp_vrf_address_family" "ipv4_multicast" {
   redistribute_eigrp                            = each.value.redistribute_eigrp
   redistribute_isis                             = each.value.redistribute_isis
 
-  lifecycle {
-    replace_triggered_by = [
-      iosxr_router_bgp_vrf.router_bgp_vrf
-    ]
-  }
+  # lifecycle {
+  #   replace_triggered_by = [
+  #     iosxr_router_bgp_vrf.router_bgp_vrf
+  #   ]
+  # }
 
   depends_on = [
     iosxr_key_chain.key_chain,
@@ -764,7 +764,7 @@ locals {
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for vrf in try(bgp_process.vrfs, []) :
-        contains(keys(try(vrf.address_family, {})), "ipv6_multicast") ? [{
+        try(vrf.address_family.ipv6_multicast, null) != null ? [{
           key                                           = format("%s/%s/%s/ipv6-multicast", device.name, bgp_process.as_number, vrf.vrf_name)
           device_name                                   = device.name
           as_number                                     = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
@@ -944,11 +944,11 @@ resource "iosxr_router_bgp_vrf_address_family" "ipv6_multicast" {
   redistribute_eigrp                            = each.value.redistribute_eigrp
   redistribute_isis                             = each.value.redistribute_isis
 
-  lifecycle {
-    replace_triggered_by = [
-      iosxr_router_bgp_vrf.router_bgp_vrf
-    ]
-  }
+  # lifecycle {
+  #   replace_triggered_by = [
+  #     iosxr_router_bgp_vrf.router_bgp_vrf
+  #   ]
+  # }
 
   depends_on = [
     iosxr_key_chain.key_chain,
