@@ -30,8 +30,8 @@ resource "iosxr_route_policy" "route_policy" {
     # Future dependencies - uncomment when resource is created:
     #iosxr_extcommunity_rt_set.extcommunity_rt_set,
     #iosxr_extcommunity_soo_set.extcommunity_soo_set,
-    iosxr_ipv4_prefix_list.ipv4_prefix_list
-    #iosxr_ipv6_prefix_list.ipv6_prefix_list,
+    iosxr_ipv4_prefix_list.ipv4_prefix_list,
+    iosxr_ipv6_prefix_list.ipv6_prefix_list,
     #iosxr_ipv4_access_list.ipv4_access_list,
     #iosxr_ipv6_access_list.ipv6_access_list
   ]

@@ -155,6 +155,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_interface_tunnel_te.tunnel_te,
     iosxr_ipv4_access_list_options.ipv4_access_list_options,
     iosxr_ipv4_prefix_list.ipv4_prefix_list,
+    iosxr_ipv6_prefix_list.ipv6_prefix_list,
     iosxr_ipv6_access_list_options.ipv6_access_list_options,
     iosxr_key_chain.key_chain,
     iosxr_l2vpn.l2vpn,

@@ -105,6 +105,7 @@ module "iosxr" {
 | [iosxr_ipv4_access_list_options.ipv4_access_list_options](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/ipv4_access_list_options) | resource |
 | [iosxr_ipv4_prefix_list.ipv4_prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/ipv4_prefix_list) | resource |
 | [iosxr_ipv6_access_list_options.ipv6_access_list_options](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/ipv6_access_list_options) | resource |
+| [iosxr_ipv6_prefix_list.ipv6_prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/ipv6_prefix_list) | resource |
 | [iosxr_key_chain.key_chain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/key_chain) | resource |
 | [iosxr_l2vpn.l2vpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/l2vpn) | resource |
 | [iosxr_l2vpn_bridge_group_bridge_domain.l2vpn_bridge_group_bridge_domain](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/l2vpn_bridge_group_bridge_domain) | resource |
