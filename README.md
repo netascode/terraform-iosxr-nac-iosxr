@@ -61,6 +61,7 @@ module "iosxr" {
 
 | Name | Type |
 |------|------|
+| [iosxr_aaa_accounting.aaa_accounting](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/aaa_accounting) | resource |
 | [iosxr_as_path_set.as_path_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/as_path_set) | resource |
 | [iosxr_banner.banner](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/banner) | resource |
 | [iosxr_bfd.bfd](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/bfd) | resource |
