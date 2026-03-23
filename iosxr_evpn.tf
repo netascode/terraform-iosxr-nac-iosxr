@@ -324,3 +324,133 @@ resource "iosxr_evpn_interface" "evpn_interface" {
     iosxr_evpn.evpn
   ]
 }
+
+##### EVPN Segment Routing SRv6 Stitching EVI #####
+
+locals {
+  evpn_segment_routing_srv6_stitching_evis = flatten([
+    for device in local.devices : [
+      for evi in try(local.device_config[device.name].evpn.segment_routing_srv6_stitching_evis, []) : {
+        key                         = format("%s/%s", device.name, evi.id)
+        device_name                 = device.name
+        vpn_id                      = try(evi.id, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.id, null)
+        description                 = try(evi.description, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.description, null)
+        advertise_mac               = try(evi.advertise_mac, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.advertise_mac, null)
+        advertise_mac_bvi_mac       = try(evi.advertise_mac_bvi_mac, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.advertise_mac_bvi_mac, null)
+        bgp_implicit_import_disable = try(evi.bgp.implicit_import_disable, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.implicit_import_disable, null)
+        bgp_rd = try(evi.bgp.rd, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.rd, null) != null ? provider::utils::normalize_bgp_rd(
+          try(evi.bgp.rd, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.rd)
+        ) : null
+        bgp_route_policy_import = try(evi.bgp.import_route_policy, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.import_route_policy, null)
+        bgp_route_policy_export = try(evi.bgp.export_route_policy, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.export_route_policy, null)
+        bgp_table_policy        = try(evi.bgp.table_policy, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.table_policy, null)
+        bgp_route_target_import = try(evi.bgp.route_target_imports, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.route_target_imports, null) != null ? [
+          for rt in try(evi.bgp.route_target_imports, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.route_target_imports) : provider::utils::normalize_bgp_rt(rt)
+        ] : null
+        bgp_route_target_export = try(evi.bgp.route_target_exports, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.route_target_exports, null) != null ? [
+          for rt in try(evi.bgp.route_target_exports, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.route_target_exports) : provider::utils::normalize_bgp_rt(rt)
+        ] : null
+        bgp_route_target = try(evi.bgp.route_targets, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.route_targets, null) != null ? [
+          for rt in try(evi.bgp.route_targets, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.bgp.route_targets) : provider::utils::normalize_bgp_rt(rt)
+        ] : null
+        ignore_mtu_mismatch          = try(evi.mtu_match, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.mtu_match, null) == "ignore" ? true : null
+        ignore_mtu_mismatch_disable  = try(evi.mtu_match, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.mtu_match, null) == "ignore_disable" ? true : null
+        locator                      = try(evi.locator, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.locator, null)
+        preferred_nexthop_highest_ip = try(evi.preferred_nexthop, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.preferred_nexthop, null) == "highest_ip" ? true : null
+        preferred_nexthop_lowest_ip  = try(evi.preferred_nexthop, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.preferred_nexthop, null) == "lowest_ip" ? true : null
+        preferred_nexthop_modulo     = try(evi.preferred_nexthop, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.preferred_nexthop, null) == "modulo" ? true : null
+        re_origination_disable       = try(evi.re_origination_disable, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.re_origination_disable, null)
+        transmit_mtu_zero            = try(evi.transmit_mtu, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.transmit_mtu, null) == "zero" ? true : null
+        transmit_mtu_zero_disable    = try(evi.transmit_mtu, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.transmit_mtu, null) == "zero_disable" ? true : null
+        unknown_unicast_suppression  = try(evi.unknown_unicast_suppression, local.defaults.iosxr.devices.configuration.evpn.segment_routing_srv6_stitching_evis.unknown_unicast_suppression, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxr_evpn_segment_routing_srv6_stitching_evi" "evpn_segment_routing_srv6_stitching_evi" {
+  for_each                     = { for evi in local.evpn_segment_routing_srv6_stitching_evis : evi.key => evi }
+  device                       = each.value.device_name
+  vpn_id                       = each.value.vpn_id
+  description                  = each.value.description
+  advertise_mac                = each.value.advertise_mac
+  advertise_mac_bvi_mac        = each.value.advertise_mac_bvi_mac
+  bgp_implicit_import_disable  = each.value.bgp_implicit_import_disable
+  bgp_rd_two_byte_as_number    = try(each.value.bgp_rd.format == "two_byte_as" ? each.value.bgp_rd.as_number : null, null)
+  bgp_rd_two_byte_as_index     = try(each.value.bgp_rd.format == "two_byte_as" ? each.value.bgp_rd.assigned_number : null, null)
+  bgp_rd_four_byte_as_number   = try(each.value.bgp_rd.format == "four_byte_as" ? each.value.bgp_rd.as_number : null, null)
+  bgp_rd_four_byte_as_index    = try(each.value.bgp_rd.format == "four_byte_as" ? each.value.bgp_rd.assigned_number : null, null)
+  bgp_rd_ipv4_address          = try(each.value.bgp_rd.format == "ipv4_address" ? each.value.bgp_rd.ipv4_address : null, null)
+  bgp_rd_ipv4_address_index    = try(each.value.bgp_rd.format == "ipv4_address" ? each.value.bgp_rd.assigned_number : null, null)
+  bgp_route_policy_import      = each.value.bgp_route_policy_import
+  bgp_route_policy_export      = each.value.bgp_route_policy_export
+  bgp_table_policy             = each.value.bgp_table_policy
+  ignore_mtu_mismatch          = each.value.ignore_mtu_mismatch
+  ignore_mtu_mismatch_disable  = each.value.ignore_mtu_mismatch_disable
+  locator                      = each.value.locator
+  preferred_nexthop_highest_ip = each.value.preferred_nexthop_highest_ip
+  preferred_nexthop_lowest_ip  = each.value.preferred_nexthop_lowest_ip
+  preferred_nexthop_modulo     = each.value.preferred_nexthop_modulo
+  re_origination_disable       = each.value.re_origination_disable
+  transmit_mtu_zero            = each.value.transmit_mtu_zero
+  transmit_mtu_zero_disable    = each.value.transmit_mtu_zero_disable
+  unknown_unicast_suppression  = each.value.unknown_unicast_suppression
+  bgp_route_target_import_two_byte_as_format = try(length([for rt in each.value.bgp_route_target_import : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_import : {
+      as_number       = rt.as_number
+      assigned_number = rt.assigned_number
+    } if rt.format == "two_byte_as"
+  ]
+  bgp_route_target_import_four_byte_as_format = try(length([for rt in each.value.bgp_route_target_import : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_import : {
+      as_number       = rt.as_number
+      assigned_number = rt.assigned_number
+    } if rt.format == "four_byte_as"
+  ]
+  bgp_route_target_import_ipv4_address_format = try(length([for rt in each.value.bgp_route_target_import : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_import : {
+      ipv4_address    = rt.ipv4_address
+      assigned_number = rt.assigned_number
+    } if rt.format == "ipv4_address"
+  ]
+  bgp_route_target_export_two_byte_as_format = try(length([for rt in each.value.bgp_route_target_export : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_export : {
+      as_number       = rt.as_number
+      assigned_number = rt.assigned_number
+    } if rt.format == "two_byte_as"
+  ]
+  bgp_route_target_export_four_byte_as_format = try(length([for rt in each.value.bgp_route_target_export : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_export : {
+      as_number       = rt.as_number
+      assigned_number = rt.assigned_number
+    } if rt.format == "four_byte_as"
+  ]
+  bgp_route_target_export_ipv4_address_format = try(length([for rt in each.value.bgp_route_target_export : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target_export : {
+      ipv4_address    = rt.ipv4_address
+      assigned_number = rt.assigned_number
+    } if rt.format == "ipv4_address"
+  ]
+  bgp_route_target_two_byte_as_format = try(length([for rt in each.value.bgp_route_target : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target : {
+      as_number       = rt.as_number
+      assigned_number = rt.assigned_number
+    } if rt.format == "two_byte_as"
+  ]
+  bgp_route_target_four_byte_as_format = try(length([for rt in each.value.bgp_route_target : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target : {
+      as_number       = rt.as_number
+      assigned_number = rt.assigned_number
+    } if rt.format == "four_byte_as"
+  ]
+  bgp_route_target_ipv4_address_format = try(length([for rt in each.value.bgp_route_target : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.bgp_route_target : {
+      ipv4_address    = rt.ipv4_address
+      assigned_number = rt.assigned_number
+    } if rt.format == "ipv4_address"
+  ]
+
+  depends_on = [
+    iosxr_evpn.evpn
+  ]
+}

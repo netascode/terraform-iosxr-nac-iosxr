@@ -20,6 +20,26 @@ iosxr:
       host: 1.2.3.4
       configuration:
         hostname: router-1
+        route_policies:
+          - route_policy_name: EVI_POLICY_1
+            rpl: "route-policy EVI_POLICY_1\n  pass\nend-policy\n"
+        evpn:
+          segment_routing_srv6_stitching_evis:
+            - id: 104
+              description: "My Description"
+              bgp:
+                rd: "65536:104"
+                route_target_imports:
+                  - "65536:104"
+                route_target_exports:
+                  - "65536:104"
+                import_route_policy: EVI_POLICY_1
+                export_route_policy: EVI_POLICY_1
+              preferred_nexthop: modulo
+              unknown_unicast_suppression: true
+              mtu_match: ignore_disable
+              transmit_mtu: zero_disable
+              re_origination_disable: true
 ```
 
 #### `main.tf`
@@ -87,6 +107,7 @@ module "iosxr" {
 | [iosxr_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/evpn) | resource |
 | [iosxr_evpn_evi.evpn_evi](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/evpn_evi) | resource |
 | [iosxr_evpn_interface.evpn_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/evpn_interface) | resource |
+| [iosxr_evpn_segment_routing_srv6_stitching_evi.evpn_segment_routing_srv6_stitching_evi](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/evpn_segment_routing_srv6_stitching_evi) | resource |
 | [iosxr_extcommunity_bandwidth_set.extcommunity_bandwidth_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/extcommunity_bandwidth_set) | resource |
 | [iosxr_extcommunity_cost_set.extcommunity_cost_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/extcommunity_cost_set) | resource |
 | [iosxr_extcommunity_evpn_link_bandwidth_set.extcommunity_evpn_link_bandwidth_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/extcommunity_evpn_link_bandwidth_set) | resource |
