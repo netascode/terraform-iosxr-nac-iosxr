@@ -68,6 +68,7 @@ module "iosxr" {
 | [iosxr_bmp_server.bmp_server](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/bmp_server) | resource |
 | [iosxr_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/cdp) | resource |
 | [iosxr_class_map_qos.class_map_qos](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/class_map_qos) | resource |
+| [iosxr_class_map_traffic.class_map_traffic](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/class_map_traffic) | resource |
 | [iosxr_cli.cli_0](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/cli) | resource |
 | [iosxr_cli.cli_1](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/cli) | resource |
 | [iosxr_cli.cli_2](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.0/docs/resources/cli) | resource |
