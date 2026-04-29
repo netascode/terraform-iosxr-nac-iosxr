@@ -234,6 +234,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_router_vrrp_interface_ipv4.router_vrrp_interface_ipv4,
     iosxr_router_vrrp_interface_ipv6.router_vrrp_interface_ipv6,
     iosxr_segment_routing.segment_routing,
+    iosxr_segment_routing_mapping_server.segment_routing_mapping_server,
     iosxr_segment_routing_te.segment_routing_te,
     iosxr_segment_routing_v6.segment_routing_v6,
     iosxr_service_timestamps.service_timestamps,
