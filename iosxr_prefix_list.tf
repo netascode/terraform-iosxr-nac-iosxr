@@ -10,7 +10,7 @@ locals {
           remark                 = try(entry.remark, local.defaults.iosxr.devices.configuration.prefix_lists.ipv4.entries.remark, null)
           permission             = try(entry.action, local.defaults.iosxr.devices.configuration.prefix_lists.ipv4.entries.action, null)
           prefix                 = try(entry.prefix, local.defaults.iosxr.devices.configuration.prefix_lists.ipv4.entries.prefix, null)
-          mask                   = try(provider::utils::normalize_mask(entry.mask, "dotted-decimal"), entry.mask, local.defaults.iosxr.devices.configuration.prefix_lists.ipv4.entries.mask, null)
+          mask                   = try(provider::utils::normalize_mask(entry.length, "dotted-decimal"), entry.length, local.defaults.iosxr.devices.configuration.prefix_lists.ipv4.entries.length, null)
           match_prefix_length_eq = try(entry.exact_length, local.defaults.iosxr.devices.configuration.prefix_lists.ipv4.entries.exact_length, null)
           match_prefix_length_ge = try(entry.min_length, local.defaults.iosxr.devices.configuration.prefix_lists.ipv4.entries.min_length, null)
           match_prefix_length_le = try(entry.max_length, local.defaults.iosxr.devices.configuration.prefix_lists.ipv4.entries.max_length, null)
