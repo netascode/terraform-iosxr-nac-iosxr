@@ -158,6 +158,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_ftp.ftp,
     iosxr_gnmi.gnmi,
     iosxr_hostname.hostname,
+    iosxr_icmp.icmp,
     iosxr_interface_bundle_ether.bundle_ether,
     iosxr_interface_bundle_ether_subinterface.bundle_ether_subinterface,
     iosxr_interface_bvi.bvi,
