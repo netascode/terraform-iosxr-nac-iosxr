@@ -260,6 +260,10 @@ resource "iosxr_snmp_server" "snmp_server" {
     ]
     }
   ]
+  contexts = try(length(local.device_config[each.value.name].snmp_server.contexts) == 0, true) ? null : [for context in local.device_config[each.value.name].snmp_server.contexts : {
+    name = try(context.name, local.defaults.iosxr.devices.configuration.snmp_server.contexts.name, null)
+    }
+  ]
 }
 
 ##### SNMP Server VRFs #####
