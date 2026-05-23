@@ -22,6 +22,11 @@ locals {
           split_horizon_group = try(interface.split_horizon_group, local.defaults.iosxr.devices.configuration.l2vpn_bridge_group_bridge_domain.interfaces.split_horizon_group, null)
           }
         ]
+        routed_interface = try(length(bridge_domain.routed_interfaces) == 0, true) ? null : [for ri in bridge_domain.routed_interfaces : {
+          interface_name           = try(ri.interface_name, local.defaults.iosxr.devices.configuration.l2vpn_bridge_group_bridge_domain.routed_interfaces.interface_name, null)
+          split_horizon_group_core = try(ri.split_horizon_group_core, local.defaults.iosxr.devices.configuration.l2vpn_bridge_group_bridge_domain.routed_interfaces.split_horizon_group_core, null)
+          }
+        ]
         srv6_evis = try(length(bridge_domain.srv6_evis) == 0, true) ? null : [for srv6_evi in bridge_domain.srv6_evis : {
           vpn_id = try(srv6_evi.vpn_id, local.defaults.iosxr.devices.configuration.l2vpn_bridge_group_bridge_domain.srv6_evis.vpn_id, null)
           }
@@ -49,6 +54,7 @@ resource "iosxr_l2vpn_bridge_group_bridge_domain" "l2vpn_bridge_group_bridge_dom
   storm_control_unknown_unicast_pps  = each.value.storm_control_unknown_unicast_pps
   evis                               = each.value.evis
   interfaces                         = each.value.interfaces
+  routed_interface                   = each.value.routed_interface
   srv6_evis                          = each.value.srv6_evis
   vnis                               = each.value.vnis
 
