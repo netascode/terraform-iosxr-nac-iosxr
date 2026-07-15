@@ -186,6 +186,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_logging.logging,
     iosxr_logging_vrf.logging_vrf,
     iosxr_monitor_session.monitor_session,
+    iosxr_mpls_ldp.mpls_ldp,
     iosxr_mpls_oam.mpls_oam,
     iosxr_mpls_traffic_eng.mpls_traffic_eng,
     iosxr_netconf_agent_tty.netconf_agent_tty,
