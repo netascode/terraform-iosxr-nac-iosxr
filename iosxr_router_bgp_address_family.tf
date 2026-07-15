@@ -2,7 +2,7 @@ locals {
   bgp_address_family_ipv4_unicast = flatten([
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) :
-      contains(keys(try(bgp_process.address_family, {})), "ipv4_unicast") ? [{
+      try(bgp_process.address_family.ipv4_unicast, null) != null ? [{
         key                                                            = format("%s/%s/ipv4-unicast", device.name, bgp_process.as_number)
         device_name                                                    = device.name
         as_number                                                      = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
@@ -78,20 +78,20 @@ locals {
         bgp_import_delay_milliseconds                                  = try(bgp_process.address_family.ipv4_unicast.bgp_import_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_import_delay_milliseconds, null)
         bgp_label_delay_seconds                                        = try(bgp_process.address_family.ipv4_unicast.bgp_label_delay_seconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_label_delay_seconds, null)
         bgp_label_delay_milliseconds                                   = try(bgp_process.address_family.ipv4_unicast.bgp_label_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_label_delay_milliseconds, null)
-        bgp_client_to_client_reflection_disable                        = try(bgp_process.address_family.ipv4_unicast.bgp_client_to_client_reflection_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection_disable, null)
-        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.ipv4_unicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.ipv4_unicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_as = try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_disable                        = try(bgp_process.address_family.ipv4_unicast.bgp_client_to_client_reflection.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.ipv4_unicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.ipv4_unicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_as = try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection.cluster_ids.id), null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) != null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection.cluster_ids.id), null) != null
         ]
-        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.ipv4_unicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.ipv4_unicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_ip = try(cluster.cluster_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id, null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.ipv4_unicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.ipv4_unicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_ip = try(cluster.id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection.cluster_ids.id, null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) == null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_client_to_client_reflection.cluster_ids.id), null) == null
         ]
         bgp_dampening_decay_half_life                            = try(bgp_process.address_family.ipv4_unicast.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_dampening_decay_half_life, null)
         bgp_dampening_reuse_threshold                            = try(bgp_process.address_family.ipv4_unicast.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_dampening_reuse_threshold, null)
@@ -127,7 +127,7 @@ locals {
         segment_routing_srv6_alloc_mode_route_policy             = try(bgp_process.address_family.ipv4_unicast.segment_routing_srv6.alloc_mode_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.segment_routing_srv6.alloc_mode_route_policy, null)
         aggregate_addresses = try(length(bgp_process.address_family.ipv4_unicast.aggregate_addresses) == 0, true) ? null : [for agg in bgp_process.address_family.ipv4_unicast.aggregate_addresses : {
           address       = try(agg.address, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.aggregate_addresses.address, null)
-          prefix        = try(agg.mask, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.aggregate_addresses.mask, null)
+          prefix        = try(agg.length, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.aggregate_addresses.length, null)
           as_set        = try(agg.as_set, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.aggregate_addresses.as_set, null)
           as_confed_set = try(agg.as_confed_set, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.aggregate_addresses.as_confed_set, null)
           summary_only  = try(agg.summary_only, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.aggregate_addresses.summary_only, null)
@@ -138,14 +138,14 @@ locals {
         ]
         networks = try(length(bgp_process.address_family.ipv4_unicast.networks) == 0, true) ? null : [for net in bgp_process.address_family.ipv4_unicast.networks : {
           address      = try(net.address, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.networks.address, null)
-          prefix       = try(net.mask, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.networks.mask, null)
+          prefix       = try(net.length, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.networks.length, null)
           route_policy = try(net.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.networks.route_policy, null)
           backdoor     = try(net.backdoor, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.networks.backdoor, null)
           multipath    = try(net.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.networks.multipath, null)
           }
         ]
         redistribute_ospf = try(length(bgp_process.address_family.ipv4_unicast.redistribute_ospf) == 0, true) ? null : [for ospf in bgp_process.address_family.ipv4_unicast.redistribute_ospf : {
-          router_tag                                = try(ospf.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_ospf.instance_id, null)
+          router_tag                                = try(ospf.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_ospf.process, null)
           match_internal                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_ospf.match, null) == "match-internal" ? true : null
           match_external                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_ospf.match, null) == "match-external" ? true : null
           match_nssa_external                       = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_ospf.match, null) == "match-nssa-external" ? true : null
@@ -180,7 +180,7 @@ locals {
           }
         ]
         redistribute_eigrp = try(length(bgp_process.address_family.ipv4_unicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in bgp_process.address_family.ipv4_unicast.redistribute_eigrp : {
-          instance_name           = try(eigrp.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.instance_id, null)
+          instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.process, null)
           match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.match, null) == "match-internal" ? true : null
           match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
           match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.match, null) == "match-external" ? true : null
@@ -190,7 +190,7 @@ locals {
           }
         ]
         redistribute_isis = try(length(bgp_process.address_family.ipv4_unicast.redistribute_isis) == 0, true) ? null : [for isis in bgp_process.address_family.ipv4_unicast.redistribute_isis : {
-          instance_name                      = try(isis.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_isis.instance_id, null)
+          instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_isis.process, null)
           level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_isis.level, null) == "level-1" ? true : null
           level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_isis.level, null) == "level-1-level-2" ? true : null
           level_1_level_2_level_1_inter_area = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_isis.level, null) == "level-1-level-2-level-1-inter-area" ? true : null
@@ -335,7 +335,7 @@ locals {
   bgp_address_family_ipv6_unicast = flatten([
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) :
-      contains(keys(try(bgp_process.address_family, {})), "ipv6_unicast") ? [{
+      try(bgp_process.address_family.ipv6_unicast, null) != null ? [{
         key                                                            = format("%s/%s/ipv6-unicast", device.name, bgp_process.as_number)
         device_name                                                    = device.name
         as_number                                                      = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
@@ -411,20 +411,20 @@ locals {
         bgp_import_delay_milliseconds                                  = try(bgp_process.address_family.ipv6_unicast.bgp_import_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_import_delay_milliseconds, null)
         bgp_label_delay_seconds                                        = try(bgp_process.address_family.ipv6_unicast.bgp_label_delay_seconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_label_delay_seconds, null)
         bgp_label_delay_milliseconds                                   = try(bgp_process.address_family.ipv6_unicast.bgp_label_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_label_delay_milliseconds, null)
-        bgp_client_to_client_reflection_disable                        = try(bgp_process.address_family.ipv6_unicast.bgp_client_to_client_reflection_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection_disable, null)
-        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.ipv6_unicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.ipv6_unicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_as = try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_disable                        = try(bgp_process.address_family.ipv6_unicast.bgp_client_to_client_reflection.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.ipv6_unicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.ipv6_unicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_as = try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection.cluster_ids.id), null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) != null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection.cluster_ids.id), null) != null
         ]
-        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.ipv6_unicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.ipv6_unicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_ip = try(cluster.cluster_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id, null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.ipv6_unicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.ipv6_unicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_ip = try(cluster.id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection.cluster_ids.id, null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) == null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_client_to_client_reflection.cluster_ids.id), null) == null
         ]
         bgp_dampening_decay_half_life                            = try(bgp_process.address_family.ipv6_unicast.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_dampening_decay_half_life, null)
         bgp_dampening_reuse_threshold                            = try(bgp_process.address_family.ipv6_unicast.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_dampening_reuse_threshold, null)
@@ -460,7 +460,7 @@ locals {
         segment_routing_srv6_alloc_mode_route_policy             = try(bgp_process.address_family.ipv6_unicast.segment_routing_srv6.alloc_mode_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.segment_routing_srv6.alloc_mode_route_policy, null)
         aggregate_addresses = try(length(bgp_process.address_family.ipv6_unicast.aggregate_addresses) == 0, true) ? null : [for agg in bgp_process.address_family.ipv6_unicast.aggregate_addresses : {
           address       = try(agg.address, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.aggregate_addresses.address, null)
-          prefix        = try(agg.mask, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.aggregate_addresses.mask, null)
+          prefix        = try(agg.length, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.aggregate_addresses.length, null)
           as_set        = try(agg.as_set, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.aggregate_addresses.as_set, null)
           as_confed_set = try(agg.as_confed_set, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.aggregate_addresses.as_confed_set, null)
           summary_only  = try(agg.summary_only, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.aggregate_addresses.summary_only, null)
@@ -471,14 +471,14 @@ locals {
         ]
         networks = try(length(bgp_process.address_family.ipv6_unicast.networks) == 0, true) ? null : [for net in bgp_process.address_family.ipv6_unicast.networks : {
           address      = try(net.address, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.networks.address, null)
-          prefix       = try(net.mask, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.networks.mask, null)
+          prefix       = try(net.length, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.networks.length, null)
           route_policy = try(net.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.networks.route_policy, null)
           backdoor     = try(net.backdoor, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.networks.backdoor, null)
           multipath    = try(net.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.networks.multipath, null)
           }
         ]
         redistribute_ospfv3 = try(length(bgp_process.address_family.ipv6_unicast.redistribute_ospfv3) == 0, true) ? null : [for ospfv3 in bgp_process.address_family.ipv6_unicast.redistribute_ospfv3 : {
-          router_tag                                = try(ospfv3.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_ospfv3.instance_id, null)
+          router_tag                                = try(ospfv3.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_ospfv3.process, null)
           match_internal                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_ospfv3.match, null) == "match-internal" ? true : null
           match_external                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_ospfv3.match, null) == "match-external" ? true : null
           match_nssa_external                       = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_ospfv3.match, null) == "match-nssa-external" ? true : null
@@ -513,7 +513,7 @@ locals {
           }
         ]
         redistribute_eigrp = try(length(bgp_process.address_family.ipv6_unicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in bgp_process.address_family.ipv6_unicast.redistribute_eigrp : {
-          instance_name           = try(eigrp.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.instance_id, null)
+          instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.process, null)
           match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
           match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
           match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-external" ? true : null
@@ -523,7 +523,7 @@ locals {
           }
         ]
         redistribute_isis = try(length(bgp_process.address_family.ipv6_unicast.redistribute_isis) == 0, true) ? null : [for isis in bgp_process.address_family.ipv6_unicast.redistribute_isis : {
-          instance_name                      = try(isis.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_isis.instance_id, null)
+          instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_isis.process, null)
           level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_isis.level, null) == "level-1" ? true : null
           level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_isis.level, null) == "level-1-level-2" ? true : null
           level_1_level_2_level_1_inter_area = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_isis.level, null) == "level-1-level-2-level-1-inter-area" ? true : null
@@ -660,24 +660,24 @@ locals {
   bgp_address_family_vpnv4_unicast = flatten([
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) :
-      contains(keys(try(bgp_process.address_family, {})), "vpnv4_unicast") ? [{
+      try(bgp_process.address_family.vpnv4_unicast, null) != null ? [{
         key                                                              = format("%s/%s/vpnv4-unicast", device.name, bgp_process.as_number)
         device_name                                                      = device.name
         as_number                                                        = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
         af_name                                                          = "vpnv4-unicast"
-        vrf_all_segment_routing_srv6_locator                             = try(bgp_process.address_family.vpnv4_unicast.segment_routing_srv6.locator, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.segment_routing_srv6.locator, null)
-        vrf_all_segment_routing_srv6_usid_allocation_wide_local_id_block = try(bgp_process.address_family.vpnv4_unicast.segment_routing_srv6.usid_allocation_wide_local_id_block, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.segment_routing_srv6.usid_allocation_wide_local_id_block, null)
-        vrf_all_segment_routing_srv6_alloc_mode_per_ce                   = try(bgp_process.address_family.vpnv4_unicast.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.segment_routing_srv6.alloc_mode, null) == "per-ce" ? true : null
-        vrf_all_segment_routing_srv6_alloc_mode_per_vrf                  = try(bgp_process.address_family.vpnv4_unicast.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.segment_routing_srv6.alloc_mode, null) == "per-vrf" ? true : null
-        vrf_all_segment_routing_srv6_alloc_mode_per_vrf_46               = try(bgp_process.address_family.vpnv4_unicast.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.segment_routing_srv6.alloc_mode, null) == "per-vrf-46" ? true : null
-        vrf_all_source_rt_import_policy                                  = try(bgp_process.address_family.vpnv4_unicast.source_rt_import_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.source_rt_import_policy, null)
-        vrf_all_label_mode_per_ce                                        = try(bgp_process.address_family.vpnv4_unicast.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.label_mode, null) == "per-ce" ? true : null
-        vrf_all_label_mode_per_vrf                                       = try(bgp_process.address_family.vpnv4_unicast.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.label_mode, null) == "per-vrf" ? true : null
-        vrf_all_label_mode_per_vrf_46                                    = try(bgp_process.address_family.vpnv4_unicast.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.label_mode, null) == "per-vrf-46" ? true : null
-        vrf_all_label_mode_route_policy                                  = try(bgp_process.address_family.vpnv4_unicast.label_mode_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.label_mode_route_policy, null)
-        vrf_all_rnh_install_extcomm                                      = try(bgp_process.address_family.vpnv4_unicast.rnh_install_extcomm, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.rnh_install_extcomm, null)
-        vrf_all_rnh_install_extcomm_only                                 = try(bgp_process.address_family.vpnv4_unicast.rnh_install_extcomm_only, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.rnh_install_extcomm_only, null)
-        vrf_all_table_policy                                             = try(bgp_process.address_family.vpnv4_unicast.table_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.table_policy, null)
+        vrf_all_segment_routing_srv6_locator                             = try(bgp_process.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.locator, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.locator, null)
+        vrf_all_segment_routing_srv6_usid_allocation_wide_local_id_block = try(bgp_process.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.usid_allocation_wide_local_id_block, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.usid_allocation_wide_local_id_block, null)
+        vrf_all_segment_routing_srv6_alloc_mode_per_ce                   = try(bgp_process.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.alloc_mode, null) == "per-ce" ? true : null
+        vrf_all_segment_routing_srv6_alloc_mode_per_vrf                  = try(bgp_process.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.alloc_mode, null) == "per-vrf" ? true : null
+        vrf_all_segment_routing_srv6_alloc_mode_per_vrf_46               = try(bgp_process.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.alloc_mode, null) == "per-vrf-46" ? true : null
+        vrf_all_source_rt_import_policy                                  = try(bgp_process.address_family.vpnv4_unicast.vrf_all.source_rt_import_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.source_rt_import_policy, null)
+        vrf_all_label_mode_per_ce                                        = try(bgp_process.address_family.vpnv4_unicast.vrf_all.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.label_mode, null) == "per-ce" ? true : null
+        vrf_all_label_mode_per_vrf                                       = try(bgp_process.address_family.vpnv4_unicast.vrf_all.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.label_mode, null) == "per-vrf" ? true : null
+        vrf_all_label_mode_per_vrf_46                                    = try(bgp_process.address_family.vpnv4_unicast.vrf_all.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.label_mode, null) == "per-vrf-46" ? true : null
+        vrf_all_label_mode_route_policy                                  = try(bgp_process.address_family.vpnv4_unicast.vrf_all.label_mode_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.label_mode_route_policy, null)
+        vrf_all_rnh_install_extcomm                                      = try(bgp_process.address_family.vpnv4_unicast.vrf_all.rnh_install_extcomm, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.rnh_install_extcomm, null)
+        vrf_all_rnh_install_extcomm_only                                 = try(bgp_process.address_family.vpnv4_unicast.vrf_all.rnh_install_extcomm_only, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.rnh_install_extcomm_only, null)
+        vrf_all_table_policy                                             = try(bgp_process.address_family.vpnv4_unicast.vrf_all.table_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.table_policy, null)
         additional_paths_send                                            = try(bgp_process.address_family.vpnv4_unicast.additional_paths_send, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.additional_paths_send, null)
         additional_paths_receive                                         = try(bgp_process.address_family.vpnv4_unicast.additional_paths_receive, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.additional_paths_receive, null)
         additional_paths_advertise_limit                                 = try(bgp_process.address_family.vpnv4_unicast.additional_paths_advertise_limit, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.additional_paths_advertise_limit, null)
@@ -696,20 +696,20 @@ locals {
         bgp_import_delay_milliseconds                                    = try(bgp_process.address_family.vpnv4_unicast.bgp_import_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_import_delay_milliseconds, null)
         bgp_label_delay_seconds                                          = try(bgp_process.address_family.vpnv4_unicast.bgp_label_delay_seconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_label_delay_seconds, null)
         bgp_label_delay_milliseconds                                     = try(bgp_process.address_family.vpnv4_unicast.bgp_label_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_label_delay_milliseconds, null)
-        bgp_client_to_client_reflection_disable                          = try(bgp_process.address_family.vpnv4_unicast.bgp_client_to_client_reflection_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection_disable, null)
-        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.vpnv4_unicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.vpnv4_unicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_as = try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_disable                          = try(bgp_process.address_family.vpnv4_unicast.bgp_client_to_client_reflection.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.vpnv4_unicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.vpnv4_unicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_as = try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection.cluster_ids.id), null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) != null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection.cluster_ids.id), null) != null
         ]
-        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.vpnv4_unicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.vpnv4_unicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_ip = try(cluster.cluster_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id, null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.vpnv4_unicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.vpnv4_unicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_ip = try(cluster.id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection.cluster_ids.id, null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) == null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_client_to_client_reflection.cluster_ids.id), null) == null
         ]
         bgp_dampening_decay_half_life                            = try(bgp_process.address_family.vpnv4_unicast.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_dampening_decay_half_life, null)
         bgp_dampening_reuse_threshold                            = try(bgp_process.address_family.vpnv4_unicast.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.bgp_dampening_reuse_threshold, null)
@@ -816,24 +816,24 @@ locals {
   bgp_address_family_vpnv6_unicast = flatten([
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) :
-      contains(keys(try(bgp_process.address_family, {})), "vpnv6_unicast") ? [{
+      try(bgp_process.address_family.vpnv6_unicast, null) != null ? [{
         key                                                              = format("%s/%s/vpnv6-unicast", device.name, bgp_process.as_number)
         device_name                                                      = device.name
         as_number                                                        = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
         af_name                                                          = "vpnv6-unicast"
-        vrf_all_segment_routing_srv6_locator                             = try(bgp_process.address_family.vpnv6_unicast.segment_routing_srv6.locator, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.segment_routing_srv6.locator, null)
-        vrf_all_segment_routing_srv6_usid_allocation_wide_local_id_block = try(bgp_process.address_family.vpnv6_unicast.segment_routing_srv6.usid_allocation_wide_local_id_block, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.segment_routing_srv6.usid_allocation_wide_local_id_block, null)
-        vrf_all_segment_routing_srv6_alloc_mode_per_ce                   = try(bgp_process.address_family.vpnv6_unicast.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.segment_routing_srv6.alloc_mode, null) == "per-ce" ? true : null
-        vrf_all_segment_routing_srv6_alloc_mode_per_vrf                  = try(bgp_process.address_family.vpnv6_unicast.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.segment_routing_srv6.alloc_mode, null) == "per-vrf" ? true : null
-        vrf_all_segment_routing_srv6_alloc_mode_per_vrf_46               = try(bgp_process.address_family.vpnv6_unicast.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.segment_routing_srv6.alloc_mode, null) == "per-vrf-46" ? true : null
-        vrf_all_source_rt_import_policy                                  = try(bgp_process.address_family.vpnv6_unicast.source_rt_import_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.source_rt_import_policy, null)
-        vrf_all_label_mode_per_ce                                        = try(bgp_process.address_family.vpnv6_unicast.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.label_mode, null) == "per-ce" ? true : null
-        vrf_all_label_mode_per_vrf                                       = try(bgp_process.address_family.vpnv6_unicast.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.label_mode, null) == "per-vrf" ? true : null
-        vrf_all_label_mode_per_vrf_46                                    = try(bgp_process.address_family.vpnv6_unicast.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.label_mode, null) == "per-vrf-46" ? true : null
-        vrf_all_label_mode_route_policy                                  = try(bgp_process.address_family.vpnv6_unicast.label_mode_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.label_mode_route_policy, null)
-        vrf_all_rnh_install_extcomm                                      = try(bgp_process.address_family.vpnv6_unicast.rnh_install_extcomm, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.rnh_install_extcomm, null)
-        vrf_all_rnh_install_extcomm_only                                 = try(bgp_process.address_family.vpnv6_unicast.rnh_install_extcomm_only, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.rnh_install_extcomm_only, null)
-        vrf_all_table_policy                                             = try(bgp_process.address_family.vpnv6_unicast.table_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.table_policy, null)
+        vrf_all_segment_routing_srv6_locator                             = try(bgp_process.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.locator, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.locator, null)
+        vrf_all_segment_routing_srv6_usid_allocation_wide_local_id_block = try(bgp_process.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.usid_allocation_wide_local_id_block, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.usid_allocation_wide_local_id_block, null)
+        vrf_all_segment_routing_srv6_alloc_mode_per_ce                   = try(bgp_process.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.alloc_mode, null) == "per-ce" ? true : null
+        vrf_all_segment_routing_srv6_alloc_mode_per_vrf                  = try(bgp_process.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.alloc_mode, null) == "per-vrf" ? true : null
+        vrf_all_segment_routing_srv6_alloc_mode_per_vrf_46               = try(bgp_process.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.alloc_mode, null) == "per-vrf-46" ? true : null
+        vrf_all_source_rt_import_policy                                  = try(bgp_process.address_family.vpnv6_unicast.vrf_all.source_rt_import_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.source_rt_import_policy, null)
+        vrf_all_label_mode_per_ce                                        = try(bgp_process.address_family.vpnv6_unicast.vrf_all.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.label_mode, null) == "per-ce" ? true : null
+        vrf_all_label_mode_per_vrf                                       = try(bgp_process.address_family.vpnv6_unicast.vrf_all.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.label_mode, null) == "per-vrf" ? true : null
+        vrf_all_label_mode_per_vrf_46                                    = try(bgp_process.address_family.vpnv6_unicast.vrf_all.label_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.label_mode, null) == "per-vrf-46" ? true : null
+        vrf_all_label_mode_route_policy                                  = try(bgp_process.address_family.vpnv6_unicast.vrf_all.label_mode_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.label_mode_route_policy, null)
+        vrf_all_rnh_install_extcomm                                      = try(bgp_process.address_family.vpnv6_unicast.vrf_all.rnh_install_extcomm, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.rnh_install_extcomm, null)
+        vrf_all_rnh_install_extcomm_only                                 = try(bgp_process.address_family.vpnv6_unicast.vrf_all.rnh_install_extcomm_only, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.rnh_install_extcomm_only, null)
+        vrf_all_table_policy                                             = try(bgp_process.address_family.vpnv6_unicast.vrf_all.table_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.table_policy, null)
         additional_paths_send                                            = try(bgp_process.address_family.vpnv6_unicast.additional_paths_send, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.additional_paths_send, null)
         additional_paths_receive                                         = try(bgp_process.address_family.vpnv6_unicast.additional_paths_receive, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.additional_paths_receive, null)
         additional_paths_advertise_limit                                 = try(bgp_process.address_family.vpnv6_unicast.additional_paths_advertise_limit, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.additional_paths_advertise_limit, null)
@@ -852,20 +852,20 @@ locals {
         bgp_import_delay_milliseconds                                    = try(bgp_process.address_family.vpnv6_unicast.bgp_import_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_import_delay_milliseconds, null)
         bgp_label_delay_seconds                                          = try(bgp_process.address_family.vpnv6_unicast.bgp_label_delay_seconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_label_delay_seconds, null)
         bgp_label_delay_milliseconds                                     = try(bgp_process.address_family.vpnv6_unicast.bgp_label_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_label_delay_milliseconds, null)
-        bgp_client_to_client_reflection_disable                          = try(bgp_process.address_family.vpnv6_unicast.bgp_client_to_client_reflection_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection_disable, null)
-        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.vpnv6_unicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.vpnv6_unicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_as = try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_disable                          = try(bgp_process.address_family.vpnv6_unicast.bgp_client_to_client_reflection.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.vpnv6_unicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.vpnv6_unicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_as = try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection.cluster_ids.id), null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) != null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection.cluster_ids.id), null) != null
         ]
-        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.vpnv6_unicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.vpnv6_unicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_ip = try(cluster.cluster_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id, null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.vpnv6_unicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.vpnv6_unicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_ip = try(cluster.id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection.cluster_ids.id, null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) == null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_client_to_client_reflection.cluster_ids.id), null) == null
         ]
         bgp_dampening_decay_half_life                            = try(bgp_process.address_family.vpnv6_unicast.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_dampening_decay_half_life, null)
         bgp_dampening_reuse_threshold                            = try(bgp_process.address_family.vpnv6_unicast.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.bgp_dampening_reuse_threshold, null)
@@ -968,7 +968,7 @@ locals {
   bgp_address_family_vpnv4_multicast = flatten([
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) :
-      contains(keys(try(bgp_process.address_family, {})), "vpnv4_multicast") ? [{
+      try(bgp_process.address_family.vpnv4_multicast, null) != null ? [{
         key                                     = format("%s/%s/vpnv4-multicast", device.name, bgp_process.as_number)
         device_name                             = device.name
         as_number                               = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
@@ -987,20 +987,20 @@ locals {
         bgp_scan_time                           = try(bgp_process.address_family.vpnv4_multicast.bgp_scan_time, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_scan_time, null)
         bgp_label_delay_seconds                 = try(bgp_process.address_family.vpnv4_multicast.bgp_label_delay_seconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_label_delay_seconds, null)
         bgp_label_delay_milliseconds            = try(bgp_process.address_family.vpnv4_multicast.bgp_label_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_label_delay_milliseconds, null)
-        bgp_client_to_client_reflection_disable = try(bgp_process.address_family.vpnv4_multicast.bgp_client_to_client_reflection_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection_disable, null)
-        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.vpnv4_multicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.vpnv4_multicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_as = try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_disable = try(bgp_process.address_family.vpnv4_multicast.bgp_client_to_client_reflection.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.vpnv4_multicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.vpnv4_multicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_as = try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection.cluster_ids.id), null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) != null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection.cluster_ids.id), null) != null
         ]
-        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.vpnv4_multicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.vpnv4_multicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_ip = try(cluster.cluster_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection_cluster_ids.cluster_id, null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.vpnv4_multicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.vpnv4_multicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_ip = try(cluster.id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection.cluster_ids.id, null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) == null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_client_to_client_reflection.cluster_ids.id), null) == null
         ]
         bgp_dampening_decay_half_life                 = try(bgp_process.address_family.vpnv4_multicast.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_dampening_decay_half_life, null)
         bgp_dampening_reuse_threshold                 = try(bgp_process.address_family.vpnv4_multicast.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_multicast.bgp_dampening_reuse_threshold, null)
@@ -1069,7 +1069,7 @@ locals {
   bgp_address_family_vpnv6_multicast = flatten([
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) :
-      contains(keys(try(bgp_process.address_family, {})), "vpnv6_multicast") ? [{
+      try(bgp_process.address_family.vpnv6_multicast, null) != null ? [{
         key                                     = format("%s/%s/vpnv6-multicast", device.name, bgp_process.as_number)
         device_name                             = device.name
         as_number                               = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
@@ -1088,20 +1088,20 @@ locals {
         bgp_scan_time                           = try(bgp_process.address_family.vpnv6_multicast.bgp_scan_time, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_scan_time, null)
         bgp_label_delay_seconds                 = try(bgp_process.address_family.vpnv6_multicast.bgp_label_delay_seconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_label_delay_seconds, null)
         bgp_label_delay_milliseconds            = try(bgp_process.address_family.vpnv6_multicast.bgp_label_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_label_delay_milliseconds, null)
-        bgp_client_to_client_reflection_disable = try(bgp_process.address_family.vpnv6_multicast.bgp_client_to_client_reflection_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection_disable, null)
-        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.vpnv6_multicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.vpnv6_multicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_as = try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_disable = try(bgp_process.address_family.vpnv6_multicast.bgp_client_to_client_reflection.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.vpnv6_multicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.vpnv6_multicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_as = try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection.cluster_ids.id), null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) != null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection.cluster_ids.id), null) != null
         ]
-        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.vpnv6_multicast.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.vpnv6_multicast.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_ip = try(cluster.cluster_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection_cluster_ids.cluster_id, null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.vpnv6_multicast.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.vpnv6_multicast.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_ip = try(cluster.id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection.cluster_ids.id, null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) == null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_client_to_client_reflection.cluster_ids.id), null) == null
         ]
         bgp_dampening_decay_half_life                 = try(bgp_process.address_family.vpnv6_multicast.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_dampening_decay_half_life, null)
         bgp_dampening_reuse_threshold                 = try(bgp_process.address_family.vpnv6_multicast.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_multicast.bgp_dampening_reuse_threshold, null)
@@ -1169,7 +1169,7 @@ locals {
   bgp_address_family_l2vpn_evpn = flatten([
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) :
-      contains(keys(try(bgp_process.address_family, {})), "l2vpn_evpn") ? [{
+      try(bgp_process.address_family.l2vpn_evpn, null) != null ? [{
         key                                     = format("%s/%s/l2vpn-evpn", device.name, bgp_process.as_number)
         device_name                             = device.name
         as_number                               = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
@@ -1190,20 +1190,20 @@ locals {
         bgp_import_delay_milliseconds           = try(bgp_process.address_family.l2vpn_evpn.bgp_import_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_import_delay_milliseconds, null)
         bgp_label_delay_seconds                 = try(bgp_process.address_family.l2vpn_evpn.bgp_label_delay_seconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_label_delay_seconds, null)
         bgp_label_delay_milliseconds            = try(bgp_process.address_family.l2vpn_evpn.bgp_label_delay_milliseconds, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_label_delay_milliseconds, null)
-        bgp_client_to_client_reflection_disable = try(bgp_process.address_family.l2vpn_evpn.bgp_client_to_client_reflection_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection_disable, null)
-        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.l2vpn_evpn.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.l2vpn_evpn.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_as = try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection_cluster_ids.cluster_id), null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_disable = try(bgp_process.address_family.l2vpn_evpn.bgp_client_to_client_reflection.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_32bit_format = try(length(bgp_process.address_family.l2vpn_evpn.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.l2vpn_evpn.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_as = try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection.cluster_ids.id), null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) != null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection.cluster_ids.id), null) != null
         ]
-        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.l2vpn_evpn.bgp_client_to_client_reflection_cluster_ids) == 0, true) ? null : [
-          for cluster in bgp_process.address_family.l2vpn_evpn.bgp_client_to_client_reflection_cluster_ids : {
-            cluster_ip = try(cluster.cluster_id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection_cluster_ids.cluster_id, null)
-            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection_cluster_ids.disable, null)
+        bgp_client_to_client_reflection_cluster_ids_ip_format = try(length(bgp_process.address_family.l2vpn_evpn.bgp_client_to_client_reflection.cluster_ids) == 0, true) ? null : [
+          for cluster in bgp_process.address_family.l2vpn_evpn.bgp_client_to_client_reflection.cluster_ids : {
+            cluster_ip = try(cluster.id, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection.cluster_ids.id, null)
+            disable    = try(cluster.disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection.cluster_ids.disable, null)
           }
-          if try(tonumber(cluster.cluster_id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection_cluster_ids.cluster_id), null) == null
+          if try(tonumber(cluster.id), tonumber(local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_client_to_client_reflection.cluster_ids.id), null) == null
         ]
         bgp_dampening_decay_half_life    = try(bgp_process.address_family.l2vpn_evpn.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_dampening_decay_half_life, null)
         bgp_dampening_reuse_threshold    = try(bgp_process.address_family.l2vpn_evpn.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_dampening_reuse_threshold, null)
