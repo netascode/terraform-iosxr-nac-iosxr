@@ -3,24 +3,24 @@ locals {
     for device in local.devices : [
       for vrf in try(local.device_config[device.name].routing.static_routes.vrfs, []) : [
         for route in try(vrf.address_family.ipv4_unicast.prefixes, []) : {
-          key            = format("%s/%s/%s/%s", device.name, vrf.vrf_name, route.address, route.mask)
+          key            = format("%s/%s/%s/%s", device.name, vrf.name, route.address, route.length)
           device_name    = device.name
-          vrf_name       = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.vrf_name, null)
+          vrf_name       = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.name, null)
           prefix_address = try(route.address, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.address, null)
-          prefix_length  = try(route.mask, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.mask, null)
+          prefix_length  = try(route.length, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.length, null)
           nexthop_interfaces = try(length(route.next_hops) == 0, true) ? null : [for nh in route.next_hops : {
-            interface_name  = try(nh.interface_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.interface_name, null)
+            interface_name  = try(nh.interface, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.interface, null)
             description     = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.description, null)
             tag             = try(nh.tag, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.tag, null)
             distance_metric = try(nh.distance, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.distance, null)
             permanent       = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.permanent, null)
             track           = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.track, null)
             metric          = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.metric, null)
-            } if try(nh.interface_name, null) != null && try(nh.address, null) == null
+            } if try(nh.interface, null) != null && try(nh.ip, null) == null
           ]
           nexthop_interface_addresses = try(length(route.next_hops) == 0, true) ? null : [for nh in route.next_hops : {
-            interface_name                   = try(nh.interface_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.interface_name, null)
-            address                          = try(nh.address, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.address, null)
+            interface_name                   = try(nh.interface, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.interface, null)
+            address                          = try(nh.ip, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.ip, null)
             bfd_fast_detect_minimum_interval = try(nh.bfd_fast_detect_minimum_interval, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.bfd_fast_detect_minimum_interval, null)
             bfd_fast_detect_multiplier       = try(nh.bfd_fast_detect_multiplier, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.bfd_fast_detect_multiplier, null)
             description                      = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.description, null)
@@ -29,10 +29,10 @@ locals {
             permanent                        = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.permanent, null)
             track                            = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.track, null)
             metric                           = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.metric, null)
-            } if try(nh.interface_name, null) != null && try(nh.address, null) != null
+            } if try(nh.interface, null) != null && try(nh.ip, null) != null
           ]
           nexthop_addresses = try(length(route.next_hops) == 0, true) ? null : [for nh in route.next_hops : {
-            address                          = try(nh.address, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.address, null)
+            address                          = try(nh.ip, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.ip, null)
             bfd_fast_detect_minimum_interval = try(nh.bfd_fast_detect_minimum_interval, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.bfd_fast_detect_minimum_interval, null)
             bfd_fast_detect_multiplier       = try(nh.bfd_fast_detect_multiplier, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.bfd_fast_detect_multiplier, null)
             description                      = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.description, null)
@@ -41,10 +41,10 @@ locals {
             permanent                        = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.permanent, null)
             track                            = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.track, null)
             metric                           = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.metric, null)
-            } if try(nh.address, null) != null && try(nh.interface_name, null) == null
+            } if try(nh.ip, null) != null && try(nh.interface, null) == null
           ]
           sr_policies = try(length(route.sr_policies) == 0, true) ? null : [for sr_policy in route.sr_policies : {
-            sr_policy_name  = try(sr_policy.sr_policy_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.sr_policies.sr_policy_name, null)
+            sr_policy_name  = try(sr_policy.name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.sr_policies.name, null)
             description     = try(sr_policy.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.sr_policies.description, null)
             tag             = try(sr_policy.tag, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.sr_policies.tag, null)
             distance_metric = try(sr_policy.distance, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.sr_policies.distance, null)
@@ -54,20 +54,20 @@ locals {
             }
           ]
           vrfs = try(length(route.vrfs) == 0, true) ? null : [for cross_vrf in route.vrfs : {
-            vrf_name = try(cross_vrf.vrf_name, null)
+            vrf_name = try(cross_vrf.name, null)
             nexthop_interfaces = try(length(cross_vrf.next_hops) == 0, true) ? null : [for nh in cross_vrf.next_hops : {
-              interface_name  = try(nh.interface_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.interface_name, null)
+              interface_name  = try(nh.interface, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.interface, null)
               description     = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.description, null)
               tag             = try(nh.tag, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.tag, null)
               distance_metric = try(nh.distance, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.distance, null)
               permanent       = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.permanent, null)
               track           = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.track, null)
               metric          = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.metric, null)
-              } if try(nh.interface_name, null) != null && try(nh.address, null) == null
+              } if try(nh.interface, null) != null && try(nh.ip, null) == null
             ]
             nexthop_interface_addresses = try(length(cross_vrf.next_hops) == 0, true) ? null : [for nh in cross_vrf.next_hops : {
-              interface_name                   = try(nh.interface_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.interface_name, null)
-              address                          = try(nh.address, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.address, null)
+              interface_name                   = try(nh.interface, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.interface, null)
+              address                          = try(nh.ip, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.ip, null)
               bfd_fast_detect_minimum_interval = try(nh.bfd_fast_detect_minimum_interval, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.bfd_fast_detect_minimum_interval, null)
               bfd_fast_detect_multiplier       = try(nh.bfd_fast_detect_multiplier, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.bfd_fast_detect_multiplier, null)
               description                      = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.description, null)
@@ -76,10 +76,10 @@ locals {
               permanent                        = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.permanent, null)
               track                            = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.track, null)
               metric                           = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.metric, null)
-              } if try(nh.interface_name, null) != null && try(nh.address, null) != null
+              } if try(nh.interface, null) != null && try(nh.ip, null) != null
             ]
             nexthop_addresses = try(length(cross_vrf.next_hops) == 0, true) ? null : [for nh in cross_vrf.next_hops : {
-              address                          = try(nh.address, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.address, null)
+              address                          = try(nh.ip, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.ip, null)
               bfd_fast_detect_minimum_interval = try(nh.bfd_fast_detect_minimum_interval, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.bfd_fast_detect_minimum_interval, null)
               bfd_fast_detect_multiplier       = try(nh.bfd_fast_detect_multiplier, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.bfd_fast_detect_multiplier, null)
               description                      = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.description, null)
@@ -88,10 +88,10 @@ locals {
               permanent                        = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.permanent, null)
               track                            = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.track, null)
               metric                           = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.next_hops.metric, null)
-              } if try(nh.address, null) != null && try(nh.interface_name, null) == null
+              } if try(nh.ip, null) != null && try(nh.interface, null) == null
             ]
             sr_policies = try(length(cross_vrf.sr_policies) == 0, true) ? null : [for sr_policy in cross_vrf.sr_policies : {
-              sr_policy_name  = try(sr_policy.sr_policy_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.sr_policies.sr_policy_name, null)
+              sr_policy_name  = try(sr_policy.name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.sr_policies.name, null)
               description     = try(sr_policy.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.sr_policies.description, null)
               tag             = try(sr_policy.tag, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.sr_policies.tag, null)
               distance_metric = try(sr_policy.distance, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_unicast.prefixes.sr_policies.distance, null)
@@ -130,24 +130,24 @@ locals {
     for device in local.devices : [
       for vrf in try(local.device_config[device.name].routing.static_routes.vrfs, []) : [
         for route in try(vrf.address_family.ipv4_multicast.prefixes, []) : {
-          key            = format("%s/%s/%s/%s", device.name, vrf.vrf_name, route.address, route.mask)
+          key            = format("%s/%s/%s/%s", device.name, vrf.name, route.address, route.length)
           device_name    = device.name
-          vrf_name       = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.vrf_name, null)
+          vrf_name       = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.name, null)
           prefix_address = try(route.address, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.address, null)
-          prefix_length  = try(route.mask, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.mask, null)
+          prefix_length  = try(route.length, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.length, null)
           nexthop_interfaces = try(length(route.next_hops) == 0, true) ? null : [for nh in route.next_hops : {
-            interface_name  = try(nh.interface_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.interface_name, null)
+            interface_name  = try(nh.interface, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.interface, null)
             description     = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.description, null)
             tag             = try(nh.tag, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.tag, null)
             distance_metric = try(nh.distance, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.distance, null)
             permanent       = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.permanent, null)
             track           = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.track, null)
             metric          = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.metric, null)
-            } if try(nh.interface_name, null) != null && try(nh.address, null) == null
+            } if try(nh.interface, null) != null && try(nh.ip, null) == null
           ]
           nexthop_interface_addresses = try(length(route.next_hops) == 0, true) ? null : [for nh in route.next_hops : {
-            interface_name                   = try(nh.interface_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.interface_name, null)
-            address                          = try(nh.address, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.address, null)
+            interface_name                   = try(nh.interface, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.interface, null)
+            address                          = try(nh.ip, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.ip, null)
             bfd_fast_detect_minimum_interval = try(nh.bfd_fast_detect_minimum_interval, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.bfd_fast_detect_minimum_interval, null)
             bfd_fast_detect_multiplier       = try(nh.bfd_fast_detect_multiplier, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.bfd_fast_detect_multiplier, null)
             description                      = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.description, null)
@@ -156,10 +156,10 @@ locals {
             permanent                        = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.permanent, null)
             track                            = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.track, null)
             metric                           = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.metric, null)
-            } if try(nh.interface_name, null) != null && try(nh.address, null) != null
+            } if try(nh.interface, null) != null && try(nh.ip, null) != null
           ]
           nexthop_addresses = try(length(route.next_hops) == 0, true) ? null : [for nh in route.next_hops : {
-            address                          = try(nh.address, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.address, null)
+            address                          = try(nh.ip, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.ip, null)
             bfd_fast_detect_minimum_interval = try(nh.bfd_fast_detect_minimum_interval, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.bfd_fast_detect_minimum_interval, null)
             bfd_fast_detect_multiplier       = try(nh.bfd_fast_detect_multiplier, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.bfd_fast_detect_multiplier, null)
             description                      = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.description, null)
@@ -168,10 +168,10 @@ locals {
             permanent                        = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.permanent, null)
             track                            = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.track, null)
             metric                           = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.metric, null)
-            } if try(nh.address, null) != null && try(nh.interface_name, null) == null
+            } if try(nh.ip, null) != null && try(nh.interface, null) == null
           ]
           sr_policies = try(length(route.sr_policies) == 0, true) ? null : [for sr_policy in route.sr_policies : {
-            sr_policy_name  = try(sr_policy.sr_policy_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.sr_policies.sr_policy_name, null)
+            sr_policy_name  = try(sr_policy.name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.sr_policies.name, null)
             description     = try(sr_policy.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.sr_policies.description, null)
             tag             = try(sr_policy.tag, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.sr_policies.tag, null)
             distance_metric = try(sr_policy.distance, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.sr_policies.distance, null)
@@ -181,20 +181,20 @@ locals {
             }
           ]
           vrfs = try(length(route.vrfs) == 0, true) ? null : [for cross_vrf in route.vrfs : {
-            vrf_name = try(cross_vrf.vrf_name, null)
+            vrf_name = try(cross_vrf.name, null)
             nexthop_interfaces = try(length(cross_vrf.next_hops) == 0, true) ? null : [for nh in cross_vrf.next_hops : {
-              interface_name  = try(nh.interface_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.interface_name, null)
+              interface_name  = try(nh.interface, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.interface, null)
               description     = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.description, null)
               tag             = try(nh.tag, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.tag, null)
               distance_metric = try(nh.distance, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.distance, null)
               permanent       = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.permanent, null)
               track           = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.track, null)
               metric          = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.metric, null)
-              } if try(nh.interface_name, null) != null && try(nh.address, null) == null
+              } if try(nh.interface, null) != null && try(nh.ip, null) == null
             ]
             nexthop_interface_addresses = try(length(cross_vrf.next_hops) == 0, true) ? null : [for nh in cross_vrf.next_hops : {
-              interface_name                   = try(nh.interface_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.interface_name, null)
-              address                          = try(nh.address, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.address, null)
+              interface_name                   = try(nh.interface, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.interface, null)
+              address                          = try(nh.ip, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.ip, null)
               bfd_fast_detect_minimum_interval = try(nh.bfd_fast_detect_minimum_interval, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.bfd_fast_detect_minimum_interval, null)
               bfd_fast_detect_multiplier       = try(nh.bfd_fast_detect_multiplier, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.bfd_fast_detect_multiplier, null)
               description                      = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.description, null)
@@ -203,10 +203,10 @@ locals {
               permanent                        = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.permanent, null)
               track                            = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.track, null)
               metric                           = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.metric, null)
-              } if try(nh.interface_name, null) != null && try(nh.address, null) != null
+              } if try(nh.interface, null) != null && try(nh.ip, null) != null
             ]
             nexthop_addresses = try(length(cross_vrf.next_hops) == 0, true) ? null : [for nh in cross_vrf.next_hops : {
-              address                          = try(nh.address, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.address, null)
+              address                          = try(nh.ip, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.ip, null)
               bfd_fast_detect_minimum_interval = try(nh.bfd_fast_detect_minimum_interval, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.bfd_fast_detect_minimum_interval, null)
               bfd_fast_detect_multiplier       = try(nh.bfd_fast_detect_multiplier, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.bfd_fast_detect_multiplier, null)
               description                      = try(nh.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.description, null)
@@ -215,10 +215,10 @@ locals {
               permanent                        = try(nh.permanent, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.permanent, null)
               track                            = try(nh.track, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.track, null)
               metric                           = try(nh.metric, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.next_hops.metric, null)
-              } if try(nh.address, null) != null && try(nh.interface_name, null) == null
+              } if try(nh.ip, null) != null && try(nh.interface, null) == null
             ]
             sr_policies = try(length(cross_vrf.sr_policies) == 0, true) ? null : [for sr_policy in cross_vrf.sr_policies : {
-              sr_policy_name  = try(sr_policy.sr_policy_name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.sr_policies.sr_policy_name, null)
+              sr_policy_name  = try(sr_policy.name, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.sr_policies.name, null)
               description     = try(sr_policy.description, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.sr_policies.description, null)
               tag             = try(sr_policy.tag, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.sr_policies.tag, null)
               distance_metric = try(sr_policy.distance, local.defaults.iosxr.devices.configuration.routing.static_routes.vrfs.address_family.ipv4_multicast.prefixes.sr_policies.distance, null)

@@ -2,10 +2,10 @@ locals {
   banners = flatten([
     for device in local.devices : [
       for banner in try(local.device_config[device.name].banners, []) : {
-        key         = format("%s/%s", device.name, banner.banner_type)
+        key         = format("%s/%s", device.name, banner.type)
         device_name = device.name
-        banner_type = try(banner.banner_type, local.defaults.iosxr.devices.configuration.banners.banner_type, null)
-        line        = try(banner.line, local.defaults.iosxr.devices.configuration.banners.line, null)
+        banner_type = try(banner.type, local.defaults.iosxr.devices.configuration.banners.type, null)
+        line        = try(banner.banner, local.defaults.iosxr.devices.configuration.banners.banner, null)
       }
     ]
   ])

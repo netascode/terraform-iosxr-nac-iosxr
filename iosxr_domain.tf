@@ -8,27 +8,29 @@ locals {
         device_name             = device.name
         name                    = try(local.device_config[device.name].domain.name, local.defaults.iosxr.devices.configuration.domain.name, null)
         lookup_disable          = try(local.device_config[device.name].domain.lookup_disable, local.defaults.iosxr.devices.configuration.domain.lookup_disable, null)
-        lookup_source_interface = try(local.device_config[device.name].domain.lookup_source_interface, local.defaults.iosxr.devices.configuration.domain.lookup_source_interface, null)
+        lookup_source_interface = try(local.device_config[device.name].domain.source_interface, local.defaults.iosxr.devices.configuration.domain.source_interface, null)
         multicast               = try(local.device_config[device.name].domain.multicast, local.defaults.iosxr.devices.configuration.domain.multicast, null)
         default_flows_disable   = try(local.device_config[device.name].domain.default_flows_disable, local.defaults.iosxr.devices.configuration.domain.default_flows_disable, null)
-        domains = try(length(local.device_config[device.name].domain.domains) == 0, true) ? null : [for domain in local.device_config[device.name].domain.domains : {
-          domain_name = try(domain.domain_name, local.defaults.iosxr.devices.configuration.domain.domains.domain_name, null)
-          order       = try(domain.order, local.defaults.iosxr.devices.configuration.domain.domains.order, null)
+        domains = try(length(local.device_config[device.name].domain.lists) == 0, true) ? null : [
+          for idx, domain in try(local.device_config[device.name].domain.lists, []) : {
+            domain_name = try(domain.name, local.defaults.iosxr.devices.configuration.domain.lists.name, null)
+            order       = idx
           }
         ]
-        name_servers = try(length(local.device_config[device.name].domain.name_servers) == 0, true) ? null : [for server in local.device_config[device.name].domain.name_servers : {
-          address = try(server.address, local.defaults.iosxr.devices.configuration.domain.name_servers.address, null)
-          order   = try(server.order, local.defaults.iosxr.devices.configuration.domain.name_servers.order, null)
+        name_servers = try(length(local.device_config[device.name].domain.name_servers) == 0, true) ? null : [
+          for idx, server in try(local.device_config[device.name].domain.name_servers, []) : {
+            address = try(server.address, local.defaults.iosxr.devices.configuration.domain.name_servers.address, null)
+            order   = idx
           }
         ]
         ipv4_hosts = try(length(local.device_config[device.name].domain.ipv4_hosts) == 0, true) ? null : [for host in local.device_config[device.name].domain.ipv4_hosts : {
-          host_name  = try(host.host_name, local.defaults.iosxr.devices.configuration.domain.ipv4_hosts.host_name, null)
-          ip_address = try(host.ip_address, local.defaults.iosxr.devices.configuration.domain.ipv4_hosts.ip_address, null)
+          host_name  = try(host.name, local.defaults.iosxr.devices.configuration.domain.ipv4_hosts.name, null)
+          ip_address = try(host.addresses, local.defaults.iosxr.devices.configuration.domain.ipv4_hosts.addresses, null)
           }
         ]
         ipv6_hosts = try(length(local.device_config[device.name].domain.ipv6_hosts) == 0, true) ? null : [for host in local.device_config[device.name].domain.ipv6_hosts : {
-          host_name    = try(host.host_name, local.defaults.iosxr.devices.configuration.domain.ipv6_hosts.host_name, null)
-          ipv6_address = try(host.ipv6_address, local.defaults.iosxr.devices.configuration.domain.ipv6_hosts.ipv6_address, null)
+          host_name    = try(host.name, local.defaults.iosxr.devices.configuration.domain.ipv6_hosts.name, null)
+          ipv6_address = try(host.addresses, local.defaults.iosxr.devices.configuration.domain.ipv6_hosts.addresses, null)
           }
         ]
       }
@@ -60,31 +62,33 @@ locals {
   domain_vrfs = flatten([
     for device in local.devices : [
       for domain_vrf in try(local.device_config[device.name].domain.vrfs, []) : {
-        key                     = format("%s/%s", device.name, domain_vrf.vrf_name)
+        key                     = format("%s/%s", device.name, domain_vrf.vrf)
         device_name             = device.name
-        vrf_name                = try(domain_vrf.vrf_name, null)
+        vrf_name                = try(domain_vrf.vrf, null)
         name                    = try(domain_vrf.name, local.defaults.iosxr.devices.configuration.domain.vrfs.name, null)
         lookup_disable          = try(domain_vrf.lookup_disable, local.defaults.iosxr.devices.configuration.domain.vrfs.lookup_disable, null)
-        lookup_source_interface = try(domain_vrf.lookup_source_interface, local.defaults.iosxr.devices.configuration.domain.vrfs.lookup_source_interface, null)
+        lookup_source_interface = try(domain_vrf.source_interface, local.defaults.iosxr.devices.configuration.domain.vrfs.source_interface, null)
         multicast               = try(domain_vrf.multicast, local.defaults.iosxr.devices.configuration.domain.vrfs.multicast, null)
-        domains = try(length(domain_vrf.domains) == 0, true) ? null : [for domain in domain_vrf.domains : {
-          domain_name = try(domain.domain_name, local.defaults.iosxr.devices.configuration.domain.vrfs.domains.domain_name, null)
-          order       = try(domain.order, local.defaults.iosxr.devices.configuration.domain.vrfs.domains.order, null)
+        domains = try(length(domain_vrf.lists) == 0, true) ? null : [
+          for idx, domain in try(domain_vrf.lists, []) : {
+            domain_name = try(domain.name, local.defaults.iosxr.devices.configuration.domain.vrfs.lists.name, null)
+            order       = idx
           }
         ]
-        name_servers = try(length(domain_vrf.name_servers) == 0, true) ? null : [for server in domain_vrf.name_servers : {
-          address = try(server.address, local.defaults.iosxr.devices.configuration.domain.vrfs.name_servers.address, null)
-          order   = try(server.order, local.defaults.iosxr.devices.configuration.domain.vrfs.name_servers.order, null)
+        name_servers = try(length(domain_vrf.name_servers) == 0, true) ? null : [
+          for idx, server in try(domain_vrf.name_servers, []) : {
+            address = try(server.address, local.defaults.iosxr.devices.configuration.domain.vrfs.name_servers.address, null)
+            order   = idx
           }
         ]
         ipv4_hosts = try(length(domain_vrf.ipv4_hosts) == 0, true) ? null : [for host in domain_vrf.ipv4_hosts : {
-          host_name  = try(host.host_name, local.defaults.iosxr.devices.configuration.domain.vrfs.ipv4_hosts.host_name, null)
-          ip_address = try(host.ip_address, local.defaults.iosxr.devices.configuration.domain.vrfs.ipv4_hosts.ip_address, null)
+          host_name  = try(host.name, local.defaults.iosxr.devices.configuration.domain.vrfs.ipv4_hosts.name, null)
+          ip_address = try(host.addresses, local.defaults.iosxr.devices.configuration.domain.vrfs.ipv4_hosts.addresses, null)
           }
         ]
         ipv6_hosts = try(length(domain_vrf.ipv6_hosts) == 0, true) ? null : [for host in domain_vrf.ipv6_hosts : {
-          host_name    = try(host.host_name, local.defaults.iosxr.devices.configuration.domain.vrfs.ipv6_hosts.host_name, null)
-          ipv6_address = try(host.ipv6_address, local.defaults.iosxr.devices.configuration.domain.vrfs.ipv6_hosts.ipv6_address, null)
+          host_name    = try(host.name, local.defaults.iosxr.devices.configuration.domain.vrfs.ipv6_hosts.name, null)
+          ipv6_address = try(host.addresses, local.defaults.iosxr.devices.configuration.domain.vrfs.ipv6_hosts.addresses, null)
           }
         ]
       }

@@ -4,11 +4,11 @@ locals {
       for ospf_process in try(local.device_config[device.name].routing.ospf_processes, []) : [
         for vrf in try(ospf_process.vrfs, []) : [
           for area in try(vrf.areas, []) : {
-            key                                                             = format("%s/%s/%s/%s", device.name, ospf_process.id, vrf.vrf_name, area.area_id)
+            key                                                             = format("%s/%s/%s/%s", device.name, ospf_process.id, vrf.name, area.id)
             device_name                                                     = device.name
             process_name                                                    = try(ospf_process.id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.id, null)
-            vrf_name                                                        = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.vrf_name, null)
-            area_id                                                         = try(area.area_id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.area_id, null)
+            vrf_name                                                        = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.name, null)
+            area_id                                                         = try(area.id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.id, null)
             default_cost                                                    = try(area.default_cost, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.default_cost, null)
             stub                                                            = try(area.stub, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.stub, null)
             stub_no_summary                                                 = try(area.stub_no_summary, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.stub_no_summary, null)
@@ -21,64 +21,64 @@ locals {
             nssa_translate_type7_always                                     = try(area.nssa_translate_type7_always, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.nssa_translate_type7_always, null)
             route_policy_in                                                 = try(area.route_policy_in, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.route_policy_in, null)
             route_policy_out                                                = try(area.route_policy_out, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.route_policy_out, null)
-            external_out_enable                                             = try(area.external_out_enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.external_out_enable, null)
-            external_out_disable                                            = try(area.external_out_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.external_out_disable, null)
-            summary_in_enable                                               = try(area.summary_in_enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.summary_in_enable, null)
-            summary_in_disable                                              = try(area.summary_in_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.summary_in_disable, null)
-            authentication_key_encrypted                                    = try(area.authentication_key_encrypted, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication_key_encrypted, null)
-            authentication_message_digest                                   = try(area.authentication_message_digest, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication_message_digest, null)
-            authentication_keychain_name                                    = try(area.authentication_keychain_name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication_keychain_name, null)
-            authentication_keychain                                         = try(area.authentication_keychain, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication_keychain, null)
-            authentication_null                                             = try(area.authentication_null, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication_null, null)
+            external_out_enable                                             = try(area.external_out, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.external_out, null) == "enable" ? true : null
+            external_out_disable                                            = try(area.external_out, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.external_out, null) == "disable" ? true : null
+            summary_in_enable                                               = try(area.summary_in, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.summary_in, null) == "enable" ? true : null
+            summary_in_disable                                              = try(area.summary_in, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.summary_in, null) == "disable" ? true : null
+            authentication_key_encrypted                                    = try(area.authentication.key.password, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication.key.password, null)
+            authentication_message_digest                                   = try(area.authentication.type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication.type, null) == "message-digest" ? true : null
+            authentication_keychain                                         = try(area.authentication.type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication.type, null) == "keychain" ? true : null
+            authentication_keychain_name                                    = try(area.authentication.keychain, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication.keychain, null)
+            authentication_null                                             = try(area.authentication.type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication.type, null) == "null" ? true : null
             network_broadcast                                               = try(area.network, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.network, null) == "broadcast" ? true : null
-            network_non_broadcast                                           = try(area.network, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.network, null) == "non_broadcast" ? true : null
-            network_point_to_point                                          = try(area.network, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.network, null) == "point_to_point" ? true : null
-            network_point_to_multipoint                                     = try(area.network, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.network, null) == "point_to_multipoint" ? true : null
-            mpls_ldp_sync_disable                                           = try(area.mpls_ldp_sync_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.mpls_ldp_sync_disable, null)
+            network_non_broadcast                                           = try(area.network, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.network, null) == "non-broadcast" ? true : null
+            network_point_to_point                                          = try(area.network, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.network, null) == "point-to-point" ? true : null
+            network_point_to_multipoint                                     = try(area.network, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.network, null) == "point-to-multipoint" ? true : null
+            mpls_ldp_sync_disable                                           = try(area.mpls_ldp_sync, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.mpls_ldp_sync, null) == "disable" ? true : null
             cost                                                            = try(area.cost, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost, null)
-            cost_fallback_anomaly_delay_igp_metric_increment                = try(area.cost_fallback_anomaly_delay_igp_metric_increment, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback_anomaly_delay_igp_metric_increment, null)
-            cost_fallback_anomaly_delay_igp_metric_multiplier               = try(area.cost_fallback_anomaly_delay_igp_metric_multiplier, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback_anomaly_delay_igp_metric_multiplier, null)
-            cost_fallback_anomaly_delay_igp_metric_value                    = try(area.cost_fallback_anomaly_delay_igp_metric_value, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback_anomaly_delay_igp_metric_value, null)
-            cost_fallback_anomaly_delay_igp_metric_disable                  = try(area.cost_fallback_anomaly_delay_igp_metric_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback_anomaly_delay_igp_metric_disable, null)
-            cost_fallback_anomaly_delay_te_metric_increment                 = try(area.cost_fallback_anomaly_delay_te_metric_increment, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback_anomaly_delay_te_metric_increment, null)
-            cost_fallback_anomaly_delay_te_metric_multiplier                = try(area.cost_fallback_anomaly_delay_te_metric_multiplier, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback_anomaly_delay_te_metric_multiplier, null)
-            cost_fallback_anomaly_delay_te_metric_value                     = try(area.cost_fallback_anomaly_delay_te_metric_value, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback_anomaly_delay_te_metric_value, null)
-            cost_fallback_anomaly_delay_te_metric_disable                   = try(area.cost_fallback_anomaly_delay_te_metric_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback_anomaly_delay_te_metric_disable, null)
+            cost_fallback_anomaly_delay_igp_metric_increment                = try(area.cost_fallback.anomaly_delay.igp_metric_increment, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback.anomaly_delay.igp_metric_increment, null)
+            cost_fallback_anomaly_delay_igp_metric_multiplier               = try(area.cost_fallback.anomaly_delay.igp_metric_multiplier, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback.anomaly_delay.igp_metric_multiplier, null)
+            cost_fallback_anomaly_delay_igp_metric_value                    = try(area.cost_fallback.anomaly_delay.igp_metric_value, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback.anomaly_delay.igp_metric_value, null)
+            cost_fallback_anomaly_delay_igp_metric_disable                  = try(area.cost_fallback.anomaly_delay.igp_metric_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback.anomaly_delay.igp_metric_disable, null)
+            cost_fallback_anomaly_delay_te_metric_increment                 = try(area.cost_fallback.anomaly_delay.te_metric_increment, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback.anomaly_delay.te_metric_increment, null)
+            cost_fallback_anomaly_delay_te_metric_multiplier                = try(area.cost_fallback.anomaly_delay.te_metric_multiplier, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback.anomaly_delay.te_metric_multiplier, null)
+            cost_fallback_anomaly_delay_te_metric_value                     = try(area.cost_fallback.anomaly_delay.te_metric_value, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback.anomaly_delay.te_metric_value, null)
+            cost_fallback_anomaly_delay_te_metric_disable                   = try(area.cost_fallback.anomaly_delay.te_metric_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.cost_fallback.anomaly_delay.te_metric_disable, null)
             hello_interval                                                  = try(area.hello_interval, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.hello_interval, null)
             dead_interval                                                   = try(area.dead_interval, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.dead_interval, null)
             priority                                                        = try(area.priority, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.priority, null)
             retransmit_interval                                             = try(area.retransmit_interval, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.retransmit_interval, null)
             transmit_delay                                                  = try(area.transmit_delay, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.transmit_delay, null)
-            flood_reduction_enable                                          = try(area.flood_reduction_enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.flood_reduction_enable, null)
-            flood_reduction_disable                                         = try(area.flood_reduction_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.flood_reduction_disable, null)
-            demand_circuit_enable                                           = try(area.demand_circuit_enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.demand_circuit_enable, null)
-            demand_circuit_disable                                          = try(area.demand_circuit_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.demand_circuit_disable, null)
-            mtu_ignore_enable                                               = try(area.mtu_ignore_enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.mtu_ignore_enable, null)
-            mtu_ignore_disable                                              = try(area.mtu_ignore_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.mtu_ignore_disable, null)
-            database_filter_all_out_enable                                  = try(area.database_filter_all_out_enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.database_filter_all_out_enable, null)
-            database_filter_all_out_disable                                 = try(area.database_filter_all_out_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.database_filter_all_out_disable, null)
-            passive_enable                                                  = try(area.passive_enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.passive_enable, null)
-            passive_disable                                                 = try(area.passive_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.passive_disable, null)
+            flood_reduction_enable                                          = try(area.flood_reduction, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.flood_reduction, null) == "enable" ? true : null
+            flood_reduction_disable                                         = try(area.flood_reduction, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.flood_reduction, null) == "disable" ? true : null
+            demand_circuit_enable                                           = try(area.demand_circuit, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.demand_circuit, null) == "enable" ? true : null
+            demand_circuit_disable                                          = try(area.demand_circuit, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.demand_circuit, null) == "disable" ? true : null
+            mtu_ignore_enable                                               = try(area.mtu_ignore, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.mtu_ignore, null) == "enable" ? true : null
+            mtu_ignore_disable                                              = try(area.mtu_ignore, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.mtu_ignore, null) == "disable" ? true : null
+            database_filter_all_out_enable                                  = try(area.database_filter_all_out, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.database_filter_all_out, null) == "enable" ? true : null
+            database_filter_all_out_disable                                 = try(area.database_filter_all_out, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.database_filter_all_out, null) == "disable" ? true : null
+            passive_enable                                                  = try(area.passive, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.passive, null) == "enable" ? true : null
+            passive_disable                                                 = try(area.passive, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.passive, null) == "disable" ? true : null
             distribute_list_in_acl                                          = try(area.distribute_list_in_acl, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.distribute_list_in_acl, null)
             distribute_list_in_route_policy                                 = try(area.distribute_list_in_route_policy, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.distribute_list_in_route_policy, null)
             packet_size                                                     = try(area.packet_size, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.packet_size, null)
             bfd_fast_detect                                                 = try(area.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.bfd_fast_detect, null) == "enable" ? true : null
-            bfd_fast_detect_strict_mode                                     = try(area.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.bfd_fast_detect, null) == "strict_mode" ? true : null
+            bfd_fast_detect_strict_mode                                     = try(area.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.bfd_fast_detect, null) == "strict-mode" ? true : null
             bfd_fast_detect_disable                                         = try(area.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.bfd_fast_detect, null) == "disable" ? true : null
             bfd_minimum_interval                                            = try(area.bfd_minimum_interval, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.bfd_minimum_interval, null)
             bfd_multiplier                                                  = try(area.bfd_multiplier, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.bfd_multiplier, null)
-            security_ttl                                                    = try(area.security_ttl, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.security_ttl, null)
+            security_ttl                                                    = try(area.security_ttl, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.security_ttl, null) == "enable" ? true : null
             security_ttl_hops                                               = try(area.security_ttl_hops, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.security_ttl_hops, null)
-            security_ttl_disable                                            = try(area.security_ttl_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.security_ttl_disable, null)
-            prefix_suppression                                              = try(area.prefix_suppression, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.prefix_suppression, null)
-            prefix_suppression_disable                                      = try(area.prefix_suppression_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.prefix_suppression_disable, null)
+            security_ttl_disable                                            = try(area.security_ttl, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.security_ttl, null) == "disable" ? true : null
+            prefix_suppression                                              = try(area.prefix_suppression, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.prefix_suppression, null) == "enable" ? true : null
+            prefix_suppression_disable                                      = try(area.prefix_suppression, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.prefix_suppression, null) == "disable" ? true : null
             fast_reroute_disable                                            = try(area.fast_reroute_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_disable, null)
             fast_reroute_per_link                                           = try(area.fast_reroute_per_link.enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_link.enable, null)
-            fast_reroute_per_link_use_candidate_only_enable                 = try(area.fast_reroute_per_link.use_candidate_only_enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_link.use_candidate_only_enable, null)
-            fast_reroute_per_link_use_candidate_only_disable                = try(area.fast_reroute_per_link.use_candidate_only_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_link.use_candidate_only_disable, null)
+            fast_reroute_per_link_use_candidate_only_enable                 = try(area.fast_reroute_per_link.use_candidate_only, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_link.use_candidate_only, null) == "enable" ? true : null
+            fast_reroute_per_link_use_candidate_only_disable                = try(area.fast_reroute_per_link.use_candidate_only, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_link.use_candidate_only, null) == "disable" ? true : null
             fast_reroute_per_prefix                                         = try(area.fast_reroute_per_prefix.enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.enable, null)
-            fast_reroute_per_prefix_use_candidate_only_enable               = try(area.fast_reroute_per_prefix.use_candidate_only_enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.use_candidate_only_enable, null)
-            fast_reroute_per_prefix_use_candidate_only_disable              = try(area.fast_reroute_per_prefix.use_candidate_only_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.use_candidate_only_disable, null)
+            fast_reroute_per_prefix_use_candidate_only_enable               = try(area.fast_reroute_per_prefix.use_candidate_only, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.use_candidate_only, null) == "enable" ? true : null
+            fast_reroute_per_prefix_use_candidate_only_disable              = try(area.fast_reroute_per_prefix.use_candidate_only, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.use_candidate_only, null) == "disable" ? true : null
             fast_reroute_per_prefix_tiebreaker_downstream_index             = try(area.fast_reroute_per_prefix.tiebreaker.downstream_index, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.tiebreaker.downstream_index, null)
             fast_reroute_per_prefix_tiebreaker_downstream_disable           = try(area.fast_reroute_per_prefix.tiebreaker.downstream_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.tiebreaker.downstream_disable, null)
             fast_reroute_per_prefix_tiebreaker_lc_disjoint_index            = try(area.fast_reroute_per_prefix.tiebreaker.lc_disjoint_index, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.tiebreaker.lc_disjoint_index, null)
@@ -95,33 +95,33 @@ locals {
             fast_reroute_per_prefix_tiebreaker_interface_disjoint_disable   = try(area.fast_reroute_per_prefix.tiebreaker.interface_disjoint_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.tiebreaker.interface_disjoint_disable, null)
             fast_reroute_per_prefix_tiebreaker_srlg_disjoint_index          = try(area.fast_reroute_per_prefix.tiebreaker.srlg_disjoint_index, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.tiebreaker.srlg_disjoint_index, null)
             fast_reroute_per_prefix_tiebreaker_srlg_disjoint_disable        = try(area.fast_reroute_per_prefix.tiebreaker.srlg_disjoint_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.tiebreaker.srlg_disjoint_disable, null)
-            loopback_stub_network_enable                                    = try(area.loopback_stub_network_enable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.loopback_stub_network_enable, null)
-            loopback_stub_network_disable                                   = try(area.loopback_stub_network_disable, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.loopback_stub_network_disable, null)
+            loopback_stub_network_enable                                    = try(area.loopback_stub_network, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.loopback_stub_network, null) == "enable" ? true : null
+            loopback_stub_network_disable                                   = try(area.loopback_stub_network, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.loopback_stub_network, null) == "disable" ? true : null
             link_down_fast_detect                                           = try(area.link_down_fast_detect, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.link_down_fast_detect, null)
             weight                                                          = try(area.weight, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.weight, null)
             delay_normalize_interval                                        = try(area.delay_normalize_interval, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.delay_normalize_interval, null)
             delay_normalize_offset                                          = try(area.delay_normalize_offset, area.delay_normalize_interval != null ? 0 : null, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.delay_normalize_offset, null)
             ranges = try(length(area.ranges) == 0, true) ? null : [for range in area.ranges : {
               address       = try(range.address, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.ranges.address, null)
-              mask          = try(range.mask, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.ranges.mask, null)
-              advertise     = try(range.advertise, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.ranges.advertise, null)
-              not_advertise = try(range.not_advertise, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.ranges.not_advertise, null)
+              mask          = try(provider::utils::normalize_mask(range.mask, "dotted-decimal"), range.mask, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.ranges.mask, null)
+              advertise     = try(range.advertise, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.ranges.advertise, true) == true ? true : null
+              not_advertise = try(range.advertise, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.ranges.advertise, true) == false ? true : null
             }]
-            message_digest_keys = try(length(area.message_digest_keys) == 0, true) ? null : [for key in area.message_digest_keys : {
-              key_id        = try(key.key_id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.message_digest_keys.key_id, null)
-              md5_encrypted = try(key.md5_encrypted, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.message_digest_keys.md5_encrypted, null)
+            message_digest_keys = try(length(area.authentication.message_digest_keys) == 0, true) ? null : [for key in area.authentication.message_digest_keys : {
+              key_id        = try(key.id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication.message_digest_keys.id, null)
+              md5_encrypted = try(key.password, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.authentication.message_digest_keys.password, null)
             }]
             fast_reroute_per_link_exclude_interfaces = try(length(area.fast_reroute_per_link.exclude_interfaces) == 0, true) ? null : [for iface in area.fast_reroute_per_link.exclude_interfaces : {
-              interface_name = try(iface.interface_name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_link.exclude_interfaces.interface_name, null)
+              interface_name = try(iface.name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_link.exclude_interfaces.name, null)
             }]
             fast_reroute_per_link_lfa_candidate_interfaces = try(length(area.fast_reroute_per_link.lfa_candidate_interfaces) == 0, true) ? null : [for iface in area.fast_reroute_per_link.lfa_candidate_interfaces : {
-              interface_name = try(iface.interface_name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_link.lfa_candidate_interfaces.interface_name, null)
+              interface_name = try(iface.name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_link.lfa_candidate_interfaces.name, null)
             }]
             fast_reroute_per_prefix_exclude_interfaces = try(length(area.fast_reroute_per_prefix.exclude_interfaces) == 0, true) ? null : [for iface in area.fast_reroute_per_prefix.exclude_interfaces : {
-              interface_name = try(iface.interface_name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.exclude_interfaces.interface_name, null)
+              interface_name = try(iface.name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.exclude_interfaces.name, null)
             }]
             fast_reroute_per_prefix_lfa_candidate_interfaces = try(length(area.fast_reroute_per_prefix.lfa_candidate_interfaces) == 0, true) ? null : [for iface in area.fast_reroute_per_prefix.lfa_candidate_interfaces : {
-              interface_name = try(iface.interface_name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.lfa_candidate_interfaces.interface_name, null)
+              interface_name = try(iface.name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.fast_reroute_per_prefix.lfa_candidate_interfaces.name, null)
             }]
             virtual_links = try(length(area.virtual_links) == 0, true) ? null : [for vl in area.virtual_links : {
               address                       = try(vl.address, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.address, null)
@@ -129,14 +129,14 @@ locals {
               dead_interval                 = try(vl.dead_interval, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.dead_interval, null)
               retransmit_interval           = try(vl.retransmit_interval, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.retransmit_interval, null)
               transmit_delay                = try(vl.transmit_delay, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.transmit_delay, null)
-              authentication_key_encrypted  = try(vl.authentication_key_encrypted, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication_key_encrypted, null)
-              authentication_message_digest = try(vl.authentication_message_digest, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication_message_digest, null)
-              authentication_keychain       = try(vl.authentication_keychain, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication_keychain, null)
-              authentication_keychain_name  = try(vl.authentication_keychain_name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication_keychain_name, null)
-              authentication_null           = try(vl.authentication_null, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication_null, null)
-              message_digest_keys = try(length(vl.message_digest_keys) == 0, true) ? null : [for key in vl.message_digest_keys : {
-                key_id        = try(key.key_id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.message_digest_keys.key_id, null)
-                md5_encrypted = try(key.md5_encrypted, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.message_digest_keys.md5_encrypted, null)
+              authentication_key_encrypted  = try(vl.authentication.key.password, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication.key.password, null)
+              authentication_message_digest = try(vl.authentication.type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication.type, null) == "message-digest" ? true : null
+              authentication_keychain       = try(vl.authentication.type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication.type, null) == "keychain" ? true : null
+              authentication_keychain_name  = try(vl.authentication.keychain, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication.keychain, null)
+              authentication_null           = try(vl.authentication.type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication.type, null) == "null" ? true : null
+              message_digest_keys = try(length(vl.authentication.message_digest_keys) == 0, true) ? null : [for key in vl.authentication.message_digest_keys : {
+                key_id        = try(key.id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication.message_digest_keys.id, null)
+                md5_encrypted = try(key.password, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.virtual_links.authentication.message_digest_keys.password, null)
               }]
             }]
             sham_links = try(length(area.sham_links) == 0, true) ? null : [for sl in area.sham_links : {
@@ -147,14 +147,14 @@ locals {
               dead_interval                 = try(sl.dead_interval, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.dead_interval, null)
               retransmit_interval           = try(sl.retransmit_interval, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.retransmit_interval, null)
               transmit_delay                = try(sl.transmit_delay, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.transmit_delay, null)
-              authentication_key_encrypted  = try(sl.authentication_key_encrypted, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication_key_encrypted, null)
-              authentication_message_digest = try(sl.authentication_message_digest, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication_message_digest, null)
-              authentication_keychain       = try(sl.authentication_keychain, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication_keychain, null)
-              authentication_keychain_name  = try(sl.authentication_keychain_name, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication_keychain_name, null)
-              authentication_null           = try(sl.authentication_null, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication_null, null)
-              message_digest_keys = try(length(sl.message_digest_keys) == 0, true) ? null : [for key in sl.message_digest_keys : {
-                key_id        = try(key.key_id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.message_digest_keys.key_id, null)
-                md5_encrypted = try(key.md5_encrypted, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.message_digest_keys.md5_encrypted, null)
+              authentication_key_encrypted  = try(sl.authentication.key.password, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication.key.password, null)
+              authentication_message_digest = try(sl.authentication.type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication.type, null) == "message-digest" ? true : null
+              authentication_keychain       = try(sl.authentication.type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication.type, null) == "keychain" ? true : null
+              authentication_keychain_name  = try(sl.authentication.keychain, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication.keychain, null)
+              authentication_null           = try(sl.authentication.type, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication.type, null) == "null" ? true : null
+              message_digest_keys = try(length(sl.authentication.message_digest_keys) == 0, true) ? null : [for key in sl.authentication.message_digest_keys : {
+                key_id        = try(key.id, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication.message_digest_keys.id, null)
+                md5_encrypted = try(key.password, local.defaults.iosxr.devices.configuration.routing.ospf_processes.vrfs.areas.sham_links.authentication.message_digest_keys.password, null)
               }]
             }]
           }

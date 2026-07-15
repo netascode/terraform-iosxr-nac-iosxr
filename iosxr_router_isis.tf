@@ -5,65 +5,65 @@ locals {
         key                                          = format("%s/%s", device.name, isis_process.id)
         device_name                                  = device.name
         process_id                                   = try(isis_process.id, local.defaults.iosxr.devices.configuration.routing.isis_processes.id, null)
-        segment_routing_global_block_lower_bound     = try(isis_process.segment_routing_global_block_lower_bound, local.defaults.iosxr.devices.configuration.routing.isis_processes.segment_routing_global_block_lower_bound, null)
-        segment_routing_global_block_upper_bound     = try(isis_process.segment_routing_global_block_upper_bound, local.defaults.iosxr.devices.configuration.routing.isis_processes.segment_routing_global_block_upper_bound, null)
+        segment_routing_global_block_lower_bound     = try(isis_process.segment_routing.global_block_from, local.defaults.iosxr.devices.configuration.routing.isis_processes.segment_routing.global_block_from, null)
+        segment_routing_global_block_upper_bound     = try(isis_process.segment_routing.global_block_to, local.defaults.iosxr.devices.configuration.routing.isis_processes.segment_routing.global_block_to, null)
         receive_application_flex_algo_delay_app_only = try(isis_process.receive_application_flex_algo_delay_app_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.receive_application_flex_algo_delay_app_only, null)
         lsp_refresh_interval                         = try(isis_process.lsp_refresh_interval, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_refresh_interval, null)
         oor_set_overload_bit_disable                 = try(isis_process.oor_set_overload_bit_disable, local.defaults.iosxr.devices.configuration.routing.isis_processes.oor_set_overload_bit_disable, null)
         set_overload_bit                             = try(isis_process.set_overload_bit.enable, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit.enable, null)
-        set_overload_bit_on_startup_time             = try(isis_process.set_overload_bit.on_startup_time, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit.on_startup_time, null)
-        set_overload_bit_on_startup_wait_for_bgp     = try(isis_process.set_overload_bit.on_startup_wait_for_bgp, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit.on_startup_wait_for_bgp, null)
+        set_overload_bit_on_startup_time             = try(tonumber(isis_process.set_overload_bit.on_startup), tonumber(local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit.on_startup), null)
+        set_overload_bit_on_startup_wait_for_bgp     = try(isis_process.set_overload_bit.on_startup, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit.on_startup, null) == "wait-for-bgp" ? true : null
         set_overload_bit_advertise_external          = try(isis_process.set_overload_bit.advertise_external, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit.advertise_external, null)
         set_overload_bit_advertise_interlevel        = try(isis_process.set_overload_bit.advertise_interlevel, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit.advertise_interlevel, null)
         lsp_mtu                                      = try(isis_process.lsp_mtu, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_mtu, null)
         extended_admin_group                         = try(isis_process.extended_admin_group, local.defaults.iosxr.devices.configuration.routing.isis_processes.extended_admin_group, null)
         nsr                                          = try(isis_process.nsr, local.defaults.iosxr.devices.configuration.routing.isis_processes.nsr, null)
         nsr_restart_time                             = try(isis_process.nsr_restart_time, local.defaults.iosxr.devices.configuration.routing.isis_processes.nsr_restart_time, null)
-        nsf_cisco                                    = try(isis_process.nsf_cisco, local.defaults.iosxr.devices.configuration.routing.isis_processes.nsf_cisco, null)
-        nsf_ietf                                     = try(isis_process.nsf_ietf, local.defaults.iosxr.devices.configuration.routing.isis_processes.nsf_ietf, null)
+        nsf_cisco                                    = try(isis_process.nsf, local.defaults.iosxr.devices.configuration.routing.isis_processes.nsf, null) == "cisco" ? true : null
+        nsf_ietf                                     = try(isis_process.nsf, local.defaults.iosxr.devices.configuration.routing.isis_processes.nsf, null) == "ietf" ? true : null
         nsf_lifetime                                 = try(isis_process.nsf_lifetime, local.defaults.iosxr.devices.configuration.routing.isis_processes.nsf_lifetime, null)
         nsf_interface_timer                          = try(isis_process.nsf_interface_timer, local.defaults.iosxr.devices.configuration.routing.isis_processes.nsf_interface_timer, null)
         nsf_interface_expires                        = try(isis_process.nsf_interface_expires, local.defaults.iosxr.devices.configuration.routing.isis_processes.nsf_interface_expires, null)
         lsp_check_interval                           = try(isis_process.lsp_check_interval, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_check_interval, null)
-        lsp_gen_interval_maximum_wait                = try(isis_process.lsp_gen_interval_maximum_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_maximum_wait, null)
-        lsp_gen_interval_initial_wait                = try(isis_process.lsp_gen_interval_initial_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_initial_wait, null)
-        lsp_gen_interval_secondary_wait              = try(isis_process.lsp_gen_interval_secondary_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_secondary_wait, null)
+        lsp_gen_interval_maximum_wait                = try(isis_process.lsp_gen_interval.maximum_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval.maximum_wait, null)
+        lsp_gen_interval_initial_wait                = try(isis_process.lsp_gen_interval.initial_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval.initial_wait, null)
+        lsp_gen_interval_secondary_wait              = try(isis_process.lsp_gen_interval.secondary_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval.secondary_wait, null)
         adjacency_stagger                            = try(isis_process.adjacency_stagger, local.defaults.iosxr.devices.configuration.routing.isis_processes.adjacency_stagger, null)
         adjacency_stagger_initial_neighbors          = try(isis_process.adjacency_stagger_initial_neighbors, local.defaults.iosxr.devices.configuration.routing.isis_processes.adjacency_stagger_initial_neighbors, null)
         adjacency_stagger_max_neighbors              = try(isis_process.adjacency_stagger_max_neighbors, local.defaults.iosxr.devices.configuration.routing.isis_processes.adjacency_stagger_max_neighbors, null)
         hostname_dynamic_disable                     = try(isis_process.hostname_dynamic_disable, local.defaults.iosxr.devices.configuration.routing.isis_processes.hostname_dynamic_disable, null)
         is_type                                      = try(isis_process.is_type, local.defaults.iosxr.devices.configuration.routing.isis_processes.is_type, null)
-        multi_part_tlv_disable                       = try(isis_process.multi_part_tlv_disable, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable, null)
-        multi_part_tlv_disable_neighbor              = try(isis_process.multi_part_tlv_disable_neighbor, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_neighbor, null)
-        multi_part_tlv_disable_prefix_tlvs           = try(isis_process.multi_part_tlv_disable_prefix_tlvs, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_prefix_tlvs, null)
-        multi_part_tlv_disable_router_capability     = try(isis_process.multi_part_tlv_disable_router_capability, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_router_capability, null)
+        multi_part_tlv_disable                       = try(isis_process.multi_part_tlv_disable.enable, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable.enable, null)
+        multi_part_tlv_disable_neighbor              = try(isis_process.multi_part_tlv_disable.neighbor, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable.neighbor, null)
+        multi_part_tlv_disable_prefix_tlvs           = try(isis_process.multi_part_tlv_disable.prefix_tlvs, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable.prefix_tlvs, null)
+        multi_part_tlv_disable_router_capability     = try(isis_process.multi_part_tlv_disable.router_capability, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable.router_capability, null)
         log_adjacency_changes                        = try(isis_process.log_adjacency_changes, local.defaults.iosxr.devices.configuration.routing.isis_processes.log_adjacency_changes, null)
         log_pdu_drops                                = try(isis_process.log_pdu_drops, local.defaults.iosxr.devices.configuration.routing.isis_processes.log_pdu_drops, null)
         log_format_brief                             = try(isis_process.log_format_brief, local.defaults.iosxr.devices.configuration.routing.isis_processes.log_format_brief, null)
-        lsp_password_accept_encrypted                = try(isis_process.lsp_password_accept_encrypted, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_accept_encrypted, null)
-        lsp_password_text_encrypted                  = try(isis_process.lsp_password_text_encrypted, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_text_encrypted, null)
-        lsp_password_text_send_only                  = try(isis_process.lsp_password_text_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_text_send_only, null)
-        lsp_password_text_snp_send_only              = try(isis_process.lsp_password_text_snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_text_snp_send_only, null)
-        lsp_password_text_enable_poi                 = try(isis_process.lsp_password_text_enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_text_enable_poi, null)
-        lsp_password_hmac_md5_encrypted              = try(isis_process.lsp_password_hmac_md5_encrypted, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_hmac_md5_encrypted, null)
-        lsp_password_hmac_md5_send_only              = try(isis_process.lsp_password_hmac_md5_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_hmac_md5_send_only, null)
-        lsp_password_hmac_md5_snp_send_only          = try(isis_process.lsp_password_hmac_md5_snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_hmac_md5_snp_send_only, null)
-        lsp_password_hmac_md5_enable_poi             = try(isis_process.lsp_password_hmac_md5_enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_hmac_md5_enable_poi, null)
-        lsp_password_keychain                        = try(isis_process.lsp_password_keychain, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_keychain, null)
-        lsp_password_keychain_send_only              = try(isis_process.lsp_password_keychain_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_keychain_send_only, null)
-        lsp_password_keychain_snp_send_only          = try(isis_process.lsp_password_keychain_snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_keychain_snp_send_only, null)
-        lsp_password_keychain_enable_poi             = try(isis_process.lsp_password_keychain_enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_keychain_enable_poi, null)
+        lsp_password_accept_encrypted                = try(isis_process.lsp_password.accept_encrypted, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.accept_encrypted, null)
+        lsp_password_text_encrypted                  = try(isis_process.lsp_password.text.password, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.text.password, null)
+        lsp_password_text_send_only                  = try(isis_process.lsp_password.text.send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.text.send_only, null)
+        lsp_password_text_snp_send_only              = try(isis_process.lsp_password.text.snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.text.snp_send_only, null)
+        lsp_password_text_enable_poi                 = try(isis_process.lsp_password.text.enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.text.enable_poi, null)
+        lsp_password_hmac_md5_encrypted              = try(isis_process.lsp_password.hmac_md5.password, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.hmac_md5.password, null)
+        lsp_password_hmac_md5_send_only              = try(isis_process.lsp_password.hmac_md5.send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.hmac_md5.send_only, null)
+        lsp_password_hmac_md5_snp_send_only          = try(isis_process.lsp_password.hmac_md5.snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.hmac_md5.snp_send_only, null)
+        lsp_password_hmac_md5_enable_poi             = try(isis_process.lsp_password.hmac_md5.enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.hmac_md5.enable_poi, null)
+        lsp_password_keychain                        = try(isis_process.lsp_password.keychain.name, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.keychain.name, null)
+        lsp_password_keychain_send_only              = try(isis_process.lsp_password.keychain.send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.keychain.send_only, null)
+        lsp_password_keychain_snp_send_only          = try(isis_process.lsp_password.keychain.snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.keychain.snp_send_only, null)
+        lsp_password_keychain_enable_poi             = try(isis_process.lsp_password.keychain.enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password.keychain.enable_poi, null)
         authentication_check_disable                 = try(isis_process.authentication_check_disable, local.defaults.iosxr.devices.configuration.routing.isis_processes.authentication_check_disable, null)
         iid_disable                                  = try(isis_process.iid_disable, local.defaults.iosxr.devices.configuration.routing.isis_processes.iid_disable, null)
-        mpls_ldp_sync                                = try(isis_process.mpls_ldp_sync, local.defaults.iosxr.devices.configuration.routing.isis_processes.mpls_ldp_sync, null)
+        mpls_ldp_sync                                = try(isis_process.mpls_ldp_sync, local.defaults.iosxr.devices.configuration.routing.isis_processes.mpls_ldp_sync, null) == "enable" ? true : null
         mpls_ldp_sync_level                          = try(isis_process.mpls_ldp_sync_level, local.defaults.iosxr.devices.configuration.routing.isis_processes.mpls_ldp_sync_level, null)
         protocol_shutdown                            = try(isis_process.protocol_shutdown, local.defaults.iosxr.devices.configuration.routing.isis_processes.protocol_shutdown, null)
-        min_lsp_arrival_initial_wait                 = try(isis_process.min_lsp_arrival_initial_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_initial_wait, null)
-        min_lsp_arrival_secondary_wait               = try(isis_process.min_lsp_arrival_secondary_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_secondary_wait, null)
-        min_lsp_arrival_maximum_wait                 = try(isis_process.min_lsp_arrival_maximum_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_maximum_wait, null)
+        min_lsp_arrival_initial_wait                 = try(isis_process.min_lsp_arrival.initial_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival.initial_wait, null)
+        min_lsp_arrival_secondary_wait               = try(isis_process.min_lsp_arrival.secondary_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival.secondary_wait, null)
+        min_lsp_arrival_maximum_wait                 = try(isis_process.min_lsp_arrival.maximum_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival.maximum_wait, null)
         max_metric                                   = try(isis_process.max_metric.enable, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric.enable, null)
-        max_metric_on_startup_advertise              = try(isis_process.max_metric.on_startup_advertise, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric.on_startup_advertise, null)
-        max_metric_on_startup_wait_for_bgp           = try(isis_process.max_metric.on_startup_wait_for_bgp, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric.on_startup_wait_for_bgp, null)
+        max_metric_on_startup_advertise              = try(tonumber(isis_process.max_metric.on_startup), tonumber(local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric.on_startup), null)
+        max_metric_on_startup_wait_for_bgp           = try(isis_process.max_metric.on_startup, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric.on_startup, null) == "wait-for-bgp" ? true : null
         max_metric_external                          = try(isis_process.max_metric.external, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric.external, null)
         max_metric_interlevel                        = try(isis_process.max_metric.interlevel, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric.interlevel, null)
         max_metric_default_route                     = try(isis_process.max_metric.default_route, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric.default_route, null)
@@ -88,108 +88,108 @@ locals {
         purge_transmit_strict                        = try(isis_process.purge_transmit_strict, local.defaults.iosxr.devices.configuration.routing.isis_processes.purge_transmit_strict, null)
         purge_transmit_strict_value                  = try(isis_process.purge_transmit_strict_value, local.defaults.iosxr.devices.configuration.routing.isis_processes.purge_transmit_strict_value, null)
         srlg_admin_weight                            = try(isis_process.srlg_admin_weight, local.defaults.iosxr.devices.configuration.routing.isis_processes.srlg_admin_weight, null)
-        lsp_refresh_interval_levels = try(length(isis_process.lsp_refresh_interval_levels) == 0, true) ? null : [for level in isis_process.lsp_refresh_interval_levels : {
-          level_number         = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_refresh_interval_levels.level_number, null)
-          lsp_refresh_interval = try(level.lsp_refresh_interval, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_refresh_interval_levels.lsp_refresh_interval, null)
+        lsp_refresh_interval_levels = try(length(isis_process.lsp_refresh_interval_per_level) == 0, true) ? null : [for level in isis_process.lsp_refresh_interval_per_level : {
+          level_number         = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_refresh_interval_per_level.level, null)
+          lsp_refresh_interval = try(level.lsp_refresh_interval, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_refresh_interval_per_level.lsp_refresh_interval, null)
           }
         ]
-        set_overload_bit_levels = try(length(isis_process.set_overload_bit_levels) == 0, true) ? null : [for level in isis_process.set_overload_bit_levels : {
-          level_number                 = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit_levels.level_number, null)
-          on_startup_time_to_advertise = try(level.on_startup_time_to_advertise, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit_levels.on_startup_time_to_advertise, null)
-          on_startup_wait_for_bgp      = try(level.on_startup_wait_for_bgp, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit_levels.on_startup_wait_for_bgp, null)
-          advertise_external           = try(level.advertise_external, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit_levels.advertise_external, null)
-          advertise_interlevel         = try(level.advertise_interlevel, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit_levels.advertise_interlevel, null)
+        set_overload_bit_levels = try(length(isis_process.set_overload_bit_per_level) == 0, true) ? null : [for level in isis_process.set_overload_bit_per_level : {
+          level_number                 = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit_per_level.level, null)
+          on_startup_time_to_advertise = try(tonumber(level.on_startup), tonumber(local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit_per_level.on_startup), null)
+          on_startup_wait_for_bgp      = try(level.on_startup, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit_per_level.on_startup, null) == "wait-for-bgp" ? true : null
+          advertise_external           = try(level.advertise_external, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit_per_level.advertise_external, null)
+          advertise_interlevel         = try(level.advertise_interlevel, local.defaults.iosxr.devices.configuration.routing.isis_processes.set_overload_bit_per_level.advertise_interlevel, null)
           }
         ]
-        lsp_mtu_levels = try(length(isis_process.lsp_mtu_levels) == 0, true) ? null : [for level in isis_process.lsp_mtu_levels : {
-          level_number = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_mtu_levels.level_number, null)
-          lsp_mtu      = try(level.lsp_mtu, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_mtu_levels.lsp_mtu, null)
+        lsp_mtu_levels = try(length(isis_process.lsp_mtu_per_level) == 0, true) ? null : [for level in isis_process.lsp_mtu_per_level : {
+          level_number = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_mtu_per_level.level, null)
+          lsp_mtu      = try(level.lsp_mtu, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_mtu_per_level.lsp_mtu, null)
           }
         ]
-        multi_part_tlv_disable_levels = try(length(isis_process.multi_part_tlv_disable_levels) == 0, true) ? null : [for level in isis_process.multi_part_tlv_disable_levels : {
-          level_number      = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_levels.level_number, null)
-          neighbor          = try(level.neighbor, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_levels.neighbor, null)
-          prefix_tlvs       = try(level.prefix_tlvs, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_levels.prefix_tlvs, null)
-          router_capability = try(level.router_capability, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_levels.router_capability, null)
+        multi_part_tlv_disable_levels = try(length(isis_process.multi_part_tlv_disable_per_level) == 0, true) ? null : [for level in isis_process.multi_part_tlv_disable_per_level : {
+          level_number      = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_per_level.level, null)
+          neighbor          = try(level.neighbor, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_per_level.neighbor, null)
+          prefix_tlvs       = try(level.prefix_tlvs, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_per_level.prefix_tlvs, null)
+          router_capability = try(level.router_capability, local.defaults.iosxr.devices.configuration.routing.isis_processes.multi_part_tlv_disable_per_level.router_capability, null)
           }
         ]
         log_sizes = try(length(isis_process.log_sizes) == 0, true) ? null : [for log_size in isis_process.log_sizes : {
-          log_type    = try(log_size.log_type, local.defaults.iosxr.devices.configuration.routing.isis_processes.log_sizes.log_type, null)
-          size_number = try(log_size.size_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.log_sizes.size_number, null)
+          log_type    = try(log_size.type, local.defaults.iosxr.devices.configuration.routing.isis_processes.log_sizes.type, null)
+          size_number = try(log_size.entries, local.defaults.iosxr.devices.configuration.routing.isis_processes.log_sizes.entries, null)
           }
         ]
-        lsp_password_accept_levels = try(length(isis_process.lsp_password_accept_levels) == 0, true) ? null : [for level in isis_process.lsp_password_accept_levels : {
-          level_number = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_accept_levels.level_number, null)
-          encrypted    = try(level.encrypted, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_accept_levels.encrypted, null)
+        lsp_password_accept_levels = try(length([for level in isis_process.lsp_password_per_level : level if try(level.accept_encrypted, null) != null]) == 0, true) ? null : [for level in isis_process.lsp_password_per_level : {
+          level_number = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.level, null)
+          encrypted    = try(level.accept_encrypted, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.accept_encrypted, null)
+          } if try(level.accept_encrypted, null) != null
+        ]
+        lsp_password_levels = try(length(isis_process.lsp_password_per_level) == 0, true) ? null : [for level in isis_process.lsp_password_per_level : {
+          level_number           = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.level, null)
+          text_encrypted         = try(level.text.password, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.text.password, null)
+          text_send_only         = try(level.text.send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.text.send_only, null)
+          text_snp_send_only     = try(level.text.snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.text.snp_send_only, null)
+          text_enable_poi        = try(level.text.enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.text.enable_poi, null)
+          hmac_md5_encrypted     = try(level.hmac_md5.password, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.hmac_md5.password, null)
+          hmac_md5_send_only     = try(level.hmac_md5.send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.hmac_md5.send_only, null)
+          hmac_md5_snp_send_only = try(level.hmac_md5.snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.hmac_md5.snp_send_only, null)
+          hmac_md5_enable_poi    = try(level.hmac_md5.enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.hmac_md5.enable_poi, null)
+          keychain_name          = try(level.keychain.name, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.keychain.name, null)
+          keychain_send_only     = try(level.keychain.send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.keychain.send_only, null)
+          keychain_snp_send_only = try(level.keychain.snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.keychain.snp_send_only, null)
+          keychain_enable_poi    = try(level.keychain.enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_per_level.keychain.enable_poi, null)
           }
         ]
-        lsp_password_levels = try(length(isis_process.lsp_password_levels) == 0, true) ? null : [for level in isis_process.lsp_password_levels : {
-          level_number           = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.level_number, null)
-          text_encrypted         = try(level.text_encrypted, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.text_encrypted, null)
-          text_send_only         = try(level.text_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.text_send_only, null)
-          text_snp_send_only     = try(level.text_snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.text_snp_send_only, null)
-          text_enable_poi        = try(level.text_enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.text_enable_poi, null)
-          hmac_md5_encrypted     = try(level.hmac_md5_encrypted, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.hmac_md5_encrypted, null)
-          hmac_md5_send_only     = try(level.hmac_md5_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.hmac_md5_send_only, null)
-          hmac_md5_snp_send_only = try(level.hmac_md5_snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.hmac_md5_snp_send_only, null)
-          hmac_md5_enable_poi    = try(level.hmac_md5_enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.hmac_md5_enable_poi, null)
-          keychain_name          = try(level.keychain_name, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.keychain_name, null)
-          keychain_send_only     = try(level.keychain_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.keychain_send_only, null)
-          keychain_snp_send_only = try(level.keychain_snp_send_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.keychain_snp_send_only, null)
-          keychain_enable_poi    = try(level.keychain_enable_poi, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_password_levels.keychain_enable_poi, null)
+        lsp_check_interval_levels = try(length(isis_process.lsp_check_interval_per_level) == 0, true) ? null : [for level in isis_process.lsp_check_interval_per_level : {
+          level_number       = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_check_interval_per_level.level, null)
+          lsp_check_interval = try(level.lsp_check_interval, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_check_interval_per_level.lsp_check_interval, null)
           }
         ]
-        lsp_check_interval_levels = try(length(isis_process.lsp_check_interval_levels) == 0, true) ? null : [for level in isis_process.lsp_check_interval_levels : {
-          level_number       = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_check_interval_levels.level_number, null)
-          lsp_check_interval = try(level.lsp_check_interval, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_check_interval_levels.lsp_check_interval, null)
+        lsp_gen_interval_levels = try(length(isis_process.lsp_gen_interval_per_level) == 0, true) ? null : [for level in isis_process.lsp_gen_interval_per_level : {
+          level_number   = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_per_level.level, null)
+          initial_wait   = try(level.initial_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_per_level.initial_wait, null)
+          secondary_wait = try(level.secondary_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_per_level.secondary_wait, null)
+          maximum_wait   = try(level.maximum_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_per_level.maximum_wait, null)
           }
         ]
-        lsp_gen_interval_levels = try(length(isis_process.lsp_gen_interval_levels) == 0, true) ? null : [for level in isis_process.lsp_gen_interval_levels : {
-          level_number   = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_levels.level_number, null)
-          initial_wait   = try(level.initial_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_levels.initial_wait, null)
-          secondary_wait = try(level.secondary_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_levels.secondary_wait, null)
-          maximum_wait   = try(level.maximum_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.lsp_gen_interval_levels.maximum_wait, null)
+        min_lsp_arrival_levels = try(length(isis_process.min_lsp_arrival_per_level) == 0, true) ? null : [for level in isis_process.min_lsp_arrival_per_level : {
+          level_number   = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_per_level.level, null)
+          initial_wait   = try(level.initial_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_per_level.initial_wait, null)
+          secondary_wait = try(level.secondary_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_per_level.secondary_wait, null)
+          maximum_wait   = try(level.maximum_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_per_level.maximum_wait, null)
           }
         ]
-        min_lsp_arrival_levels = try(length(isis_process.min_lsp_arrival_levels) == 0, true) ? null : [for level in isis_process.min_lsp_arrival_levels : {
-          level_number   = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_levels.level_number, null)
-          initial_wait   = try(level.initial_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_levels.initial_wait, null)
-          secondary_wait = try(level.secondary_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_levels.secondary_wait, null)
-          maximum_wait   = try(level.maximum_wait, local.defaults.iosxr.devices.configuration.routing.isis_processes.min_lsp_arrival_levels.maximum_wait, null)
+        max_metric_levels = try(length(isis_process.max_metric_per_level) == 0, true) ? null : [for level in isis_process.max_metric_per_level : {
+          level_number            = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_per_level.level, null)
+          on_startup_advertise    = try(tonumber(level.on_startup), tonumber(local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_per_level.on_startup), null)
+          on_startup_wait_for_bgp = try(level.on_startup, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_per_level.on_startup, null) == "wait-for-bgp" ? true : null
+          external                = try(level.external, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_per_level.external, null)
+          interlevel              = try(level.interlevel, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_per_level.interlevel, null)
+          default_route           = try(level.default_route, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_per_level.default_route, null)
+          srv6_locator            = try(level.srv6_locator, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_per_level.srv6_locator, null)
+          te                      = try(level.te, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_per_level.te, null)
+          delay                   = try(level.delay, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_per_level.delay, null)
           }
         ]
-        max_metric_levels = try(length(isis_process.max_metric_levels) == 0, true) ? null : [for level in isis_process.max_metric_levels : {
-          level_number            = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_levels.level_number, null)
-          on_startup_advertise    = try(level.on_startup_advertise, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_levels.on_startup_advertise, null)
-          on_startup_wait_for_bgp = try(level.on_startup_wait_for_bgp, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_levels.on_startup_wait_for_bgp, null)
-          external                = try(level.external, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_levels.external, null)
-          interlevel              = try(level.interlevel, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_levels.interlevel, null)
-          default_route           = try(level.default_route, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_levels.default_route, null)
-          srv6_locator            = try(level.srv6_locator, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_levels.srv6_locator, null)
-          te                      = try(level.te, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_levels.te, null)
-          delay                   = try(level.delay, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_metric_levels.delay, null)
-          }
-        ]
-        max_lsp_lifetime_levels = try(length(isis_process.max_lsp_lifetime_levels) == 0, true) ? null : [for level in isis_process.max_lsp_lifetime_levels : {
-          level_number     = try(level.level_number, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_lsp_lifetime_levels.level_number, null)
-          max_lsp_lifetime = try(level.max_lsp_lifetime, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_lsp_lifetime_levels.max_lsp_lifetime, null)
+        max_lsp_lifetime_levels = try(length(isis_process.max_lsp_lifetime_per_level) == 0, true) ? null : [for level in isis_process.max_lsp_lifetime_per_level : {
+          level_number     = try(level.level, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_lsp_lifetime_per_level.level, null)
+          max_lsp_lifetime = try(level.max_lsp_lifetime, local.defaults.iosxr.devices.configuration.routing.isis_processes.max_lsp_lifetime_per_level.max_lsp_lifetime, null)
           }
         ]
         nets = try(length(isis_process.nets) == 0, true) ? null : [for net in isis_process.nets : {
-          net_id = try(net.net_id, local.defaults.iosxr.devices.configuration.routing.isis_processes.nets.net_id, null)
+          net_id = try(net.id, local.defaults.iosxr.devices.configuration.routing.isis_processes.nets.id, null)
           }
         ]
         affinity_maps = try(length(isis_process.affinity_maps) == 0, true) ? null : [for affinity_map in isis_process.affinity_maps : {
-          affinity_name = try(affinity_map.affinity_name, local.defaults.iosxr.devices.configuration.routing.isis_processes.affinity_maps.affinity_name, null)
+          affinity_name = try(affinity_map.name, local.defaults.iosxr.devices.configuration.routing.isis_processes.affinity_maps.name, null)
           bit_position  = try(affinity_map.bit_position, local.defaults.iosxr.devices.configuration.routing.isis_processes.affinity_maps.bit_position, null)
           }
         ]
-        srlg_names = try(length(isis_process.srlg_names) == 0, true) ? null : [for srlg_name in isis_process.srlg_names : {
-          srlg_name    = try(srlg_name.srlg_name, local.defaults.iosxr.devices.configuration.routing.isis_processes.srlg_names.srlg_name, null)
-          admin_weight = try(srlg_name.admin_weight, local.defaults.iosxr.devices.configuration.routing.isis_processes.srlg_names.admin_weight, null)
-          static_ipv4_addresses = try(length(srlg_name.static_ipv4_addresses) == 0, true) ? null : [for addr in srlg_name.static_ipv4_addresses : {
-            local_end_point  = try(addr.local_end_point, local.defaults.iosxr.devices.configuration.routing.isis_processes.srlg_names.static_ipv4_addresses.local_end_point, null)
-            remote_end_point = try(addr.remote_end_point, local.defaults.iosxr.devices.configuration.routing.isis_processes.srlg_names.static_ipv4_addresses.remote_end_point, null)
+        srlg_names = try(length(isis_process.srlgs) == 0, true) ? null : [for srlg in isis_process.srlgs : {
+          srlg_name    = try(srlg.name, local.defaults.iosxr.devices.configuration.routing.isis_processes.srlgs.name, null)
+          admin_weight = try(srlg.admin_weight, local.defaults.iosxr.devices.configuration.routing.isis_processes.srlgs.admin_weight, null)
+          static_ipv4_addresses = try(length(srlg.static_ipv4_addresses) == 0, true) ? null : [for addr in srlg.static_ipv4_addresses : {
+            local_end_point  = try(addr.local_end_point, local.defaults.iosxr.devices.configuration.routing.isis_processes.srlgs.static_ipv4_addresses.local_end_point, null)
+            remote_end_point = try(addr.remote_end_point, local.defaults.iosxr.devices.configuration.routing.isis_processes.srlgs.static_ipv4_addresses.remote_end_point, null)
             }
           ]
           }
@@ -205,21 +205,21 @@ locals {
           auto_cost_reference_bandwidth             = try(flex_algo.auto_cost_reference_bandwidth, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.auto_cost_reference_bandwidth, null)
           auto_cost_reference_bandwidth_granularity = try(flex_algo.auto_cost_reference_bandwidth_granularity, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.auto_cost_reference_bandwidth_granularity, null)
           auto_cost_reference_group_mode            = try(flex_algo.auto_cost_reference_group_mode, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.auto_cost_reference_group_mode, null)
-          affinity_exclude_any                      = try(flex_algo.affinity_exclude_any, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.affinity_exclude_any, null)
-          affinity_include_any                      = try(flex_algo.affinity_include_any, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.affinity_include_any, null)
-          affinity_include_all                      = try(flex_algo.affinity_include_all, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.affinity_include_all, null)
-          affinity_reverse_exclude_any              = try(flex_algo.affinity_reverse_exclude_any, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.affinity_reverse_exclude_any, null)
-          affinity_reverse_include_any              = try(flex_algo.affinity_reverse_include_any, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.affinity_reverse_include_any, null)
-          affinity_reverse_include_all              = try(flex_algo.affinity_reverse_include_all, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.affinity_reverse_include_all, null)
-          srlg_exclude_any                          = try(flex_algo.srlg_exclude_any, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.srlg_exclude_any, null)
+          affinity_exclude_any                      = try(length(flex_algo.affinity_exclude_any) == 0, true) ? null : [for aff in flex_algo.affinity_exclude_any : aff.name]
+          affinity_include_any                      = try(length(flex_algo.affinity_include_any) == 0, true) ? null : [for aff in flex_algo.affinity_include_any : aff.name]
+          affinity_include_all                      = try(length(flex_algo.affinity_include_all) == 0, true) ? null : [for aff in flex_algo.affinity_include_all : aff.name]
+          affinity_reverse_exclude_any              = try(length(flex_algo.affinity_reverse_exclude_any) == 0, true) ? null : [for aff in flex_algo.affinity_reverse_exclude_any : aff.name]
+          affinity_reverse_include_any              = try(length(flex_algo.affinity_reverse_include_any) == 0, true) ? null : [for aff in flex_algo.affinity_reverse_include_any : aff.name]
+          affinity_reverse_include_all              = try(length(flex_algo.affinity_reverse_include_all) == 0, true) ? null : [for aff in flex_algo.affinity_reverse_include_all : aff.name]
+          srlg_exclude_any                          = try(length(flex_algo.srlg_exclude_any) == 0, true) ? null : [for srlg in flex_algo.srlg_exclude_any : srlg.name]
           fast_reroute_disable                      = try(flex_algo.fast_reroute_disable, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.fast_reroute_disable, null)
           microloop_avoidance_disable               = try(flex_algo.microloop_avoidance_disable, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.microloop_avoidance_disable, null)
           data_plane_segment_routing                = try(flex_algo.data_plane_segment_routing, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.data_plane_segment_routing, null)
           data_plane_ip                             = try(flex_algo.data_plane_ip, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.data_plane_ip, null)
           ucmp_disable                              = try(flex_algo.ucmp_disable, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.ucmp_disable, null)
           address_family = try(length(flex_algo.address_family) == 0, true) ? null : [for af in flex_algo.address_family : {
-            af_name                    = try(af.af_name, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.address_family.af_name, null)
-            saf_name                   = try(af.saf_name, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.address_family.saf_name, null)
+            af_name                    = try(af.name, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.address_family.name, null)
+            saf_name                   = try(af.type, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.address_family.type, null)
             maximum_paths              = try(af.maximum_paths, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.address_family.maximum_paths, null)
             maximum_paths_route_policy = try(af.maximum_paths_route_policy, local.defaults.iosxr.devices.configuration.routing.isis_processes.flex_algos.address_family.maximum_paths_route_policy, null)
             }
