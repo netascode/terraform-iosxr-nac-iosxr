@@ -13,11 +13,11 @@ locals {
         igp_sync_delay_on_session_up_disable = try(ldp_interface.igp_sync_delay_on_session_up_disable, local.defaults.iosxr.devices.configuration.mpls_ldp_interfaces.igp_sync_delay_on_session_up_disable, null)
         address_family = try(length(ldp_interface.address_family) == 0, true) ? null : [
           for af in ldp_interface.address_family : {
-            af_name                               = try(af.af_name, null)
-            discovery_transport_address_interface = try(af.discovery_transport_address_interface, null)
-            discovery_transport_address_ip        = try(af.discovery_transport_address_ip, null)
-            igp_auto_config_disable               = try(af.igp_auto_config_disable, null)
-            mldp_disable                          = try(af.mldp_disable, null)
+            af_name                               = try(af.af_name, local.defaults.iosxr.devices.configuration.mpls_ldp_interfaces.address_family.af_name, null)
+            discovery_transport_address_interface = try(af.discovery_transport_address_interface, local.defaults.iosxr.devices.configuration.mpls_ldp_interfaces.address_family.discovery_transport_address_interface, null)
+            discovery_transport_address_ip        = try(af.discovery_transport_address_ip, local.defaults.iosxr.devices.configuration.mpls_ldp_interfaces.address_family.discovery_transport_address_ip, null)
+            igp_auto_config_disable               = try(af.igp_auto_config_disable, local.defaults.iosxr.devices.configuration.mpls_ldp_interfaces.address_family.igp_auto_config_disable, null)
+            mldp_disable                          = try(af.mldp_disable, local.defaults.iosxr.devices.configuration.mpls_ldp_interfaces.address_family.mldp_disable, null)
           }
         ]
       }
