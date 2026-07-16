@@ -2,13 +2,13 @@ locals {
   vrfs = flatten([
     for device in local.devices : [
       for vrf in try(local.device_config[device.name].vrfs, []) : {
-        key                                                       = format("%s/%s", device.name, vrf.vrf_name)
+        key                                                       = format("%s/%s", device.name, vrf.name)
         device_name                                               = device.name
-        vrf_name                                                  = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.vrfs.vrf_name, null)
+        name                                                      = try(vrf.name, local.defaults.iosxr.devices.configuration.vrfs.name, null)
         description                                               = try(vrf.description, local.defaults.iosxr.devices.configuration.vrfs.description, null)
         fallback_vrf                                              = try(vrf.fallback_vrf, local.defaults.iosxr.devices.configuration.vrfs.fallback_vrf, null)
         evpn_route_sync                                           = try(vrf.evpn_route_sync, local.defaults.iosxr.devices.configuration.vrfs.evpn_route_sync, null)
-        ipv4_unicast                                              = try(can(vrf.address_family.ipv4_unicast), can(local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast), false) ? true : null
+        ipv4_unicast                                              = try(vrf.address_family.ipv4_unicast.enable, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.enable, try(vrf.address_family.ipv4_unicast, null) != null ? true : null)
         ipv4_unicast_import_route_policy                          = try(vrf.address_family.ipv4_unicast.import_route_policy, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_policy, null)
         ipv4_unicast_export_route_policy                          = try(vrf.address_family.ipv4_unicast.export_route_policy, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_policy, null)
         ipv4_unicast_import_from_bridge_domain_advertise_as_vpn   = try(vrf.address_family.ipv4_unicast.import_from_bridge_domain_advertise_as_vpn, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_from_bridge_domain_advertise_as_vpn, null)
@@ -24,7 +24,7 @@ locals {
         ipv4_unicast_export_to_default_vrf_allow_imported_vpn     = try(vrf.address_family.ipv4_unicast.export_to_default_vrf_allow_imported_vpn, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_to_default_vrf_allow_imported_vpn, null)
         ipv4_unicast_max_prefix_limit                             = try(vrf.address_family.ipv4_unicast.max_prefix_limit, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.max_prefix_limit, null)
         ipv4_unicast_max_prefix_threshold                         = try(vrf.address_family.ipv4_unicast.max_prefix_threshold, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.max_prefix_threshold, null)
-        ipv4_multicast                                            = try(can(vrf.address_family.ipv4_multicast), can(local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast), false) ? true : null
+        ipv4_multicast                                            = try(vrf.address_family.ipv4_multicast.enable, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.enable, try(vrf.address_family.ipv4_multicast, null) != null ? true : null)
         ipv4_multicast_import_route_policy                        = try(vrf.address_family.ipv4_multicast.import_route_policy, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_policy, null)
         ipv4_multicast_export_route_policy                        = try(vrf.address_family.ipv4_multicast.export_route_policy, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_policy, null)
         ipv4_multicast_import_from_bridge_domain_advertise_as_vpn = try(vrf.address_family.ipv4_multicast.import_from_bridge_domain_advertise_as_vpn, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_from_bridge_domain_advertise_as_vpn, null)
@@ -40,8 +40,8 @@ locals {
         ipv4_multicast_export_to_default_vrf_allow_imported_vpn   = try(vrf.address_family.ipv4_multicast.export_to_default_vrf_allow_imported_vpn, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_to_default_vrf_allow_imported_vpn, null)
         ipv4_multicast_max_prefix_limit                           = try(vrf.address_family.ipv4_multicast.max_prefix_limit, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.max_prefix_limit, null)
         ipv4_multicast_max_prefix_threshold                       = try(vrf.address_family.ipv4_multicast.max_prefix_threshold, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.max_prefix_threshold, null)
-        ipv4_flowspec                                             = try(can(vrf.address_family.ipv4_flowspec), can(local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_flowspec), false) ? true : null
-        ipv6_unicast                                              = try(can(vrf.address_family.ipv6_unicast), can(local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast), false) ? true : null
+        ipv4_flowspec                                             = try(vrf.address_family.ipv4_flowspec.enable, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_flowspec.enable, try(vrf.address_family.ipv4_flowspec, null) != null ? true : null)
+        ipv6_unicast                                              = try(vrf.address_family.ipv6_unicast.enable, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.enable, try(vrf.address_family.ipv6_unicast, null) != null ? true : null)
         ipv6_unicast_import_route_policy                          = try(vrf.address_family.ipv6_unicast.import_route_policy, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_policy, null)
         ipv6_unicast_export_route_policy                          = try(vrf.address_family.ipv6_unicast.export_route_policy, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_policy, null)
         ipv6_unicast_import_from_bridge_domain_advertise_as_vpn   = try(vrf.address_family.ipv6_unicast.import_from_bridge_domain_advertise_as_vpn, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_from_bridge_domain_advertise_as_vpn, null)
@@ -57,7 +57,7 @@ locals {
         ipv6_unicast_export_to_default_vrf_allow_imported_vpn     = try(vrf.address_family.ipv6_unicast.export_to_default_vrf_allow_imported_vpn, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_to_default_vrf_allow_imported_vpn, null)
         ipv6_unicast_max_prefix_limit                             = try(vrf.address_family.ipv6_unicast.max_prefix_limit, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.max_prefix_limit, null)
         ipv6_unicast_max_prefix_threshold                         = try(vrf.address_family.ipv6_unicast.max_prefix_threshold, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.max_prefix_threshold, null)
-        ipv6_multicast                                            = try(can(vrf.address_family.ipv6_multicast), can(local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast), false) ? true : null
+        ipv6_multicast                                            = try(vrf.address_family.ipv6_multicast.enable, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.enable, try(vrf.address_family.ipv6_multicast, null) != null ? true : null)
         ipv6_multicast_import_route_policy                        = try(vrf.address_family.ipv6_multicast.import_route_policy, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_policy, null)
         ipv6_multicast_export_route_policy                        = try(vrf.address_family.ipv6_multicast.export_route_policy, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_policy, null)
         ipv6_multicast_import_from_bridge_domain_advertise_as_vpn = try(vrf.address_family.ipv6_multicast.import_from_bridge_domain_advertise_as_vpn, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_from_bridge_domain_advertise_as_vpn, null)
@@ -73,157 +73,58 @@ locals {
         ipv6_multicast_export_to_default_vrf_allow_imported_vpn   = try(vrf.address_family.ipv6_multicast.export_to_default_vrf_allow_imported_vpn, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_to_default_vrf_allow_imported_vpn, null)
         ipv6_multicast_max_prefix_limit                           = try(vrf.address_family.ipv6_multicast.max_prefix_limit, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.max_prefix_limit, null)
         ipv6_multicast_max_prefix_threshold                       = try(vrf.address_family.ipv6_multicast.max_prefix_threshold, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.max_prefix_threshold, null)
-        ipv6_flowspec                                             = try(can(vrf.address_family.ipv6_flowspec), can(local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_flowspec), false) ? true : null
-        rd_two_byte_as_number                                     = try(vrf.rd_two_byte_as_number, local.defaults.iosxr.devices.configuration.vrfs.rd_two_byte_as_number, null)
-        rd_two_byte_as_index                                      = try(vrf.rd_two_byte_as_index, local.defaults.iosxr.devices.configuration.vrfs.rd_two_byte_as_index, null)
-        rd_four_byte_as_number                                    = try(vrf.rd_four_byte_as_number, local.defaults.iosxr.devices.configuration.vrfs.rd_four_byte_as_number, null)
-        rd_four_byte_as_index                                     = try(vrf.rd_four_byte_as_index, local.defaults.iosxr.devices.configuration.vrfs.rd_four_byte_as_index, null)
-        rd_ipv4_address                                           = try(vrf.rd_ipv4_address, local.defaults.iosxr.devices.configuration.vrfs.rd_ipv4_address, null)
-        rd_ipv4_address_index                                     = try(vrf.rd_ipv4_address_index, local.defaults.iosxr.devices.configuration.vrfs.rd_ipv4_address_index, null)
-        ipv4_unicast_import_route_target_two_byte_as_format = try(length(vrf.address_family.ipv4_unicast.import_route_target_two_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_unicast.import_route_target_two_byte_format : {
-          two_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_target_two_byte_format.as_number, null)
-          asn2_index         = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_target_two_byte_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_target_two_byte_format.stitching, "disable")
-          }
-        ]
-        ipv4_unicast_import_route_target_four_byte_as_format = try(length(vrf.address_family.ipv4_unicast.import_route_target_four_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_unicast.import_route_target_four_byte_format : {
-          four_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_target_four_byte_format.as_number, null)
-          asn4_index          = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_target_four_byte_format.index, null)
-          stitching           = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_target_four_byte_format.stitching, "disable")
-          }
-        ]
-        ipv4_unicast_import_route_target_ip_address_format = try(length(vrf.address_family.ipv4_unicast.import_route_target_ip_address_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_unicast.import_route_target_ip_address_format : {
-          ipv4_address       = try(rt.ipv4_address, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_target_ip_address_format.ipv4_address, null)
-          ipv4_address_index = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_target_ip_address_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_target_ip_address_format.stitching, "disable")
-          }
-        ]
-        ipv4_unicast_export_route_target_two_byte_as_format = try(length(vrf.address_family.ipv4_unicast.export_route_target_two_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_unicast.export_route_target_two_byte_format : {
-          two_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_target_two_byte_format.as_number, null)
-          asn2_index         = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_target_two_byte_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_target_two_byte_format.stitching, "disable")
-          }
-        ]
-        ipv4_unicast_export_route_target_four_byte_as_format = try(length(vrf.address_family.ipv4_unicast.export_route_target_four_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_unicast.export_route_target_four_byte_format : {
-          four_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_target_four_byte_format.as_number, null)
-          asn4_index          = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_target_four_byte_format.index, null)
-          stitching           = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_target_four_byte_format.stitching, "disable")
-          }
-        ]
-        ipv4_unicast_export_route_target_ip_address_format = try(length(vrf.address_family.ipv4_unicast.export_route_target_ip_address_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_unicast.export_route_target_ip_address_format : {
-          ipv4_address       = try(rt.ipv4_address, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_target_ip_address_format.ipv4_address, null)
-          ipv4_address_index = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_target_ip_address_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_target_ip_address_format.stitching, "disable")
-          }
-        ]
-        ipv6_unicast_import_route_target_two_byte_as_format = try(length(vrf.address_family.ipv6_unicast.import_route_target_two_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_unicast.import_route_target_two_byte_format : {
-          two_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_target_two_byte_format.as_number, null)
-          asn2_index         = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_target_two_byte_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_target_two_byte_format.stitching, "disable")
-          }
-        ]
-        ipv6_unicast_import_route_target_four_byte_as_format = try(length(vrf.address_family.ipv6_unicast.import_route_target_four_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_unicast.import_route_target_four_byte_format : {
-          four_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_target_four_byte_format.as_number, null)
-          asn4_index          = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_target_four_byte_format.index, null)
-          stitching           = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_target_four_byte_format.stitching, "disable")
-          }
-        ]
-        ipv6_unicast_import_route_target_ip_address_format = try(length(vrf.address_family.ipv6_unicast.import_route_target_ip_address_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_unicast.import_route_target_ip_address_format : {
-          ipv4_address       = try(rt.ipv4_address, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_target_ip_address_format.ipv4_address, null)
-          ipv4_address_index = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_target_ip_address_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_target_ip_address_format.stitching, "disable")
-          }
-        ]
-        ipv6_unicast_export_route_target_two_byte_as_format = try(length(vrf.address_family.ipv6_unicast.export_route_target_two_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_unicast.export_route_target_two_byte_format : {
-          two_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_target_two_byte_format.as_number, null)
-          asn2_index         = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_target_two_byte_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_target_two_byte_format.stitching, "disable")
-          }
-        ]
-        ipv6_unicast_export_route_target_four_byte_as_format = try(length(vrf.address_family.ipv6_unicast.export_route_target_four_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_unicast.export_route_target_four_byte_format : {
-          four_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_target_four_byte_format.as_number, null)
-          asn4_index          = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_target_four_byte_format.index, null)
-          stitching           = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_target_four_byte_format.stitching, "disable")
-          }
-        ]
-        ipv6_unicast_export_route_target_ip_address_format = try(length(vrf.address_family.ipv6_unicast.export_route_target_ip_address_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_unicast.export_route_target_ip_address_format : {
-          ipv4_address       = try(rt.ipv4_address, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_target_ip_address_format.ipv4_address, null)
-          ipv4_address_index = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_target_ip_address_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_target_ip_address_format.stitching, "disable")
-          }
-        ]
-        ipv4_multicast_import_route_target_two_byte_as_format = try(length(vrf.address_family.ipv4_multicast.import_route_target_two_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_multicast.import_route_target_two_byte_format : {
-          two_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_target_two_byte_format.as_number, null)
-          asn2_index         = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_target_two_byte_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_target_two_byte_format.stitching, "disable")
-          }
-        ]
-        ipv4_multicast_import_route_target_four_byte_as_format = try(length(vrf.address_family.ipv4_multicast.import_route_target_four_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_multicast.import_route_target_four_byte_format : {
-          four_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_target_four_byte_format.as_number, null)
-          asn4_index          = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_target_four_byte_format.index, null)
-          stitching           = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_target_four_byte_format.stitching, "disable")
-          }
-        ]
-        ipv4_multicast_import_route_target_ip_address_format = try(length(vrf.address_family.ipv4_multicast.import_route_target_ip_address_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_multicast.import_route_target_ip_address_format : {
-          ipv4_address       = try(rt.ipv4_address, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_target_ip_address_format.ipv4_address, null)
-          ipv4_address_index = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_target_ip_address_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_target_ip_address_format.stitching, "disable")
-          }
-        ]
-        ipv4_multicast_export_route_target_two_byte_as_format = try(length(vrf.address_family.ipv4_multicast.export_route_target_two_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_multicast.export_route_target_two_byte_format : {
-          two_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_target_two_byte_format.as_number, null)
-          asn2_index         = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_target_two_byte_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_target_two_byte_format.stitching, "disable")
-          }
-        ]
-        ipv4_multicast_export_route_target_four_byte_as_format = try(length(vrf.address_family.ipv4_multicast.export_route_target_four_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_multicast.export_route_target_four_byte_format : {
-          four_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_target_four_byte_format.as_number, null)
-          asn4_index          = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_target_four_byte_format.index, null)
-          stitching           = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_target_four_byte_format.stitching, "disable")
-          }
-        ]
-        ipv4_multicast_export_route_target_ip_address_format = try(length(vrf.address_family.ipv4_multicast.export_route_target_ip_address_format) == 0, true) ? null : [for rt in vrf.address_family.ipv4_multicast.export_route_target_ip_address_format : {
-          ipv4_address       = try(rt.ipv4_address, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_target_ip_address_format.ipv4_address, null)
-          ipv4_address_index = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_target_ip_address_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_target_ip_address_format.stitching, "disable")
-          }
-        ]
-        ipv6_multicast_import_route_target_two_byte_as_format = try(length(vrf.address_family.ipv6_multicast.import_route_target_two_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_multicast.import_route_target_two_byte_format : {
-          two_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_target_two_byte_format.as_number, null)
-          asn2_index         = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_target_two_byte_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_target_two_byte_format.stitching, "disable")
-          }
-        ]
-        ipv6_multicast_import_route_target_four_byte_as_format = try(length(vrf.address_family.ipv6_multicast.import_route_target_four_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_multicast.import_route_target_four_byte_format : {
-          four_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_target_four_byte_format.as_number, null)
-          asn4_index          = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_target_four_byte_format.index, null)
-          stitching           = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_target_four_byte_format.stitching, "disable")
-          }
-        ]
-        ipv6_multicast_import_route_target_ip_address_format = try(length(vrf.address_family.ipv6_multicast.import_route_target_ip_address_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_multicast.import_route_target_ip_address_format : {
-          ipv4_address       = try(rt.ipv4_address, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_target_ip_address_format.ipv4_address, null)
-          ipv4_address_index = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_target_ip_address_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_target_ip_address_format.stitching, "disable")
-          }
-        ]
-        ipv6_multicast_export_route_target_two_byte_as_format = try(length(vrf.address_family.ipv6_multicast.export_route_target_two_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_multicast.export_route_target_two_byte_format : {
-          two_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_target_two_byte_format.as_number, null)
-          asn2_index         = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_target_two_byte_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_target_two_byte_format.stitching, "disable")
-          }
-        ]
-        ipv6_multicast_export_route_target_four_byte_as_format = try(length(vrf.address_family.ipv6_multicast.export_route_target_four_byte_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_multicast.export_route_target_four_byte_format : {
-          four_byte_as_number = try(rt.as_number, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_target_four_byte_format.as_number, null)
-          asn4_index          = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_target_four_byte_format.index, null)
-          stitching           = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_target_four_byte_format.stitching, "disable")
-          }
-        ]
-        ipv6_multicast_export_route_target_ip_address_format = try(length(vrf.address_family.ipv6_multicast.export_route_target_ip_address_format) == 0, true) ? null : [for rt in vrf.address_family.ipv6_multicast.export_route_target_ip_address_format : {
-          ipv4_address       = try(rt.ipv4_address, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_target_ip_address_format.ipv4_address, null)
-          ipv4_address_index = try(rt.index, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_target_ip_address_format.index, null)
-          stitching          = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_target_ip_address_format.stitching, "disable")
-          }
-        ]
+        ipv6_flowspec                                             = try(vrf.address_family.ipv6_flowspec.enable, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_flowspec.enable, try(vrf.address_family.ipv6_flowspec, null) != null ? true : null)
+        rd = try(vrf.rd, local.defaults.iosxr.devices.configuration.vrfs.rd, null) != null ? provider::utils::normalize_bgp_rd(
+          try(vrf.rd, local.defaults.iosxr.devices.configuration.vrfs.rd)
+        ) : null
+        ipv4_unicast_import_route_targets = try(vrf.address_family.ipv4_unicast.import_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_targets, null) != null ? [
+          for rt in try(vrf.address_family.ipv4_unicast.import_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_targets) : merge(
+            provider::utils::normalize_bgp_rt(rt.rt),
+            { stitching = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.import_route_targets.stitching, "disable") }
+          )
+        ] : null
+        ipv4_unicast_export_route_targets = try(vrf.address_family.ipv4_unicast.export_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_targets, null) != null ? [
+          for rt in try(vrf.address_family.ipv4_unicast.export_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_targets) : merge(
+            provider::utils::normalize_bgp_rt(rt.rt),
+            { stitching = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_unicast.export_route_targets.stitching, "disable") }
+          )
+        ] : null
+        ipv6_unicast_import_route_targets = try(vrf.address_family.ipv6_unicast.import_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_targets, null) != null ? [
+          for rt in try(vrf.address_family.ipv6_unicast.import_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_targets) : merge(
+            provider::utils::normalize_bgp_rt(rt.rt),
+            { stitching = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.import_route_targets.stitching, "disable") }
+          )
+        ] : null
+        ipv6_unicast_export_route_targets = try(vrf.address_family.ipv6_unicast.export_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_targets, null) != null ? [
+          for rt in try(vrf.address_family.ipv6_unicast.export_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_targets) : merge(
+            provider::utils::normalize_bgp_rt(rt.rt),
+            { stitching = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_unicast.export_route_targets.stitching, "disable") }
+          )
+        ] : null
+        ipv4_multicast_import_route_targets = try(vrf.address_family.ipv4_multicast.import_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_targets, null) != null ? [
+          for rt in try(vrf.address_family.ipv4_multicast.import_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_targets) : merge(
+            provider::utils::normalize_bgp_rt(rt.rt),
+            { stitching = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.import_route_targets.stitching, "disable") }
+          )
+        ] : null
+        ipv4_multicast_export_route_targets = try(vrf.address_family.ipv4_multicast.export_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_targets, null) != null ? [
+          for rt in try(vrf.address_family.ipv4_multicast.export_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_targets) : merge(
+            provider::utils::normalize_bgp_rt(rt.rt),
+            { stitching = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv4_multicast.export_route_targets.stitching, "disable") }
+          )
+        ] : null
+        ipv6_multicast_import_route_targets = try(vrf.address_family.ipv6_multicast.import_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_targets, null) != null ? [
+          for rt in try(vrf.address_family.ipv6_multicast.import_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_targets) : merge(
+            provider::utils::normalize_bgp_rt(rt.rt),
+            { stitching = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.import_route_targets.stitching, "disable") }
+          )
+        ] : null
+        ipv6_multicast_export_route_targets = try(vrf.address_family.ipv6_multicast.export_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_targets, null) != null ? [
+          for rt in try(vrf.address_family.ipv6_multicast.export_route_targets, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_targets) : merge(
+            provider::utils::normalize_bgp_rt(rt.rt),
+            { stitching = try(rt.stitching, local.defaults.iosxr.devices.configuration.vrfs.address_family.ipv6_multicast.export_route_targets.stitching, "disable") }
+          )
+        ] : null
         vpn_id                         = try(vrf.vpn_id, local.defaults.iosxr.devices.configuration.vrfs.vpn_id, null)
         remote_route_filtering_disable = try(vrf.remote_route_filtering_disable, local.defaults.iosxr.devices.configuration.vrfs.remote_route_filtering_disable, null)
       }
@@ -234,7 +135,7 @@ locals {
 resource "iosxr_vrf" "vrf" {
   for_each                                                  = { for vrf in local.vrfs : vrf.key => vrf }
   device                                                    = each.value.device_name
-  vrf_name                                                  = each.value.vrf_name
+  vrf_name                                                  = each.value.name
   description                                               = each.value.description
   fallback_vrf                                              = each.value.fallback_vrf
   evpn_route_sync                                           = each.value.evpn_route_sync
@@ -304,38 +205,182 @@ resource "iosxr_vrf" "vrf" {
   ipv6_multicast_max_prefix_limit                           = each.value.ipv6_multicast_max_prefix_limit
   ipv6_multicast_max_prefix_threshold                       = each.value.ipv6_multicast_max_prefix_threshold
   ipv6_flowspec                                             = each.value.ipv6_flowspec
-  rd_two_byte_as_number                                     = each.value.rd_two_byte_as_number
-  rd_two_byte_as_index                                      = each.value.rd_two_byte_as_index
-  rd_four_byte_as_number                                    = each.value.rd_four_byte_as_number
-  rd_four_byte_as_index                                     = each.value.rd_four_byte_as_index
-  rd_ipv4_address                                           = each.value.rd_ipv4_address
-  rd_ipv4_address_index                                     = each.value.rd_ipv4_address_index
-  ipv4_unicast_import_route_target_two_byte_as_format       = each.value.ipv4_unicast_import_route_target_two_byte_as_format
-  ipv4_unicast_import_route_target_four_byte_as_format      = each.value.ipv4_unicast_import_route_target_four_byte_as_format
-  ipv4_unicast_import_route_target_ip_address_format        = each.value.ipv4_unicast_import_route_target_ip_address_format
-  ipv4_unicast_export_route_target_two_byte_as_format       = each.value.ipv4_unicast_export_route_target_two_byte_as_format
-  ipv4_unicast_export_route_target_four_byte_as_format      = each.value.ipv4_unicast_export_route_target_four_byte_as_format
-  ipv4_unicast_export_route_target_ip_address_format        = each.value.ipv4_unicast_export_route_target_ip_address_format
-  ipv6_unicast_import_route_target_two_byte_as_format       = each.value.ipv6_unicast_import_route_target_two_byte_as_format
-  ipv6_unicast_import_route_target_four_byte_as_format      = each.value.ipv6_unicast_import_route_target_four_byte_as_format
-  ipv6_unicast_import_route_target_ip_address_format        = each.value.ipv6_unicast_import_route_target_ip_address_format
-  ipv6_unicast_export_route_target_two_byte_as_format       = each.value.ipv6_unicast_export_route_target_two_byte_as_format
-  ipv6_unicast_export_route_target_four_byte_as_format      = each.value.ipv6_unicast_export_route_target_four_byte_as_format
-  ipv6_unicast_export_route_target_ip_address_format        = each.value.ipv6_unicast_export_route_target_ip_address_format
-  ipv4_multicast_import_route_target_two_byte_as_format     = each.value.ipv4_multicast_import_route_target_two_byte_as_format
-  ipv4_multicast_import_route_target_four_byte_as_format    = each.value.ipv4_multicast_import_route_target_four_byte_as_format
-  ipv4_multicast_import_route_target_ip_address_format      = each.value.ipv4_multicast_import_route_target_ip_address_format
-  ipv4_multicast_export_route_target_two_byte_as_format     = each.value.ipv4_multicast_export_route_target_two_byte_as_format
-  ipv4_multicast_export_route_target_four_byte_as_format    = each.value.ipv4_multicast_export_route_target_four_byte_as_format
-  ipv4_multicast_export_route_target_ip_address_format      = each.value.ipv4_multicast_export_route_target_ip_address_format
-  ipv6_multicast_import_route_target_two_byte_as_format     = each.value.ipv6_multicast_import_route_target_two_byte_as_format
-  ipv6_multicast_import_route_target_four_byte_as_format    = each.value.ipv6_multicast_import_route_target_four_byte_as_format
-  ipv6_multicast_import_route_target_ip_address_format      = each.value.ipv6_multicast_import_route_target_ip_address_format
-  ipv6_multicast_export_route_target_two_byte_as_format     = each.value.ipv6_multicast_export_route_target_two_byte_as_format
-  ipv6_multicast_export_route_target_four_byte_as_format    = each.value.ipv6_multicast_export_route_target_four_byte_as_format
-  ipv6_multicast_export_route_target_ip_address_format      = each.value.ipv6_multicast_export_route_target_ip_address_format
-  vpn_id                                                    = each.value.vpn_id
-  remote_route_filtering_disable                            = each.value.remote_route_filtering_disable
+  rd_two_byte_as_number                                     = try(each.value.rd.format == "two_byte_as" ? each.value.rd.as_number : null, null)
+  rd_two_byte_as_index                                      = try(each.value.rd.format == "two_byte_as" ? each.value.rd.assigned_number : null, null)
+  rd_four_byte_as_number                                    = try(each.value.rd.format == "four_byte_as" ? each.value.rd.as_number : null, null)
+  rd_four_byte_as_index                                     = try(each.value.rd.format == "four_byte_as" ? each.value.rd.assigned_number : null, null)
+  rd_ipv4_address                                           = try(each.value.rd.format == "ipv4_address" ? each.value.rd.ipv4_address : null, null)
+  rd_ipv4_address_index                                     = try(each.value.rd.format == "ipv4_address" ? each.value.rd.assigned_number : null, null)
+  ipv4_unicast_import_route_target_two_byte_as_format = try(length([for rt in each.value.ipv4_unicast_import_route_targets : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_unicast_import_route_targets : {
+      two_byte_as_number = rt.as_number
+      asn2_index         = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "two_byte_as"
+  ]
+  ipv4_unicast_import_route_target_four_byte_as_format = try(length([for rt in each.value.ipv4_unicast_import_route_targets : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_unicast_import_route_targets : {
+      four_byte_as_number = rt.as_number
+      asn4_index          = rt.assigned_number
+      stitching           = rt.stitching
+    } if rt.format == "four_byte_as"
+  ]
+  ipv4_unicast_import_route_target_ip_address_format = try(length([for rt in each.value.ipv4_unicast_import_route_targets : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_unicast_import_route_targets : {
+      ipv4_address       = rt.ipv4_address
+      ipv4_address_index = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "ipv4_address"
+  ]
+  ipv4_unicast_export_route_target_two_byte_as_format = try(length([for rt in each.value.ipv4_unicast_export_route_targets : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_unicast_export_route_targets : {
+      two_byte_as_number = rt.as_number
+      asn2_index         = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "two_byte_as"
+  ]
+  ipv4_unicast_export_route_target_four_byte_as_format = try(length([for rt in each.value.ipv4_unicast_export_route_targets : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_unicast_export_route_targets : {
+      four_byte_as_number = rt.as_number
+      asn4_index          = rt.assigned_number
+      stitching           = rt.stitching
+    } if rt.format == "four_byte_as"
+  ]
+  ipv4_unicast_export_route_target_ip_address_format = try(length([for rt in each.value.ipv4_unicast_export_route_targets : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_unicast_export_route_targets : {
+      ipv4_address       = rt.ipv4_address
+      ipv4_address_index = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "ipv4_address"
+  ]
+  ipv6_unicast_import_route_target_two_byte_as_format = try(length([for rt in each.value.ipv6_unicast_import_route_targets : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_unicast_import_route_targets : {
+      two_byte_as_number = rt.as_number
+      asn2_index         = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "two_byte_as"
+  ]
+  ipv6_unicast_import_route_target_four_byte_as_format = try(length([for rt in each.value.ipv6_unicast_import_route_targets : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_unicast_import_route_targets : {
+      four_byte_as_number = rt.as_number
+      asn4_index          = rt.assigned_number
+      stitching           = rt.stitching
+    } if rt.format == "four_byte_as"
+  ]
+  ipv6_unicast_import_route_target_ip_address_format = try(length([for rt in each.value.ipv6_unicast_import_route_targets : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_unicast_import_route_targets : {
+      ipv4_address       = rt.ipv4_address
+      ipv4_address_index = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "ipv4_address"
+  ]
+  ipv6_unicast_export_route_target_two_byte_as_format = try(length([for rt in each.value.ipv6_unicast_export_route_targets : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_unicast_export_route_targets : {
+      two_byte_as_number = rt.as_number
+      asn2_index         = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "two_byte_as"
+  ]
+  ipv6_unicast_export_route_target_four_byte_as_format = try(length([for rt in each.value.ipv6_unicast_export_route_targets : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_unicast_export_route_targets : {
+      four_byte_as_number = rt.as_number
+      asn4_index          = rt.assigned_number
+      stitching           = rt.stitching
+    } if rt.format == "four_byte_as"
+  ]
+  ipv6_unicast_export_route_target_ip_address_format = try(length([for rt in each.value.ipv6_unicast_export_route_targets : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_unicast_export_route_targets : {
+      ipv4_address       = rt.ipv4_address
+      ipv4_address_index = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "ipv4_address"
+  ]
+  ipv4_multicast_import_route_target_two_byte_as_format = try(length([for rt in each.value.ipv4_multicast_import_route_targets : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_multicast_import_route_targets : {
+      two_byte_as_number = rt.as_number
+      asn2_index         = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "two_byte_as"
+  ]
+  ipv4_multicast_import_route_target_four_byte_as_format = try(length([for rt in each.value.ipv4_multicast_import_route_targets : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_multicast_import_route_targets : {
+      four_byte_as_number = rt.as_number
+      asn4_index          = rt.assigned_number
+      stitching           = rt.stitching
+    } if rt.format == "four_byte_as"
+  ]
+  ipv4_multicast_import_route_target_ip_address_format = try(length([for rt in each.value.ipv4_multicast_import_route_targets : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_multicast_import_route_targets : {
+      ipv4_address       = rt.ipv4_address
+      ipv4_address_index = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "ipv4_address"
+  ]
+  ipv4_multicast_export_route_target_two_byte_as_format = try(length([for rt in each.value.ipv4_multicast_export_route_targets : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_multicast_export_route_targets : {
+      two_byte_as_number = rt.as_number
+      asn2_index         = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "two_byte_as"
+  ]
+  ipv4_multicast_export_route_target_four_byte_as_format = try(length([for rt in each.value.ipv4_multicast_export_route_targets : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_multicast_export_route_targets : {
+      four_byte_as_number = rt.as_number
+      asn4_index          = rt.assigned_number
+      stitching           = rt.stitching
+    } if rt.format == "four_byte_as"
+  ]
+  ipv4_multicast_export_route_target_ip_address_format = try(length([for rt in each.value.ipv4_multicast_export_route_targets : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.ipv4_multicast_export_route_targets : {
+      ipv4_address       = rt.ipv4_address
+      ipv4_address_index = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "ipv4_address"
+  ]
+  ipv6_multicast_import_route_target_two_byte_as_format = try(length([for rt in each.value.ipv6_multicast_import_route_targets : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_multicast_import_route_targets : {
+      two_byte_as_number = rt.as_number
+      asn2_index         = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "two_byte_as"
+  ]
+  ipv6_multicast_import_route_target_four_byte_as_format = try(length([for rt in each.value.ipv6_multicast_import_route_targets : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_multicast_import_route_targets : {
+      four_byte_as_number = rt.as_number
+      asn4_index          = rt.assigned_number
+      stitching           = rt.stitching
+    } if rt.format == "four_byte_as"
+  ]
+  ipv6_multicast_import_route_target_ip_address_format = try(length([for rt in each.value.ipv6_multicast_import_route_targets : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_multicast_import_route_targets : {
+      ipv4_address       = rt.ipv4_address
+      ipv4_address_index = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "ipv4_address"
+  ]
+  ipv6_multicast_export_route_target_two_byte_as_format = try(length([for rt in each.value.ipv6_multicast_export_route_targets : rt if rt.format == "two_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_multicast_export_route_targets : {
+      two_byte_as_number = rt.as_number
+      asn2_index         = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "two_byte_as"
+  ]
+  ipv6_multicast_export_route_target_four_byte_as_format = try(length([for rt in each.value.ipv6_multicast_export_route_targets : rt if rt.format == "four_byte_as"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_multicast_export_route_targets : {
+      four_byte_as_number = rt.as_number
+      asn4_index          = rt.assigned_number
+      stitching           = rt.stitching
+    } if rt.format == "four_byte_as"
+  ]
+  ipv6_multicast_export_route_target_ip_address_format = try(length([for rt in each.value.ipv6_multicast_export_route_targets : rt if rt.format == "ipv4_address"]) == 0, true) ? null : [
+    for rt in each.value.ipv6_multicast_export_route_targets : {
+      ipv4_address       = rt.ipv4_address
+      ipv4_address_index = rt.assigned_number
+      stitching          = rt.stitching
+    } if rt.format == "ipv4_address"
+  ]
+  vpn_id                         = each.value.vpn_id
+  remote_route_filtering_disable = each.value.remote_route_filtering_disable
 
   depends_on = [
     iosxr_route_policy.route_policy

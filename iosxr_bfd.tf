@@ -23,14 +23,19 @@ resource "iosxr_bfd" "bfd" {
   bundle_coexistence_bob_blb                   = try(local.device_config[each.value.name].bfd.bundle_coexistence_bob_blb, local.defaults.iosxr.devices.configuration.bfd.bundle_coexistence_bob_blb, null)
   ipv6_checksum_disable                        = try(local.device_config[each.value.name].bfd.ipv6_checksum_disable, local.defaults.iosxr.devices.configuration.bfd.ipv6_checksum_disable, null)
 
-  multipath_locations = try(length(local.device_config[each.value.name].bfd.multipath_locations) == 0, true) ? null : [for location in local.device_config[each.value.name].bfd.multipath_locations : {
-    location_id = try(location.location_id, local.defaults.iosxr.devices.configuration.bfd.multipath_locations.location_id, null)
+  multipath_locations = try(length(local.device_config[each.value.name].bfd.multipath_locations) == 0, true) ? null : [for loc in local.device_config[each.value.name].bfd.multipath_locations : {
+    location_id = try(loc.location, local.defaults.iosxr.devices.configuration.bfd.multipath_locations.location, null)
+    }
+  ]
+  multipath_destinations = try(length(local.device_config[each.value.name].bfd.multipath_destinations) == 0, true) ? null : [for dest in local.device_config[each.value.name].bfd.multipath_destinations : {
+    destination_address = try(dest.address, local.defaults.iosxr.devices.configuration.bfd.multipath_destinations.address, null)
+    location_id         = try(dest.location, local.defaults.iosxr.devices.configuration.bfd.multipath_destinations.location, null)
     }
   ]
   interfaces = try(length(local.device_config[each.value.name].bfd.interfaces) == 0, true) ? null : [for interface in local.device_config[each.value.name].bfd.interfaces : {
-    interface_name        = try(interface.interface_name, local.defaults.iosxr.devices.configuration.bfd.interfaces.interface_name, null)
+    interface_name        = try(interface.name, local.defaults.iosxr.devices.configuration.bfd.interfaces.name, null)
     disable               = try(interface.disable, local.defaults.iosxr.devices.configuration.bfd.interfaces.disable, null)
-    echo_disable          = try(interface.echo_disable, local.defaults.iosxr.devices.configuration.bfd.interfaces.echo_disable, null)
+    echo_disable          = try(interface.echo_disable, local.defaults.iosxr.devices.configuration.bfd.interfaces.echo_disable, null) == true ? "disable" : try(interface.echo_disable, local.defaults.iosxr.devices.configuration.bfd.interfaces.echo_disable, null) == false ? "enable" : null
     echo_ipv4_source      = try(interface.echo_ipv4_source, local.defaults.iosxr.devices.configuration.bfd.interfaces.echo_ipv4_source, null)
     ipv6_checksum_disable = try(interface.ipv6_checksum_disable, local.defaults.iosxr.devices.configuration.bfd.interfaces.ipv6_checksum_disable, null)
     local_address         = try(interface.local_address, local.defaults.iosxr.devices.configuration.bfd.interfaces.local_address, null)
