@@ -189,6 +189,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_mpls_ldp.mpls_ldp,
     iosxr_mpls_ldp_address_family.mpls_ldp_address_family,
     iosxr_mpls_ldp_interface.mpls_ldp_interface,
+    iosxr_mpls_ldp_mldp.mpls_ldp_mldp,
     iosxr_mpls_oam.mpls_oam,
     iosxr_mpls_traffic_eng.mpls_traffic_eng,
     iosxr_netconf_agent_tty.netconf_agent_tty,
