@@ -1,36 +1,37 @@
 locals {
   policy_map_qos = flatten([
     for device in local.devices : [
-      for policy_map_qos in try(local.device_config[device.name].policy_map_qos, []) : {
-        key             = format("%s/%s", device.name, policy_map_qos.policy_map_name)
+      for policy_map in try(local.device_config[device.name].policy_maps, []) : {
+        key             = format("%s/%s", device.name, policy_map.name)
         device_name     = device.name
-        policy_map_name = try(policy_map_qos.policy_map_name, local.defaults.iosxr.devices.configuration.policy_map_qos.policy_map_name, null)
-        description     = try(policy_map_qos.description, local.defaults.iosxr.devices.configuration.policy_map_qos.description, null)
-        classes = try(length(policy_map_qos.classes) == 0, true) ? null : [for class in policy_map_qos.classes : {
-          name                           = try(class.name, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.name, null)
-          type                           = try(class.type, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.type, null)
-          bandwidth_remaining_unit       = try(class.bandwidth_remaining_unit, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.bandwidth_remaining_unit, null)
-          bandwidth_remaining_value      = try(class.bandwidth_remaining_value, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.bandwidth_remaining_value, null)
-          police_conform_action_drop     = try(class.police_conform_action_drop, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.police_conform_action_drop, null)
-          police_conform_action_transmit = try(class.police_conform_action_transmit, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.police_conform_action_transmit, null)
-          police_exceed_action_drop      = try(class.police_exceed_action_drop, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.police_exceed_action_drop, null)
-          police_exceed_action_transmit  = try(class.police_exceed_action_transmit, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.police_exceed_action_transmit, null)
-          police_rate_unit               = try(class.police_rate_unit, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.police_rate_unit, null)
-          police_rate_value              = try(class.police_rate_value, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.police_rate_value, null)
-          police_violate_action_drop     = try(class.police_violate_action_drop, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.police_violate_action_drop, null)
-          police_violate_action_transmit = try(class.police_violate_action_transmit, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.police_violate_action_transmit, null)
-          priority_level                 = try(class.priority_level, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.priority_level, null)
-          service_policy_name            = try(class.service_policy_name, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.service_policy_name, null)
-          set_dscp                       = try(class.set_dscp, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.set_dscp, null)
-          set_mpls_experimental_topmost  = try(class.set_mpls_experimental_topmost, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.set_mpls_experimental_topmost, null)
-          shape_average_rate_unit        = try(class.shape_average_rate_unit, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.shape_average_rate_unit, null)
-          shape_average_rate_value       = try(class.shape_average_rate_value, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.shape_average_rate_value, null)
+        policy_map_name = try(policy_map.name, local.defaults.iosxr.devices.configuration.policy_maps.name, null)
+        description     = try(policy_map.description, local.defaults.iosxr.devices.configuration.policy_maps.description, null)
+        classes = try(length(policy_map.classes) == 0, true) ? null : [for class in policy_map.classes : {
+          name                           = try(class.name, local.defaults.iosxr.devices.configuration.policy_maps.classes.name, null)
+          type                           = try(class.type, local.defaults.iosxr.devices.configuration.policy_maps.classes.type, null)
+          bandwidth_remaining_unit       = try(class.bandwidth_remaining_unit, local.defaults.iosxr.devices.configuration.policy_maps.classes.bandwidth_remaining_unit, null)
+          bandwidth_remaining_value      = try(class.bandwidth_remaining_value, local.defaults.iosxr.devices.configuration.policy_maps.classes.bandwidth_remaining_value, null)
+          police_conform_action_drop     = try(class.police_conform_action_drop, local.defaults.iosxr.devices.configuration.policy_maps.classes.police_conform_action_drop, null)
+          police_conform_action_transmit = try(class.police_conform_action_transmit, local.defaults.iosxr.devices.configuration.policy_maps.classes.police_conform_action_transmit, null)
+          police_exceed_action_drop      = try(class.police_exceed_action_drop, local.defaults.iosxr.devices.configuration.policy_maps.classes.police_exceed_action_drop, null)
+          police_exceed_action_transmit  = try(class.police_exceed_action_transmit, local.defaults.iosxr.devices.configuration.policy_maps.classes.police_exceed_action_transmit, null)
+          police_rate_unit               = try(class.police_rate_unit, local.defaults.iosxr.devices.configuration.policy_maps.classes.police_rate_unit, null)
+          police_rate_value              = try(class.police_rate_value, local.defaults.iosxr.devices.configuration.policy_maps.classes.police_rate_value, null)
+          police_violate_action_drop     = try(class.police_violate_action_drop, local.defaults.iosxr.devices.configuration.policy_maps.classes.police_violate_action_drop, null)
+          police_violate_action_transmit = try(class.police_violate_action_transmit, local.defaults.iosxr.devices.configuration.policy_maps.classes.police_violate_action_transmit, null)
+          priority_level                 = try(class.priority_level, local.defaults.iosxr.devices.configuration.policy_maps.classes.priority_level, null)
+          service_policy_name            = try(class.service_policy_name, local.defaults.iosxr.devices.configuration.policy_maps.classes.service_policy_name, null)
+          set_dscp                       = try(class.set_dscp, local.defaults.iosxr.devices.configuration.policy_maps.classes.set_dscp, null)
+          set_mpls_experimental_topmost  = try(class.set_mpls_experimental_topmost, local.defaults.iosxr.devices.configuration.policy_maps.classes.set_mpls_experimental_topmost, null)
+          shape_average_rate_unit        = try(class.shape_average_rate_unit, local.defaults.iosxr.devices.configuration.policy_maps.classes.shape_average_rate_unit, null)
+          shape_average_rate_value       = try(class.shape_average_rate_value, local.defaults.iosxr.devices.configuration.policy_maps.classes.shape_average_rate_value, null)
           queue_limits = try(length(class.queue_limits) == 0, true) ? null : [for limit in class.queue_limits : {
-            value = try(limit.value, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.queue_limits.value, null)
-            unit  = try(limit.unit, local.defaults.iosxr.devices.configuration.policy_map_qos.classes.queue_limits.unit, null)
+            value = try(limit.value, local.defaults.iosxr.devices.configuration.policy_maps.classes.queue_limits.value, null)
+            unit  = try(limit.unit, local.defaults.iosxr.devices.configuration.policy_maps.classes.queue_limits.unit, null)
           }]
         }]
       }
+      if try(policy_map.type, local.defaults.iosxr.devices.configuration.policy_maps.type, null) == "qos"
     ]
   ])
 }
