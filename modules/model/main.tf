@@ -114,7 +114,8 @@ locals {
       flatten([for bundle_ethernet in try(yamldecode(local.devices_raw_config[device.name]).interfaces.bundle_ethernets, []) : try(bundle_ethernet.interface_groups, [])]),
       flatten([for bvi in try(yamldecode(local.devices_raw_config[device.name]).interfaces.bvis, []) : try(bvi.interface_groups, [])]),
       flatten([for loopback in try(yamldecode(local.devices_raw_config[device.name]).interfaces.loopbacks, []) : try(loopback.interface_groups, [])]),
-      flatten([for tunnel in try(yamldecode(local.devices_raw_config[device.name]).interfaces.tunnels, []) : try(tunnel.interface_groups, [])])
+      flatten([for tunnel in try(yamldecode(local.devices_raw_config[device.name]).interfaces.tunnel_ips, []) : try(tunnel.interface_groups, [])]),
+      flatten([for tunnel in try(yamldecode(local.devices_raw_config[device.name]).interfaces.tunnel_tes, []) : try(tunnel.interface_groups, [])])
     ]))
   }
 
@@ -211,7 +212,7 @@ locals {
             { for k, v in try(local.devices_config[device.name], {}) : k => v if k != "interfaces" },
             {
               interfaces = merge(
-                { for k, v in try(local.devices_config[device.name].interfaces, {}) : k => v if k != "ethernets" && k != "bundle_ethernets" && k != "bvis" && k != "loopbacks" && k != "tunnels" },
+                { for k, v in try(local.devices_config[device.name].interfaces, {}) : k => v if k != "ethernets" && k != "bundle_ethernets" && k != "bvis" && k != "loopbacks" && k != "tunnel_ips" && k != "tunnel_tes" },
                 {
                   "ethernets" = [
                     for ethernet in try(local.devices_config[device.name].interfaces.ethernets, []) : merge(
@@ -253,8 +254,18 @@ locals {
                   ]
                 },
                 {
-                  "tunnels" = [
-                    for tunnel in try(local.devices_config[device.name].interfaces.tunnels, []) : merge(
+                  "tunnel_ips" = [
+                    for tunnel in try(local.devices_config[device.name].interfaces.tunnel_ips, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(tunnel.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(tunnel)]
+                      )))
+                    )
+                  ]
+                },
+                {
+                  "tunnel_tes" = [
+                    for tunnel in try(local.devices_config[device.name].interfaces.tunnel_tes, []) : merge(
                       yamldecode(provider::utils::yaml_merge(concat(
                         [for g in try(tunnel.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
                         [yamlencode(tunnel)]

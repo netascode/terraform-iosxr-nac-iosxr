@@ -3,10 +3,10 @@ locals {
     for device in local.devices : [
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for session_group in try(bgp_process.session_groups, []) : {
-          key                                              = format("%s/%s/%s", device.name, bgp_process.as_number, session_group.group_name)
+          key                                              = format("%s/%s/%s", device.name, bgp_process.as_number, session_group.name)
           device_name                                      = device.name
           as_number                                        = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
-          name                                             = try(session_group.group_name, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.group_name, null)
+          name                                             = try(session_group.name, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.name, null)
           remote_as                                        = try(session_group.remote_as, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.remote_as, null)
           remote_as_list                                   = try(session_group.remote_as_list, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.remote_as_list, null)
           maximum_peers                                    = try(session_group.maximum_peers, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.maximum_peers, null)
@@ -26,14 +26,14 @@ locals {
           internal_vpn_client                              = try(session_group.internal_vpn_client, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.internal_vpn_client, null)
           ebgp_multihop_maximum_hop_count                  = try(session_group.ebgp_multihop_maximum_hop_count, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.ebgp_multihop_maximum_hop_count, null)
           ebgp_multihop_mpls                               = try(session_group.ebgp_multihop_mpls, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.ebgp_multihop_mpls, null)
-          tcp_mss_value                                    = try(session_group.tcp_mss_value, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.tcp_mss_value, null)
+          tcp_mss_value                                    = try(session_group.tcp_mss, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.tcp_mss, null)
           tcp_mss_inheritance_disable                      = try(session_group.tcp_mss_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.tcp_mss_inheritance_disable, null)
           tcp_mtu_discovery                                = try(session_group.tcp_mtu_discovery, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.tcp_mtu_discovery, null)
           tcp_mtu_discovery_inheritance_disable            = try(session_group.tcp_mtu_discovery_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.tcp_mtu_discovery_inheritance_disable, null)
           tcp_ip_only_preferred                            = try(session_group.tcp_ip_only_preferred, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.tcp_ip_only_preferred, null)
           tcp_ip_only_preferred_inheritance_disable        = try(session_group.tcp_ip_only_preferred_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.tcp_ip_only_preferred_inheritance_disable, null)
           bmp_activate_servers = try(length(session_group.bmp_activate_servers) == 0, true) ? null : [for server in session_group.bmp_activate_servers : {
-            server_number = try(server.server_number, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.bmp_activate_servers.server_number, null)
+            server_number = try(server.number, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.bmp_activate_servers.number, null)
             }
           ]
           bfd_minimum_interval                             = try(session_group.bfd_minimum_interval, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.bfd_minimum_interval, null)
@@ -43,7 +43,7 @@ locals {
           bfd_fast_detect_disable                          = try(session_group.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.bfd_fast_detect, null) == "disable" ? true : null
           bfd_fast_detect_strict_mode_negotiate            = try(session_group.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.bfd_fast_detect, null) == "strict-mode-negotiate" ? true : null
           bfd_fast_detect_strict_mode_negotiate_override   = try(session_group.bfd_fast_detect, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.bfd_fast_detect, null) == "strict-mode-negotiate-override" ? true : null
-          keychain_name                                    = try(session_group.keychain_name, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.keychain_name, null)
+          keychain_name                                    = try(session_group.keychain, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.keychain, null)
           keychain_inheritance_disable                     = try(session_group.keychain_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.keychain_inheritance_disable, null)
           local_as_inheritance_disable                     = try(session_group.local_as_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.local_as_inheritance_disable, null)
           local_as                                         = try(session_group.local_as, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.local_as, null)
@@ -53,9 +53,9 @@ locals {
           password                                         = try(session_group.password, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.password, null)
           password_inheritance_disable                     = try(session_group.password_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.password_inheritance_disable, null)
           receive_buffer_size                              = try(session_group.receive_buffer_size, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.receive_buffer_size, null)
-          receive_buffer_size_read                         = try(session_group.receive_buffer_size_read, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.receive_buffer_size_read, null)
+          receive_buffer_size_read                         = try(session_group.receive_buffer_read_size, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.receive_buffer_read_size, null)
           send_buffer_size                                 = try(session_group.send_buffer_size, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.send_buffer_size, null)
-          send_buffer_size_write                           = try(session_group.send_buffer_size_write, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.send_buffer_size_write, null)
+          send_buffer_size_write                           = try(session_group.send_buffer_write_size, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.send_buffer_write_size, null)
           shutdown                                         = try(session_group.shutdown, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.shutdown, null)
           timers_keepalive_interval                        = try(session_group.timers_keepalive_interval, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.timers_keepalive_interval, null)
           timers_holddown_zero                             = try(session_group.timers_holddown_zero, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.timers_holddown_zero, null)
@@ -68,15 +68,15 @@ locals {
           log_neighbor_changes_detail                      = try(session_group.log_neighbor_changes, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_neighbor_changes, null) == "detail" ? true : null
           log_neighbor_changes_disable                     = try(session_group.log_neighbor_changes, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_neighbor_changes, null) == "disable" ? true : null
           log_neighbor_changes_inheritance_disable         = try(session_group.log_neighbor_changes, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_neighbor_changes, null) == "inheritance-disable" ? true : null
-          log_message_in_size                              = try(session_group.log_message_in_size, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_message_in_size, null)
+          log_message_in_size                              = try(session_group.log_message_in, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_message_in, null)
           log_message_in_disable                           = try(session_group.log_message_in_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_message_in_disable, null)
           log_message_in_inheritance_disable               = try(session_group.log_message_in_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_message_in_inheritance_disable, null)
-          log_message_out_size                             = try(session_group.log_message_out_size, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_message_out_size, null)
+          log_message_out_size                             = try(session_group.log_message_out, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_message_out, null)
           log_message_out_disable                          = try(session_group.log_message_out_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_message_out_disable, null)
           log_message_out_inheritance_disable              = try(session_group.log_message_out_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.log_message_out_inheritance_disable, null)
           update_source                                    = try(session_group.update_source, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.update_source, null)
           local_address_subnet_prefix                      = try(session_group.local_address_subnet_prefix, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.local_address_subnet_prefix, null)
-          local_address_subnet_mask                        = try(session_group.local_address_subnet_mask, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.local_address_subnet_mask, null)
+          local_address_subnet_mask                        = try(session_group.local_address_subnet_length, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.local_address_subnet_length, null)
           dmz_link_bandwidth                               = try(session_group.dmz_link_bandwidth, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.dmz_link_bandwidth, null)
           dmz_link_bandwidth_inheritance_disable           = try(session_group.dmz_link_bandwidth_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.dmz_link_bandwidth_inheritance_disable, null)
           ebgp_recv_extcommunity_dmz                       = try(session_group.ebgp_recv_extcommunity_dmz, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.ebgp_recv_extcommunity_dmz, null)
@@ -107,8 +107,8 @@ locals {
           capability_suppress_extended_nexthop_encoding_inheritance_disable = try(session_group.capability_suppress_extended_nexthop_encoding_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.capability_suppress_extended_nexthop_encoding_inheritance_disable, null)
           capability_suppress_four_byte_as                                  = try(session_group.capability_suppress_four_byte_as, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.capability_suppress_four_byte_as, null)
           capability_suppress_four_byte_as_inheritance_disable              = try(session_group.capability_suppress_four_byte_as_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.capability_suppress_four_byte_as_inheritance_disable, null)
-          graceful_restart                                                  = try(session_group.graceful_restart, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.graceful_restart, null)
-          graceful_restart_disable                                          = try(session_group.graceful_restart_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.graceful_restart_disable, null)
+          graceful_restart                                                  = try(session_group.graceful_restart, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.graceful_restart, null) == "enable" ? true : null
+          graceful_restart_disable                                          = try(session_group.graceful_restart, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.graceful_restart, null) == "disable" ? true : null
           graceful_restart_helper_only                                      = try(session_group.graceful_restart_helper_only, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.graceful_restart_helper_only, null)
           graceful_restart_helper_only_inheritance_disable                  = try(session_group.graceful_restart_helper_only_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.graceful_restart_helper_only_inheritance_disable, null)
           graceful_restart_restart_time                                     = try(session_group.graceful_restart_restart_time, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.graceful_restart_restart_time, null)
@@ -121,10 +121,10 @@ locals {
           egress_engineering                                                = try(session_group.egress_engineering, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.egress_engineering, null)
           egress_engineering_inheritance_disable                            = try(session_group.egress_engineering_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.egress_engineering_inheritance_disable, null)
           peer_sets = try(length(session_group.peer_sets) == 0, true) ? null : [for peer_set in session_group.peer_sets : {
-            peer = try(peer_set.peer, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.peer_sets.peer, null)
+            peer = try(peer_set.id, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.peer_sets.id, null)
             }
           ]
-          ao_key_chain_name                                        = try(session_group.ao_key_chain_name, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.ao_key_chain_name, null)
+          ao_key_chain_name                                        = try(session_group.ao_key_chain, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.ao_key_chain, null)
           ao_key_chain_include_tcp_options                         = try(session_group.ao_key_chain_include_tcp_options, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.ao_key_chain_include_tcp_options, null)
           ao_key_chain_accept_mismatch                             = try(session_group.ao_key_chain_accept_mismatch, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.ao_key_chain_accept_mismatch, null)
           ao_inheritance_disable                                   = try(session_group.ao_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.session_groups.ao_inheritance_disable, null)

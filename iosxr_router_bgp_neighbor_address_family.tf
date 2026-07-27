@@ -4,11 +4,11 @@ locals {
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for neighbor in try(bgp_process.neighbors, []) : [
           for af in try(neighbor.address_family, []) : {
-            key                                                = format("%s/%s/%s/%s", device.name, bgp_process.as_number, neighbor.ip, af.af_name)
+            key                                                = format("%s/%s/%s/%s", device.name, bgp_process.as_number, neighbor.address, af.name)
             device_name                                        = device.name
             as_number                                          = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
-            address                                            = try(neighbor.ip, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.ip, null)
-            af_name                                            = try(af.af_name, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.address_family.af_name, null)
+            address                                            = try(neighbor.address, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.address, null)
+            af_name                                            = try(af.name, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.address_family.name, null)
             encapsulation_type                                 = try(af.encapsulation_type, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.address_family.encapsulation_type, null)
             weight                                             = try(af.weight, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.address_family.weight, null)
             multipath                                          = try(af.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.neighbors.address_family.multipath, null)

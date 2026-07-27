@@ -4,10 +4,10 @@ locals {
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for vrf in try(bgp_process.vrfs, []) :
         try(vrf.address_family.ipv4_unicast, null) != null ? [{
-          key                                                      = format("%s/%s/%s/ipv4-unicast", device.name, bgp_process.as_number, vrf.vrf_name)
+          key                                                      = format("%s/%s/%s/ipv4-unicast", device.name, bgp_process.as_number, vrf.name)
           device_name                                              = device.name
           as_number                                                = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
-          vrf_name                                                 = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.vrf_name, null)
+          vrf_name                                                 = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.name, null)
           af_name                                                  = "ipv4-unicast"
           distance_bgp_external_route                              = try(vrf.address_family.ipv4_unicast.distance_bgp_external_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.distance_bgp_external_route, null)
           distance_bgp_internal_route                              = try(vrf.address_family.ipv4_unicast.distance_bgp_internal_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.distance_bgp_internal_route, null)
@@ -81,7 +81,7 @@ locals {
           segment_routing_srv6_alloc_mode_route_policy             = try(vrf.address_family.ipv4_unicast.segment_routing_srv6.alloc_mode_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.segment_routing_srv6.alloc_mode_route_policy, null)
           aggregate_addresses = try(length(vrf.address_family.ipv4_unicast.aggregate_addresses) == 0, true) ? null : [for agg in vrf.address_family.ipv4_unicast.aggregate_addresses : {
             address       = try(agg.address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.aggregate_addresses.address, null)
-            prefix        = try(agg.mask, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.aggregate_addresses.mask, null)
+            prefix        = try(agg.length, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.aggregate_addresses.length, null)
             as_set        = try(agg.as_set, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.aggregate_addresses.as_set, null)
             as_confed_set = try(agg.as_confed_set, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.aggregate_addresses.as_confed_set, null)
             summary_only  = try(agg.summary_only, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.aggregate_addresses.summary_only, null)
@@ -92,14 +92,14 @@ locals {
           ]
           networks = try(length(vrf.address_family.ipv4_unicast.networks) == 0, true) ? null : [for net in vrf.address_family.ipv4_unicast.networks : {
             address      = try(net.address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.networks.address, null)
-            prefix       = try(net.mask, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.networks.mask, null)
+            prefix       = try(net.length, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.networks.length, null)
             route_policy = try(net.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.networks.route_policy, null)
             backdoor     = try(net.backdoor, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.networks.backdoor, null)
             multipath    = try(net.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.networks.multipath, null)
             }
           ]
           redistribute_ospf = try(length(vrf.address_family.ipv4_unicast.redistribute_ospf) == 0, true) ? null : [for ospf in vrf.address_family.ipv4_unicast.redistribute_ospf : {
-            router_tag                                = try(ospf.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_ospf.instance_id, null)
+            router_tag                                = try(ospf.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_ospf.process, null)
             match_internal                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_ospf.match, null) == "match-internal" ? true : null
             match_external                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_ospf.match, null) == "match-external" ? true : null
             match_nssa_external                       = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_ospf.match, null) == "match-nssa-external" ? true : null
@@ -137,7 +137,7 @@ locals {
             }
           ]
           redistribute_eigrp = try(length(vrf.address_family.ipv4_unicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in vrf.address_family.ipv4_unicast.redistribute_eigrp : {
-            instance_name           = try(eigrp.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.instance_id, null)
+            instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.process, null)
             match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
             match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
             match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.match, null) == "match-external" ? true : null
@@ -147,7 +147,7 @@ locals {
             }
           ]
           redistribute_isis = try(length(vrf.address_family.ipv4_unicast.redistribute_isis) == 0, true) ? null : [for isis in vrf.address_family.ipv4_unicast.redistribute_isis : {
-            instance_name                      = try(isis.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_isis.instance_id, null)
+            instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_isis.process, null)
             level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_isis.level, null) == "level-1" ? true : null
             level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_isis.level, null) == "level-1-level-2" ? true : null
             level_1_level_2_level_1_inter_area = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_isis.level, null) == "level-1-level-2-level-1-inter-area" ? true : null
@@ -280,10 +280,10 @@ locals {
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for vrf in try(bgp_process.vrfs, []) :
         try(vrf.address_family.ipv6_unicast, null) != null ? [{
-          key                                                      = format("%s/%s/%s/ipv6-unicast", device.name, bgp_process.as_number, vrf.vrf_name)
+          key                                                      = format("%s/%s/%s/ipv6-unicast", device.name, bgp_process.as_number, vrf.name)
           device_name                                              = device.name
           as_number                                                = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
-          vrf_name                                                 = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.vrf_name, null)
+          vrf_name                                                 = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.name, null)
           af_name                                                  = "ipv6-unicast"
           distance_bgp_external_route                              = try(vrf.address_family.ipv6_unicast.distance_bgp_external_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.distance_bgp_external_route, null)
           distance_bgp_internal_route                              = try(vrf.address_family.ipv6_unicast.distance_bgp_internal_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.distance_bgp_internal_route, null)
@@ -357,7 +357,7 @@ locals {
           segment_routing_srv6_alloc_mode_route_policy             = try(vrf.address_family.ipv6_unicast.segment_routing_srv6.alloc_mode_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.segment_routing_srv6.alloc_mode_route_policy, null)
           aggregate_addresses = try(length(vrf.address_family.ipv6_unicast.aggregate_addresses) == 0, true) ? null : [for agg in vrf.address_family.ipv6_unicast.aggregate_addresses : {
             address       = try(agg.address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.aggregate_addresses.address, null)
-            prefix        = try(agg.mask, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.aggregate_addresses.mask, null)
+            prefix        = try(agg.length, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.aggregate_addresses.length, null)
             as_set        = try(agg.as_set, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.aggregate_addresses.as_set, null)
             as_confed_set = try(agg.as_confed_set, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.aggregate_addresses.as_confed_set, null)
             summary_only  = try(agg.summary_only, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.aggregate_addresses.summary_only, null)
@@ -368,14 +368,14 @@ locals {
           ]
           networks = try(length(vrf.address_family.ipv6_unicast.networks) == 0, true) ? null : [for net in vrf.address_family.ipv6_unicast.networks : {
             address      = try(net.address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.networks.address, null)
-            prefix       = try(net.mask, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.networks.mask, null)
+            prefix       = try(net.length, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.networks.length, null)
             route_policy = try(net.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.networks.route_policy, null)
             backdoor     = try(net.backdoor, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.networks.backdoor, null)
             multipath    = try(net.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.networks.multipath, null)
             }
           ]
           redistribute_ospfv3 = try(length(vrf.address_family.ipv6_unicast.redistribute_ospfv3) == 0, true) ? null : [for ospfv3 in vrf.address_family.ipv6_unicast.redistribute_ospfv3 : {
-            router_tag                                = try(ospfv3.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_ospfv3.instance_id, null)
+            router_tag                                = try(ospfv3.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_ospfv3.process, null)
             match_internal                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_ospfv3.match, null) == "match-internal" ? true : null
             match_external                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_ospfv3.match, null) == "match-external" ? true : null
             match_nssa_external                       = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_ospfv3.match, null) == "match-nssa-external" ? true : null
@@ -413,7 +413,7 @@ locals {
             }
           ]
           redistribute_eigrp = try(length(vrf.address_family.ipv6_unicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in vrf.address_family.ipv6_unicast.redistribute_eigrp : {
-            instance_name           = try(eigrp.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.instance_id, null)
+            instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.process, null)
             match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
             match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
             match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-external" ? true : null
@@ -423,7 +423,7 @@ locals {
             }
           ]
           redistribute_isis = try(length(vrf.address_family.ipv6_unicast.redistribute_isis) == 0, true) ? null : [for isis in vrf.address_family.ipv6_unicast.redistribute_isis : {
-            instance_name                      = try(isis.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_isis.instance_id, null)
+            instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_isis.process, null)
             level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_isis.level, null) == "level-1" ? true : null
             level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_isis.level, null) == "level-1-level-2" ? true : null
             level_1_level_2_level_1_inter_area = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_isis.level, null) == "level-1-level-2-level-1-inter-area" ? true : null
@@ -555,10 +555,10 @@ locals {
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for vrf in try(bgp_process.vrfs, []) :
         try(vrf.address_family.ipv4_multicast, null) != null ? [{
-          key                                           = format("%s/%s/%s/ipv4-multicast", device.name, bgp_process.as_number, vrf.vrf_name)
+          key                                           = format("%s/%s/%s/ipv4-multicast", device.name, bgp_process.as_number, vrf.name)
           device_name                                   = device.name
           as_number                                     = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
-          vrf_name                                      = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.vrf_name, null)
+          vrf_name                                      = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.name, null)
           af_name                                       = "ipv4-multicast"
           distance_bgp_external_route                   = try(vrf.address_family.ipv4_multicast.distance_bgp_external_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.distance_bgp_external_route, null)
           distance_bgp_internal_route                   = try(vrf.address_family.ipv4_multicast.distance_bgp_internal_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.distance_bgp_internal_route, null)
@@ -599,7 +599,7 @@ locals {
           mvpn_single_forwarder_selection               = try(vrf.address_family.ipv4_multicast.mvpn_single_forwarder_selection, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.mvpn_single_forwarder_selection, null)
           aggregate_addresses = try(length(vrf.address_family.ipv4_multicast.aggregate_addresses) == 0, true) ? null : [for agg in vrf.address_family.ipv4_multicast.aggregate_addresses : {
             address       = try(agg.address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.aggregate_addresses.address, null)
-            prefix        = try(agg.mask, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.aggregate_addresses.mask, null)
+            prefix        = try(agg.length, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.aggregate_addresses.length, null)
             as_set        = try(agg.as_set, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.aggregate_addresses.as_set, null)
             as_confed_set = try(agg.as_confed_set, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.aggregate_addresses.as_confed_set, null)
             summary_only  = try(agg.summary_only, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.aggregate_addresses.summary_only, null)
@@ -610,14 +610,14 @@ locals {
           ]
           networks = try(length(vrf.address_family.ipv4_multicast.networks) == 0, true) ? null : [for net in vrf.address_family.ipv4_multicast.networks : {
             address      = try(net.address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.networks.address, null)
-            prefix       = try(net.mask, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.networks.mask, null)
+            prefix       = try(net.length, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.networks.length, null)
             route_policy = try(net.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.networks.route_policy, null)
             backdoor     = try(net.backdoor, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.networks.backdoor, null)
             multipath    = try(net.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.networks.multipath, null)
             }
           ]
           redistribute_ospf = try(length(vrf.address_family.ipv4_multicast.redistribute_ospf) == 0, true) ? null : [for ospf in vrf.address_family.ipv4_multicast.redistribute_ospf : {
-            router_tag                                = try(ospf.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_ospf.instance_id, null)
+            router_tag                                = try(ospf.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_ospf.process, null)
             match_internal                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_ospf.match, null) == "match-internal" ? true : null
             match_external                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_ospf.match, null) == "match-external" ? true : null
             match_nssa_external                       = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_ospf.match, null) == "match-nssa-external" ? true : null
@@ -655,7 +655,7 @@ locals {
             }
           ]
           redistribute_eigrp = try(length(vrf.address_family.ipv4_multicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in vrf.address_family.ipv4_multicast.redistribute_eigrp : {
-            instance_name           = try(eigrp.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.instance_id, null)
+            instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.process, null)
             match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
             match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
             match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.match, null) == "match-external" ? true : null
@@ -665,7 +665,7 @@ locals {
             }
           ]
           redistribute_isis = try(length(vrf.address_family.ipv4_multicast.redistribute_isis) == 0, true) ? null : [for isis in vrf.address_family.ipv4_multicast.redistribute_isis : {
-            instance_name                      = try(isis.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_isis.instance_id, null)
+            instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_isis.process, null)
             level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_isis.level, null) == "level-1" ? true : null
             level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_isis.level, null) == "level-1-level-2" ? true : null
             level_1_level_2_level_1_inter_area = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_isis.level, null) == "level-1-level-2-level-1-inter-area" ? true : null
@@ -765,10 +765,10 @@ locals {
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for vrf in try(bgp_process.vrfs, []) :
         try(vrf.address_family.ipv6_multicast, null) != null ? [{
-          key                                           = format("%s/%s/%s/ipv6-multicast", device.name, bgp_process.as_number, vrf.vrf_name)
+          key                                           = format("%s/%s/%s/ipv6-multicast", device.name, bgp_process.as_number, vrf.name)
           device_name                                   = device.name
           as_number                                     = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
-          vrf_name                                      = try(vrf.vrf_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.vrf_name, null)
+          vrf_name                                      = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.name, null)
           af_name                                       = "ipv6-multicast"
           distance_bgp_external_route                   = try(vrf.address_family.ipv6_multicast.distance_bgp_external_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.distance_bgp_external_route, null)
           distance_bgp_internal_route                   = try(vrf.address_family.ipv6_multicast.distance_bgp_internal_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.distance_bgp_internal_route, null)
@@ -809,7 +809,7 @@ locals {
           mvpn_single_forwarder_selection               = try(vrf.address_family.ipv6_multicast.mvpn_single_forwarder_selection, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.mvpn_single_forwarder_selection, null)
           aggregate_addresses = try(length(vrf.address_family.ipv6_multicast.aggregate_addresses) == 0, true) ? null : [for agg in vrf.address_family.ipv6_multicast.aggregate_addresses : {
             address       = try(agg.address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.aggregate_addresses.address, null)
-            prefix        = try(agg.mask, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.aggregate_addresses.mask, null)
+            prefix        = try(agg.length, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.aggregate_addresses.length, null)
             as_set        = try(agg.as_set, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.aggregate_addresses.as_set, null)
             as_confed_set = try(agg.as_confed_set, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.aggregate_addresses.as_confed_set, null)
             summary_only  = try(agg.summary_only, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.aggregate_addresses.summary_only, null)
@@ -820,14 +820,14 @@ locals {
           ]
           networks = try(length(vrf.address_family.ipv6_multicast.networks) == 0, true) ? null : [for net in vrf.address_family.ipv6_multicast.networks : {
             address      = try(net.address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.networks.address, null)
-            prefix       = try(net.mask, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.networks.mask, null)
+            prefix       = try(net.length, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.networks.length, null)
             route_policy = try(net.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.networks.route_policy, null)
             backdoor     = try(net.backdoor, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.networks.backdoor, null)
             multipath    = try(net.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.networks.multipath, null)
             }
           ]
           redistribute_ospfv3 = try(length(vrf.address_family.ipv6_multicast.redistribute_ospfv3) == 0, true) ? null : [for ospfv3 in vrf.address_family.ipv6_multicast.redistribute_ospfv3 : {
-            router_tag                                = try(ospfv3.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_ospfv3.instance_id, null)
+            router_tag                                = try(ospfv3.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_ospfv3.process, null)
             match_internal                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_ospfv3.match, null) == "match-internal" ? true : null
             match_external                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_ospfv3.match, null) == "match-external" ? true : null
             match_nssa_external                       = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_ospfv3.match, null) == "match-nssa-external" ? true : null
@@ -865,7 +865,7 @@ locals {
             }
           ]
           redistribute_eigrp = try(length(vrf.address_family.ipv6_multicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in vrf.address_family.ipv6_multicast.redistribute_eigrp : {
-            instance_name           = try(eigrp.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.instance_id, null)
+            instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.process, null)
             match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
             match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
             match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.match, null) == "match-external" ? true : null
@@ -875,7 +875,7 @@ locals {
             }
           ]
           redistribute_isis = try(length(vrf.address_family.ipv6_multicast.redistribute_isis) == 0, true) ? null : [for isis in vrf.address_family.ipv6_multicast.redistribute_isis : {
-            instance_name                      = try(isis.instance_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_isis.instance_id, null)
+            instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_isis.process, null)
             level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_isis.level, null) == "level-1" ? true : null
             level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_isis.level, null) == "level-1-level-2" ? true : null
             level_1_level_2_level_1_inter_area = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_isis.level, null) == "level-1-level-2-level-1-inter-area" ? true : null
