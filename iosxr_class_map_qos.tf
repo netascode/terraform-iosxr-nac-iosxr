@@ -43,26 +43,26 @@ locals {
         match_vlan_inner                   = try(class_map_qos.match_vlan_inner, local.defaults.iosxr.devices.configuration.class_map_qos.match_vlan_inner, null)
         match_destination_address_ipv4 = try(length(class_map_qos.match_destination_address_ipv4) == 0, true) ? null : [
           for addr in class_map_qos.match_destination_address_ipv4 : {
-            address = try(addr.address, null)
-            netmask = try(addr.netmask, null)
+            address = try(addr.address, local.defaults.iosxr.devices.configuration.class_map_qos.match_destination_address_ipv4.address, null)
+            netmask = try(addr.netmask, local.defaults.iosxr.devices.configuration.class_map_qos.match_destination_address_ipv4.netmask, null)
           }
         ]
         match_destination_address_ipv6 = try(length(class_map_qos.match_destination_address_ipv6) == 0, true) ? null : [
           for addr in class_map_qos.match_destination_address_ipv6 : {
-            address       = try(addr.address, null)
-            prefix_length = try(addr.prefix_length, null)
+            address       = try(addr.address, local.defaults.iosxr.devices.configuration.class_map_qos.match_destination_address_ipv6.address, null)
+            prefix_length = try(addr.prefix_length, local.defaults.iosxr.devices.configuration.class_map_qos.match_destination_address_ipv6.prefix_length, null)
           }
         ]
         match_source_address_ipv4 = try(length(class_map_qos.match_source_address_ipv4) == 0, true) ? null : [
           for addr in class_map_qos.match_source_address_ipv4 : {
-            address = try(addr.address, null)
-            netmask = try(addr.netmask, null)
+            address = try(addr.address, local.defaults.iosxr.devices.configuration.class_map_qos.match_source_address_ipv4.address, null)
+            netmask = try(addr.netmask, local.defaults.iosxr.devices.configuration.class_map_qos.match_source_address_ipv4.netmask, null)
           }
         ]
         match_source_address_ipv6 = try(length(class_map_qos.match_source_address_ipv6) == 0, true) ? null : [
           for addr in class_map_qos.match_source_address_ipv6 : {
-            address       = try(addr.address, null)
-            prefix_length = try(addr.prefix_length, null)
+            address       = try(addr.address, local.defaults.iosxr.devices.configuration.class_map_qos.match_source_address_ipv6.address, null)
+            prefix_length = try(addr.prefix_length, local.defaults.iosxr.devices.configuration.class_map_qos.match_source_address_ipv6.prefix_length, null)
           }
         ]
       }
