@@ -134,6 +134,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_bmp_server.bmp_server,
     iosxr_cdp.cdp,
     iosxr_class_map_qos.class_map_qos,
+    iosxr_class_map_traffic.class_map_traffic,
     iosxr_community_set.community_set,
     iosxr_control_plane.control_plane,
     iosxr_domain.domain,
