@@ -199,6 +199,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_ospf_area_set.ospf_area_set,
     iosxr_pce.pce,
     iosxr_policy_global_set.policy_global_set,
+    iosxr_policy_map_pbr.policy_map_pbr,
     iosxr_policy_map_qos.policy_map_qos,
     iosxr_ptp.ptp,
     iosxr_ptp_profile.ptp_profile,

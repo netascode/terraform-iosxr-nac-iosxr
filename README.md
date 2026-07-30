@@ -145,6 +145,7 @@ module "iosxr" {
 | [iosxr_ospf_area_set.ospf_area_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/ospf_area_set) | resource |
 | [iosxr_pce.pce](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/pce) | resource |
 | [iosxr_policy_global_set.policy_global_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/policy_global_set) | resource |
+| [iosxr_policy_map_pbr.policy_map_pbr](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/policy_map_pbr) | resource |
 | [iosxr_policy_map_qos.policy_map_qos](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/policy_map_qos) | resource |
 | [iosxr_prefix_set.prefix_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/prefix_set) | resource |
 | [iosxr_ptp.ptp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/ptp) | resource |
@@ -224,6 +225,7 @@ module "iosxr" {
 | [terraform_data.control_plane_replace](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [terraform_data.ethernet_flow_replace](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [terraform_data.ethernet_subinterface_flow_replace](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.policy_map_pbr_replace](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [terraform_data.segment_routing_v6_replace](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 ## Modules
 
