@@ -34,7 +34,7 @@ locals {
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
-        content = join(" ", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
+        content = join("\n", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
       } if try(template.order, local.defaults.iosxr.templates.order) == 0
     ]
   ])
@@ -43,7 +43,7 @@ locals {
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
-        content = join(" ", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
+        content = join("\n", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
       } if try(template.order, local.defaults.iosxr.templates.order) == 1
     ]
   ])
@@ -52,7 +52,7 @@ locals {
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
-        content = join(" ", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
+        content = join("\n", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
       } if try(template.order, local.defaults.iosxr.templates.order) == 2
     ]
   ])
@@ -61,7 +61,7 @@ locals {
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
-        content = join(" ", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
+        content = join("\n", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
       } if try(template.order, local.defaults.iosxr.templates.order) == 3
     ]
   ])
@@ -70,7 +70,7 @@ locals {
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
-        content = join(" ", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
+        content = join("\n", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
       } if try(template.order, local.defaults.iosxr.templates.order) == 4
     ]
   ])
@@ -79,7 +79,7 @@ locals {
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
-        content = join(" ", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
+        content = join("\n", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
       } if try(template.order, local.defaults.iosxr.templates.order) == 5
     ]
   ])
@@ -88,7 +88,7 @@ locals {
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
-        content = join(" ", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
+        content = join("\n", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
       } if try(template.order, local.defaults.iosxr.templates.order) == 6
     ]
   ])
@@ -97,7 +97,7 @@ locals {
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
-        content = join(" ", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
+        content = join("\n", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
       } if try(template.order, local.defaults.iosxr.templates.order) == 7
     ]
   ])
@@ -106,7 +106,7 @@ locals {
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
-        content = join(" ", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
+        content = join("\n", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
       } if try(template.order, local.defaults.iosxr.templates.order) == 8
     ]
   ])
@@ -115,7 +115,7 @@ locals {
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
-        content = join(" ", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
+        content = join("\n", [for line in split("\n", template.content) : trimspace(line) if trimspace(line) != ""])
       } if try(template.order, local.defaults.iosxr.templates.order) == 9
     ]
   ])
