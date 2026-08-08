@@ -157,7 +157,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_flow_sampler_map.flow_sampler_map,
     iosxr_fpd.fpd,
     iosxr_ftp.ftp,
-    iosxr_gnmi.gnmi,
+    iosxr_yang.yang,
     iosxr_hostname.hostname,
     iosxr_interface_bundle_ether.bundle_ether,
     iosxr_interface_bundle_ether_subinterface.bundle_ether_subinterface,

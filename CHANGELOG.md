@@ -1,6 +1,7 @@
-## 0.2.0
+## Unreleased
 
 - BREAKING CHANGE: Remove the deprecated device-level `cli_templates` attribute. Define CLI templates via the unified `templates` structure with `type: cli`, applied by name at global/device-group/device scope
+- BREAKING CHANGE: Rename the `iosxr_gnmi` resource to `iosxr_yang`. The new resource can be used with GNMI and Netconf transport protocols.
 
 ## 0.1.1
 
