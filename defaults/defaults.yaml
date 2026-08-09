@@ -8,3 +8,19 @@ defaults:
         interfaces:
           ethernets:
             managed: true
+            shutdown: false
+            subinterfaces:
+              shutdown: false
+          bundle_ethernets:
+            shutdown: false
+            bundle_shutdown: false
+            subinterfaces:
+              shutdown: false
+          bvis:
+            shutdown: false
+          loopbacks:
+            shutdown: false
+          tunnel_ips:
+            shutdown: false
+          tunnel_tes:
+            shutdown: false

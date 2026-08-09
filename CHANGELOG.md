@@ -1,6 +1,6 @@
-## 0.1.0
+## 0.2.0
 
-- Initial release
+- BREAKING CHANGE: Remove the deprecated device-level `cli_templates` attribute. Define CLI templates via the unified `templates` structure with `type: cli`, applied by name at global/device-group/device scope
 
 ## 0.1.1
 
@@ -23,3 +23,7 @@
   - Standardize OSPF, IS-IS, and static route resources with consistent naming and enum values
   - Normalize MAC address formats automatically across interfaces, LACP, and HSRP
   - Normalize route distinguisher and route target parsing across BGP and VRF resources
+
+## 0.1.0
+
+- Initial release
