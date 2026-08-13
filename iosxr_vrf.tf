@@ -383,6 +383,27 @@ resource "iosxr_vrf" "vrf" {
   remote_route_filtering_disable = each.value.remote_route_filtering_disable
 
   depends_on = [
-    iosxr_route_policy.route_policy
+    iosxr_route_policy.route_policy,
+    # referenced sets must exist before a route-policy is attached (issue #191)
+    iosxr_as_path_set.as_path_set,
+    iosxr_community_set.community_set,
+    iosxr_esi_set.esi_set,
+    iosxr_etag_set.etag_set,
+    iosxr_extcommunity_bandwidth_set.extcommunity_bandwidth_set,
+    iosxr_extcommunity_cost_set.extcommunity_cost_set,
+    iosxr_extcommunity_evpn_link_bandwidth_set.extcommunity_evpn_link_bandwidth_set,
+    iosxr_extcommunity_opaque_set.extcommunity_opaque_set,
+    iosxr_extcommunity_rt_set.extcommunity_rt_set,
+    iosxr_extcommunity_seg_nh_set.extcommunity_seg_nh_set,
+    iosxr_extcommunity_soo_set.extcommunity_soo_set,
+    iosxr_large_community_set.large_community_set,
+    iosxr_mac_set.mac_set,
+    iosxr_ospf_area_set.ospf_area_set,
+    iosxr_policy_global_set.policy_global_set,
+    iosxr_prefix_set.prefix_set,
+    iosxr_rd_set.rd_set,
+    iosxr_tag_set.tag_set,
+    iosxr_ipv4_prefix_list.ipv4_prefix_list,
+    iosxr_ipv6_prefix_list.ipv6_prefix_list,
   ]
 }
