@@ -1,3 +1,5 @@
+##### TACACS Server #####
+
 resource "iosxr_tacacs_server" "tacacs_server" {
   for_each      = { for device in local.devices : device.name => device if try(local.device_config[device.name].tacacs_server, null) != null || try(local.defaults.iosxr.devices.configuration.tacacs_server, null) != null }
   device        = each.value.name
@@ -22,6 +24,8 @@ resource "iosxr_tacacs_server" "tacacs_server" {
     }
   ]
 }
+
+##### TACACS Source Interface #####
 
 locals {
   tacacs_source_interface = flatten([
