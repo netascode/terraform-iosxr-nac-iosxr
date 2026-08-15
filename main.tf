@@ -262,6 +262,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_snmp_server_mib.snmp_server_mib,
     iosxr_ssh.ssh,
     iosxr_tacacs_server.tacacs_server,
+    iosxr_tacacs_source_interface.tacacs_source_interface,
     iosxr_tag_set.tag_set,
     iosxr_tcp.tcp,
     iosxr_tftp_client.tftp_client,

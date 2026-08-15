@@ -22,3 +22,33 @@ resource "iosxr_tacacs_server" "tacacs_server" {
     }
   ]
 }
+
+locals {
+  tacacs_source_interface = flatten([
+    for device in local.devices : [
+      {
+        key         = device.name
+        device_name = device.name
+        source_interface = try(
+          [for si in local.device_config[device.name].tacacs_source_interface : si.interface if try(si.vrf, null) == null][0],
+          local.defaults.iosxr.devices.configuration.tacacs_source_interface.interface,
+          null
+        )
+        source_interfaces = try(length([for si in try(local.device_config[device.name].tacacs_source_interface, []) : si if try(si.vrf, null) != null]) == 0, true) ? null : [
+          for si in local.device_config[device.name].tacacs_source_interface : {
+            vrf       = try(si.vrf, local.defaults.iosxr.devices.configuration.tacacs_source_interface.vrf, null)
+            interface = try(si.interface, local.defaults.iosxr.devices.configuration.tacacs_source_interface.interface, null)
+          } if try(si.vrf, null) != null
+        ]
+      }
+    ] if try(local.device_config[device.name].tacacs_source_interface, null) != null ||
+    try(local.defaults.iosxr.devices.configuration.tacacs_source_interface, null) != null
+  ])
+}
+
+resource "iosxr_tacacs_source_interface" "tacacs_source_interface" {
+  for_each          = { for v in local.tacacs_source_interface : v.key => v }
+  device            = each.value.device_name
+  source_interface  = each.value.source_interface
+  source_interfaces = each.value.source_interfaces
+}

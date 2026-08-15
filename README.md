@@ -212,6 +212,7 @@ module "iosxr" {
 | [iosxr_snmp_server_vrf.snmp_server_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/snmp_server_vrf) | resource |
 | [iosxr_ssh.ssh](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/ssh) | resource |
 | [iosxr_tacacs_server.tacacs_server](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/tacacs_server) | resource |
+| [iosxr_tacacs_source_interface.tacacs_source_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/tacacs_source_interface) | resource |
 | [iosxr_tag_set.tag_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/tag_set) | resource |
 | [iosxr_tcp.tcp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/tcp) | resource |
 | [iosxr_telemetry_model_driven.telemetry_model_driven](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/telemetry_model_driven) | resource |
