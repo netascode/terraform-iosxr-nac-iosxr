@@ -11,12 +11,12 @@ locals {
         retransmit_retries                                            = try(local.device_config[device.name].radius_server.retransmit_retries, local.defaults.iosxr.devices.configuration.radius_server.retransmit_retries, null)
         load_balance_method_least_outstanding_batch_size              = try(local.device_config[device.name].radius_server.load_balance_method_least_outstanding_batch_size, local.defaults.iosxr.devices.configuration.radius_server.load_balance_method_least_outstanding_batch_size, null)
         load_balance_method_least_outstanding_ignore_preferred_server = try(local.device_config[device.name].radius_server.load_balance_method_least_outstanding_ignore_preferred_server, local.defaults.iosxr.devices.configuration.radius_server.load_balance_method_least_outstanding_ignore_preferred_server, null)
-        throttle_access                                               = try(local.device_config[device.name].radius_server.throttle_access, local.defaults.iosxr.devices.configuration.radius_server.throttle_access, null)
-        throttle_access_timeout                                       = try(local.device_config[device.name].radius_server.throttle_access_timeout, local.defaults.iosxr.devices.configuration.radius_server.throttle_access_timeout, null)
-        throttle_accounting                                           = try(local.device_config[device.name].radius_server.throttle_accounting, local.defaults.iosxr.devices.configuration.radius_server.throttle_accounting, null)
+        throttle_access                                               = try(local.device_config[device.name].radius_server.throttle.access, local.defaults.iosxr.devices.configuration.radius_server.throttle.access, null)
+        throttle_access_timeout                                       = try(local.device_config[device.name].radius_server.throttle.access_timeout, local.defaults.iosxr.devices.configuration.radius_server.throttle.access_timeout, null)
+        throttle_accounting                                           = try(local.device_config[device.name].radius_server.throttle.accounting, local.defaults.iosxr.devices.configuration.radius_server.throttle.accounting, null)
         deadtime                                                      = try(local.device_config[device.name].radius_server.deadtime, local.defaults.iosxr.devices.configuration.radius_server.deadtime, null)
-        dead_criteria_time                                            = try(local.device_config[device.name].radius_server.dead_criteria_time, local.defaults.iosxr.devices.configuration.radius_server.dead_criteria_time, null)
-        dead_criteria_tries                                           = try(local.device_config[device.name].radius_server.dead_criteria_tries, local.defaults.iosxr.devices.configuration.radius_server.dead_criteria_tries, null)
+        dead_criteria_time                                            = try(local.device_config[device.name].radius_server.dead_criteria.time, local.defaults.iosxr.devices.configuration.radius_server.dead_criteria.time, null)
+        dead_criteria_tries                                           = try(local.device_config[device.name].radius_server.dead_criteria.tries, local.defaults.iosxr.devices.configuration.radius_server.dead_criteria.tries, null)
         source_port_extended                                          = try(local.device_config[device.name].radius_server.source_port_extended, local.defaults.iosxr.devices.configuration.radius_server.source_port_extended, null)
         ipv4_dscp = try(lookup(local.dscp_map,
           tostring(try(local.device_config[device.name].radius_server.ipv4_dscp, local.defaults.iosxr.devices.configuration.radius_server.ipv4_dscp)),
@@ -30,9 +30,9 @@ locals {
         )
         vsa_attribute_ignore_unknown                              = try(local.device_config[device.name].radius_server.vsa_attribute_ignore_unknown, local.defaults.iosxr.devices.configuration.radius_server.vsa_attribute_ignore_unknown, null)
         disallow_null_username                                    = try(local.device_config[device.name].radius_server.disallow_null_username, local.defaults.iosxr.devices.configuration.radius_server.disallow_null_username, null)
-        attribute_acct_session_id_prepend_nas_port_id             = try(local.device_config[device.name].radius_server.attribute_acct_session_id_prepend_nas_port_id, local.defaults.iosxr.devices.configuration.radius_server.attribute_acct_session_id_prepend_nas_port_id, null)
-        attribute_acct_multi_session_id_include_parent_session_id = try(local.device_config[device.name].radius_server.attribute_acct_multi_session_id_include_parent_session_id, local.defaults.iosxr.devices.configuration.radius_server.attribute_acct_multi_session_id_include_parent_session_id, null)
-        attribute_filter_id_11_default_direction                  = try(local.device_config[device.name].radius_server.attribute_filter_id_11_default_direction, local.defaults.iosxr.devices.configuration.radius_server.attribute_filter_id_11_default_direction, null)
+        attribute_acct_session_id_prepend_nas_port_id             = try(local.device_config[device.name].radius_server.attribute.acct_session_id_prepend_nas_port_id, local.defaults.iosxr.devices.configuration.radius_server.attribute.acct_session_id_prepend_nas_port_id, null)
+        attribute_acct_multi_session_id_include_parent_session_id = try(local.device_config[device.name].radius_server.attribute.acct_multi_session_id_include_parent_session_id, local.defaults.iosxr.devices.configuration.radius_server.attribute.acct_multi_session_id_include_parent_session_id, null)
+        attribute_filter_id_11_default_direction                  = try(local.device_config[device.name].radius_server.attribute.filter_id_11_default_direction, local.defaults.iosxr.devices.configuration.radius_server.attribute.filter_id_11_default_direction, null)
         hosts = try(length(local.device_config[device.name].radius_server.hosts) == 0, true) ? null : [
           for host in local.device_config[device.name].radius_server.hosts : {
             address                  = try(host.address, local.defaults.iosxr.devices.configuration.radius_server.hosts.address, null)
@@ -51,16 +51,16 @@ locals {
             timeout                  = try(host.timeout, local.defaults.iosxr.devices.configuration.radius_server.hosts.timeout, null)
           }
         ]
-        attribute_lists = try(length(local.device_config[device.name].radius_server.attribute_lists) == 0, true) ? null : [
-          for attr_list in local.device_config[device.name].radius_server.attribute_lists : {
-            name              = try(attr_list.name, local.defaults.iosxr.devices.configuration.radius_server.attribute_lists.name, null)
-            radius_attributes = try(attr_list.radius_attributes, local.defaults.iosxr.devices.configuration.radius_server.attribute_lists.radius_attributes, null)
+        attribute_lists = try(length(local.device_config[device.name].radius_server.attribute.lists) == 0, true) ? null : [
+          for attr_list in local.device_config[device.name].radius_server.attribute.lists : {
+            name              = try(attr_list.name, local.defaults.iosxr.devices.configuration.radius_server.attribute.lists.name, null)
+            radius_attributes = try(attr_list.attributes, local.defaults.iosxr.devices.configuration.radius_server.attribute.lists.attributes, null)
             attribute_vendor_ids = try(length(attr_list.attribute_vendor_ids) == 0, true) ? null : [
               for vendor in attr_list.attribute_vendor_ids : {
-                id = try(vendor.id, local.defaults.iosxr.devices.configuration.radius_server.attribute_lists.attribute_vendor_ids.id, null)
+                id = try(vendor.id, local.defaults.iosxr.devices.configuration.radius_server.attribute.lists.attribute_vendor_ids.id, null)
                 vendor_types = try(length(vendor.vendor_types) == 0, true) ? null : [
                   for vtype in vendor.vendor_types : {
-                    vendor_type_id = try(vtype.vendor_type_id, local.defaults.iosxr.devices.configuration.radius_server.attribute_lists.attribute_vendor_ids.vendor_types.vendor_type_id, null)
+                    vendor_type_id = try(vtype.id, local.defaults.iosxr.devices.configuration.radius_server.attribute.lists.attribute_vendor_ids.vendor_types.id, null)
                   }
                 ]
               }
