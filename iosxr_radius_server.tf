@@ -34,11 +34,11 @@ locals {
         attribute_acct_multi_session_id_include_parent_session_id = try(local.device_config[device.name].radius_server.attribute.acct_multi_session_id_include_parent_session_id, local.defaults.iosxr.devices.configuration.radius_server.attribute.acct_multi_session_id_include_parent_session_id, null)
         attribute_filter_id_11_default_direction                  = try(local.device_config[device.name].radius_server.attribute.filter_id_11_default_direction, local.defaults.iosxr.devices.configuration.radius_server.attribute.filter_id_11_default_direction, null)
         hosts = try(length(local.device_config[device.name].radius_server.hosts) == 0, true) ? null : [
-          for host in local.device_config[device.name].radius_server.hosts : {
+          for idx, host in local.device_config[device.name].radius_server.hosts : {
+            order                    = idx
             address                  = try(host.address, local.defaults.iosxr.devices.configuration.radius_server.hosts.address, null)
             auth_port                = try(host.auth_port, local.defaults.iosxr.devices.configuration.radius_server.hosts.auth_port, null)
             acct_port                = try(host.acct_port, local.defaults.iosxr.devices.configuration.radius_server.hosts.acct_port, null)
-            order                    = try(host.order, local.defaults.iosxr.devices.configuration.radius_server.hosts.order, null)
             dtls_server_trustpoint   = try(host.dtls_server_trustpoint, local.defaults.iosxr.devices.configuration.radius_server.hosts.dtls_server_trustpoint, null)
             idle_time                = try(host.idle_time, local.defaults.iosxr.devices.configuration.radius_server.hosts.idle_time, null)
             ignore_acct_port         = try(host.ignore_acct_port, local.defaults.iosxr.devices.configuration.radius_server.hosts.ignore_acct_port, null)

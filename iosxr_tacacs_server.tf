@@ -3,12 +3,20 @@
 resource "iosxr_tacacs_server" "tacacs_server" {
   for_each      = { for device in local.devices : device.name => device if try(local.device_config[device.name].tacacs_server, null) != null || try(local.defaults.iosxr.devices.configuration.tacacs_server, null) != null }
   device        = each.value.name
-  key_type_6    = try(local.device_config[each.value.name].tacacs_server.key_type_6, local.defaults.iosxr.devices.configuration.tacacs_server.key_type_6, null)
-  key_type_7    = try(local.device_config[each.value.name].tacacs_server.key_type_7, local.defaults.iosxr.devices.configuration.tacacs_server.key_type_7, null)
+  key_type_6    = try(local.device_config[each.value.name].tacacs_server.key_type, local.defaults.iosxr.devices.configuration.tacacs_server.key_type, null) == 6 ? try(local.device_config[each.value.name].tacacs_server.key, local.defaults.iosxr.devices.configuration.tacacs_server.key, null) : null
+  key_type_7    = try(local.device_config[each.value.name].tacacs_server.key_type, local.defaults.iosxr.devices.configuration.tacacs_server.key_type, null) == 7 ? try(local.device_config[each.value.name].tacacs_server.key, local.defaults.iosxr.devices.configuration.tacacs_server.key, null) : null
   timeout       = try(local.device_config[each.value.name].tacacs_server.timeout, local.defaults.iosxr.devices.configuration.tacacs_server.timeout, null)
   holddown_time = try(local.device_config[each.value.name].tacacs_server.holddown_time, local.defaults.iosxr.devices.configuration.tacacs_server.holddown_time, null)
-  ipv4_dscp     = try(local.device_config[each.value.name].tacacs_server.ipv4_dscp, local.defaults.iosxr.devices.configuration.tacacs_server.ipv4_dscp, null)
-  ipv6_dscp     = try(local.device_config[each.value.name].tacacs_server.ipv6_dscp, local.defaults.iosxr.devices.configuration.tacacs_server.ipv6_dscp, null)
+  ipv4_dscp = try(lookup(local.dscp_map,
+    tostring(try(local.device_config[each.value.name].tacacs_server.ipv4_dscp, local.defaults.iosxr.devices.configuration.tacacs_server.ipv4_dscp)),
+    tostring(try(local.device_config[each.value.name].tacacs_server.ipv4_dscp, local.defaults.iosxr.devices.configuration.tacacs_server.ipv4_dscp))
+    ), null
+  )
+  ipv6_dscp = try(lookup(local.dscp_map,
+    tostring(try(local.device_config[each.value.name].tacacs_server.ipv6_dscp, local.defaults.iosxr.devices.configuration.tacacs_server.ipv6_dscp)),
+    tostring(try(local.device_config[each.value.name].tacacs_server.ipv6_dscp, local.defaults.iosxr.devices.configuration.tacacs_server.ipv6_dscp))
+    ), null
+  )
 
   hosts = try(length(local.device_config[each.value.name].tacacs_server.hosts) == 0, true) ? null : [
     for idx, host in try(local.device_config[each.value.name].tacacs_server.hosts, []) : {
@@ -17,8 +25,8 @@ resource "iosxr_tacacs_server" "tacacs_server" {
       port                           = try(host.port, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.port, null)
       timeout                        = try(host.timeout, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.timeout, null)
       holddown_time                  = try(host.holddown_time, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.holddown_time, null)
-      key_type_6                     = try(host.key_type_6, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.key_type_6, null)
-      key_type_7                     = try(host.key_type_7, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.key_type_7, null)
+      key_type_6                     = try(host.key_type, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.key_type, null) == 6 ? try(host.key, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.key, null) : null
+      key_type_7                     = try(host.key_type, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.key_type, null) == 7 ? try(host.key, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.key, null) : null
       single_connection              = try(host.single_connection, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.single_connection, null)
       single_connection_idle_timeout = try(host.single_connection_idle_timeout, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.single_connection_idle_timeout, null)
     }
