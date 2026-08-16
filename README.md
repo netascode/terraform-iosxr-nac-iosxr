@@ -151,6 +151,7 @@ module "iosxr" {
 | [iosxr_prefix_set.prefix_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/prefix_set) | resource |
 | [iosxr_ptp.ptp](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/ptp) | resource |
 | [iosxr_ptp_profile.ptp_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/ptp_profile) | resource |
+| [iosxr_radius_server.radius_server](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/radius_server) | resource |
 | [iosxr_radius_source_interface.radius_source_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/radius_source_interface) | resource |
 | [iosxr_rd_set.rd_set](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/rd_set) | resource |
 | [iosxr_route_policy.route_policy](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/route_policy) | resource |
