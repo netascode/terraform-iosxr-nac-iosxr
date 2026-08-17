@@ -127,6 +127,7 @@ resource "iosxr_cli" "cli_0" {
   cli      = each.value.content
 
   depends_on = [
+    iosxr_aaa_authentication.aaa_authentication,
     iosxr_as_path_set.as_path_set,
     iosxr_banner.banner,
     iosxr_bfd.bfd,
