@@ -48,7 +48,10 @@ resource "iosxr_line_console" "line_console" {
   ]
 
   depends_on = [
-    iosxr_aaa.aaa
+    iosxr_aaa.aaa,
+    iosxr_aaa_authentication.aaa_authentication,
+    iosxr_aaa_authorization.aaa_authorization,
+    iosxr_aaa_accounting.aaa_accounting,
   ]
 }
 
@@ -103,7 +106,10 @@ resource "iosxr_line_default" "line_default" {
   ]
 
   depends_on = [
-    iosxr_aaa.aaa
+    iosxr_aaa.aaa,
+    iosxr_aaa_authentication.aaa_authentication,
+    iosxr_aaa_authorization.aaa_authorization,
+    iosxr_aaa_accounting.aaa_accounting,
   ]
 }
 
@@ -211,6 +217,9 @@ resource "iosxr_line_template" "line_template" {
   users_group                 = each.value.users_group
 
   depends_on = [
-    iosxr_aaa.aaa
+    iosxr_aaa.aaa,
+    iosxr_aaa_authentication.aaa_authentication,
+    iosxr_aaa_authorization.aaa_authorization,
+    iosxr_aaa_accounting.aaa_accounting,
   ]
 }
