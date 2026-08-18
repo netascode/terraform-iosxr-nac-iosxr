@@ -128,6 +128,7 @@ resource "iosxr_cli" "cli_0" {
 
   depends_on = [
     iosxr_aaa.aaa,
+    iosxr_aaa_accounting.aaa_accounting,
     iosxr_aaa_authentication.aaa_authentication,
     iosxr_as_path_set.as_path_set,
     iosxr_banner.banner,
