@@ -208,6 +208,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_ptp.ptp,
     iosxr_ptp_profile.ptp_profile,
     iosxr_prefix_set.prefix_set,
+    iosxr_radius_server.radius_server,
     iosxr_radius_source_interface.radius_source_interface,
     iosxr_rd_set.rd_set,
     iosxr_route_policy.route_policy,
