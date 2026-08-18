@@ -661,3 +661,96 @@ resource "iosxr_aaa_accounting" "aaa_accounting" {
   ]
   depends_on = [iosxr_aaa.aaa]
 }
+##### AAA Authorization #####
+
+resource "iosxr_aaa_authorization" "aaa_authorization" {
+  for_each = {
+    for device in local.devices : device.name => device
+    if try(local.device_config[device.name].aaa.authorization, null) != null ||
+    try(local.defaults.iosxr.devices.configuration.aaa.authorization, null) != null
+  }
+  device = each.value.name
+  exec = try(length(try(local.device_config[each.value.name].aaa.authorization.exec, [])) == 0, true) ? null : [
+    for item in try(local.device_config[each.value.name].aaa.authorization.exec, []) : {
+      list      = try(item.name, null)
+      a1_local  = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[0], null) == "local" ? true : null
+      a1_none   = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[0], null) == "none" ? true : null
+      a1_tacacs = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[0], null) == "tacacs" ? true : null
+      a1_radius = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[0], null) == "radius" ? true : null
+      a1_group  = !contains(["local", "none", "tacacs", "radius"], try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[0], "")) && try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[0], null) != null ? try(item.groups[0], null) : null
+      a2_local  = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[1], null) == "local" ? true : null
+      a2_none   = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[1], null) == "none" ? true : null
+      a2_tacacs = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[1], null) == "tacacs" ? true : null
+      a2_radius = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[1], null) == "radius" ? true : null
+      a2_group  = !contains(["local", "none", "tacacs", "radius"], try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[1], "")) && try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[1], null) != null ? try(item.groups[1], null) : null
+      a3_local  = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[2], null) == "local" ? true : null
+      a3_none   = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[2], null) == "none" ? true : null
+      a3_tacacs = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[2], null) == "tacacs" ? true : null
+      a3_radius = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[2], null) == "radius" ? true : null
+      a3_group  = !contains(["local", "none", "tacacs", "radius"], try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[2], "")) && try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[2], null) != null ? try(item.groups[2], null) : null
+      a4_local  = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[3], null) == "local" ? true : null
+      a4_none   = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[3], null) == "none" ? true : null
+      a4_tacacs = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[3], null) == "tacacs" ? true : null
+      a4_radius = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[3], null) == "radius" ? true : null
+      a4_group  = !contains(["local", "none", "tacacs", "radius"], try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[3], "")) && try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.exec.groups[3], null) != null ? try(item.groups[3], null) : null
+    }
+  ]
+  eventmanager = try(length(try(local.device_config[each.value.name].aaa.authorization.eventmanager, [])) == 0, true) ? null : [
+    for item in try(local.device_config[each.value.name].aaa.authorization.eventmanager, []) : {
+      list      = try(item.name, null)
+      a1_local  = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.eventmanager.groups[0], null) == "local" ? true : null
+      a1_tacacs = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.eventmanager.groups[0], null) == "tacacs" ? true : null
+      a1_group  = !contains(["local", "tacacs"], try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.eventmanager.groups[0], "")) && try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.eventmanager.groups[0], null) != null ? try(item.groups[0], null) : null
+      a2_local  = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.eventmanager.groups[1], null) == "local" ? true : null
+      a2_tacacs = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.eventmanager.groups[1], null) == "tacacs" ? true : null
+      a2_group  = !contains(["local", "tacacs"], try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.eventmanager.groups[1], "")) && try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.eventmanager.groups[1], null) != null ? try(item.groups[1], null) : null
+    }
+  ]
+  commands = try(length(try(local.device_config[each.value.name].aaa.authorization.commands, [])) == 0, true) ? null : [
+    for item in try(local.device_config[each.value.name].aaa.authorization.commands, []) : {
+      list      = try(item.name, null)
+      a1_local  = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[0], null) == "local" ? true : null
+      a1_none   = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[0], null) == "none" ? true : null
+      a1_tacacs = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[0], null) == "tacacs" ? true : null
+      a1_group  = !contains(["local", "none", "tacacs"], try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[0], "")) && try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[0], null) != null ? try(item.groups[0], null) : null
+      a2_local  = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[1], null) == "local" ? true : null
+      a2_none   = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[1], null) == "none" ? true : null
+      a2_tacacs = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[1], null) == "tacacs" ? true : null
+      a2_group  = !contains(["local", "none", "tacacs"], try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[1], "")) && try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[1], null) != null ? try(item.groups[1], null) : null
+      a3_local  = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[2], null) == "local" ? true : null
+      a3_none   = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[2], null) == "none" ? true : null
+      a3_tacacs = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[2], null) == "tacacs" ? true : null
+      a3_group  = !contains(["local", "none", "tacacs"], try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[2], "")) && try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[2], null) != null ? try(item.groups[2], null) : null
+      a4_local  = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[3], null) == "local" ? true : null
+      a4_none   = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[3], null) == "none" ? true : null
+      a4_tacacs = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[3], null) == "tacacs" ? true : null
+      a4_group  = !contains(["local", "none", "tacacs"], try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[3], "")) && try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.commands.groups[3], null) != null ? try(item.groups[3], null) : null
+    }
+  ]
+  network = try(length(try(local.device_config[each.value.name].aaa.authorization.network, [])) == 0, true) ? null : [
+    for item in try(local.device_config[each.value.name].aaa.authorization.network, []) : {
+      list      = try(item.name, null)
+      a1_local  = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[0], null) == "local" ? true : null
+      a1_none   = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[0], null) == "none" ? true : null
+      a1_tacacs = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[0], null) == "tacacs" ? true : null
+      a1_radius = try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[0], null) == "radius" ? true : null
+      a1_group  = !contains(["local", "none", "tacacs", "radius"], try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[0], "")) && try(item.groups[0], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[0], null) != null ? try(item.groups[0], null) : null
+      a2_local  = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[1], null) == "local" ? true : null
+      a2_none   = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[1], null) == "none" ? true : null
+      a2_tacacs = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[1], null) == "tacacs" ? true : null
+      a2_radius = try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[1], null) == "radius" ? true : null
+      a2_group  = !contains(["local", "none", "tacacs", "radius"], try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[1], "")) && try(item.groups[1], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[1], null) != null ? try(item.groups[1], null) : null
+      a3_local  = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[2], null) == "local" ? true : null
+      a3_none   = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[2], null) == "none" ? true : null
+      a3_tacacs = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[2], null) == "tacacs" ? true : null
+      a3_radius = try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[2], null) == "radius" ? true : null
+      a3_group  = !contains(["local", "none", "tacacs", "radius"], try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[2], "")) && try(item.groups[2], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[2], null) != null ? try(item.groups[2], null) : null
+      a4_local  = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[3], null) == "local" ? true : null
+      a4_none   = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[3], null) == "none" ? true : null
+      a4_tacacs = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[3], null) == "tacacs" ? true : null
+      a4_radius = try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[3], null) == "radius" ? true : null
+      a4_group  = !contains(["local", "none", "tacacs", "radius"], try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[3], "")) && try(item.groups[3], local.defaults.iosxr.devices.configuration.aaa.authorization.network.groups[3], null) != null ? try(item.groups[3], null) : null
+    }
+  ]
+  depends_on = [iosxr_aaa.aaa]
+}

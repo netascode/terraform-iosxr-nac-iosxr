@@ -130,6 +130,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_aaa.aaa,
     iosxr_aaa_accounting.aaa_accounting,
     iosxr_aaa_authentication.aaa_authentication,
+    iosxr_aaa_authorization.aaa_authorization,
     iosxr_as_path_set.as_path_set,
     iosxr_banner.banner,
     iosxr_bfd.bfd,
