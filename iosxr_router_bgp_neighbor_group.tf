@@ -385,7 +385,6 @@ resource "iosxr_router_bgp_neighbor_group" "router_bgp_neighbor_group" {
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     iosxr_bmp_server.bmp_server,
-    # iosxr_router_bgp.router_bgp,  # TODO: Circular dependency but needs attibutes from
     iosxr_router_bgp_address_family.ipv4_unicast,
     iosxr_router_bgp_address_family.ipv6_unicast,
     iosxr_router_bgp_address_family.vpnv4_unicast,

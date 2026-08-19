@@ -168,6 +168,7 @@ module "iosxr" {
 | [iosxr_router_bgp_address_family.vpnv6_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_address_family) | resource |
 | [iosxr_router_bgp_address_family.vpnv6_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_address_family) | resource |
 | [iosxr_router_bgp_af_group.router_bgp_af_group](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_af_group) | resource |
+| [iosxr_router_bgp_neighbor.router_bgp_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_neighbor) | resource |
 | [iosxr_router_bgp_neighbor_address_family.router_bgp_neighbor_address_family](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_neighbor_address_family) | resource |
 | [iosxr_router_bgp_neighbor_group.router_bgp_neighbor_group](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_neighbor_group) | resource |
 | [iosxr_router_bgp_session_group.router_bgp_session_group](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_session_group) | resource |
@@ -176,6 +177,7 @@ module "iosxr" {
 | [iosxr_router_bgp_vrf_address_family.ipv4_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_vrf_address_family) | resource |
 | [iosxr_router_bgp_vrf_address_family.ipv6_multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_vrf_address_family) | resource |
 | [iosxr_router_bgp_vrf_address_family.ipv6_unicast](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_vrf_address_family) | resource |
+| [iosxr_router_bgp_vrf_neighbor.router_bgp_vrf_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_vrf_neighbor) | resource |
 | [iosxr_router_bgp_vrf_neighbor_address_family.router_bgp_vrf_neighbor_address_family](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_bgp_vrf_neighbor_address_family) | resource |
 | [iosxr_router_hsrp_interface.router_hsrp_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_hsrp_interface) | resource |
 | [iosxr_router_hsrp_interface_ipv4_group_v1.router_hsrp_interface_ipv4_group_v1](https://registry.terraform.io/providers/CiscoDevNet/iosxr/0.7.1/docs/resources/router_hsrp_interface_ipv4_group_v1) | resource |

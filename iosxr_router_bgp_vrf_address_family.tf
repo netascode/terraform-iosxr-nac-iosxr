@@ -252,24 +252,17 @@ resource "iosxr_router_bgp_vrf_address_family" "ipv4_unicast" {
 
   # lifecycle {
   #   replace_triggered_by = [
+  #     iosxr_bmp_server.bmp_server,
+  #     iosxr_key_chain.key_chain,
+  #     iosxr_route_policy.route_policy,
   #     iosxr_router_bgp_vrf.router_bgp_vrf
   #   ]
   # }
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    iosxr_router_bgp.router_bgp,
-    iosxr_router_bgp_address_family.ipv4_unicast,
-    iosxr_router_bgp_address_family.ipv6_unicast,
-    iosxr_router_bgp_address_family.vpnv4_unicast,
-    iosxr_router_bgp_address_family.vpnv6_unicast,
-    iosxr_router_bgp_address_family.vpnv4_multicast,
-    iosxr_router_bgp_address_family.vpnv6_multicast,
-    iosxr_router_bgp_address_family.l2vpn_evpn,
-    iosxr_router_bgp_session_group.router_bgp_session_group,
-    iosxr_router_bgp_neighbor_group.router_bgp_neighbor_group,
-    iosxr_router_bgp_af_group.router_bgp_af_group,
     iosxr_router_bgp_vrf.router_bgp_vrf
   ]
 }
@@ -527,24 +520,17 @@ resource "iosxr_router_bgp_vrf_address_family" "ipv6_unicast" {
 
   # lifecycle {
   #   replace_triggered_by = [
+  #     iosxr_bmp_server.bmp_server,
+  #     iosxr_key_chain.key_chain,
+  #     iosxr_route_policy.route_policy,
   #     iosxr_router_bgp_vrf.router_bgp_vrf
   #   ]
   # }
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    iosxr_router_bgp.router_bgp,
-    iosxr_router_bgp_address_family.ipv4_unicast,
-    iosxr_router_bgp_address_family.ipv6_unicast,
-    iosxr_router_bgp_address_family.vpnv4_unicast,
-    iosxr_router_bgp_address_family.vpnv6_unicast,
-    iosxr_router_bgp_address_family.vpnv4_multicast,
-    iosxr_router_bgp_address_family.vpnv6_multicast,
-    iosxr_router_bgp_address_family.l2vpn_evpn,
-    iosxr_router_bgp_session_group.router_bgp_session_group,
-    iosxr_router_bgp_neighbor_group.router_bgp_neighbor_group,
-    iosxr_router_bgp_af_group.router_bgp_af_group,
     iosxr_router_bgp_vrf.router_bgp_vrf
   ]
 }
@@ -736,24 +722,17 @@ resource "iosxr_router_bgp_vrf_address_family" "ipv4_multicast" {
 
   # lifecycle {
   #   replace_triggered_by = [
+  #     iosxr_bmp_server.bmp_server,
+  #     iosxr_key_chain.key_chain,
+  #     iosxr_route_policy.route_policy,
   #     iosxr_router_bgp_vrf.router_bgp_vrf
   #   ]
   # }
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    iosxr_router_bgp.router_bgp,
-    iosxr_router_bgp_address_family.ipv4_unicast,
-    iosxr_router_bgp_address_family.ipv6_unicast,
-    iosxr_router_bgp_address_family.vpnv4_unicast,
-    iosxr_router_bgp_address_family.vpnv6_unicast,
-    iosxr_router_bgp_address_family.vpnv4_multicast,
-    iosxr_router_bgp_address_family.vpnv6_multicast,
-    iosxr_router_bgp_address_family.l2vpn_evpn,
-    iosxr_router_bgp_session_group.router_bgp_session_group,
-    iosxr_router_bgp_neighbor_group.router_bgp_neighbor_group,
-    iosxr_router_bgp_af_group.router_bgp_af_group,
     iosxr_router_bgp_vrf.router_bgp_vrf
   ]
 }
@@ -946,24 +925,17 @@ resource "iosxr_router_bgp_vrf_address_family" "ipv6_multicast" {
 
   # lifecycle {
   #   replace_triggered_by = [
+  #     iosxr_bmp_server.bmp_server,
+  #     iosxr_key_chain.key_chain,
+  #     iosxr_route_policy.route_policy,
   #     iosxr_router_bgp_vrf.router_bgp_vrf
   #   ]
   # }
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    iosxr_router_bgp.router_bgp,
-    iosxr_router_bgp_address_family.ipv4_unicast,
-    iosxr_router_bgp_address_family.ipv6_unicast,
-    iosxr_router_bgp_address_family.vpnv4_unicast,
-    iosxr_router_bgp_address_family.vpnv6_unicast,
-    iosxr_router_bgp_address_family.vpnv4_multicast,
-    iosxr_router_bgp_address_family.vpnv6_multicast,
-    iosxr_router_bgp_address_family.l2vpn_evpn,
-    iosxr_router_bgp_session_group.router_bgp_session_group,
-    iosxr_router_bgp_neighbor_group.router_bgp_neighbor_group,
-    iosxr_router_bgp_af_group.router_bgp_af_group,
     iosxr_router_bgp_vrf.router_bgp_vrf
   ]
 }

@@ -325,6 +325,7 @@ resource "iosxr_router_bgp_address_family" "ipv4_unicast" {
   peer_set_ids                                             = each.value.peer_set_ids
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     iosxr_router_bgp.router_bgp
@@ -650,6 +651,7 @@ resource "iosxr_router_bgp_address_family" "ipv6_unicast" {
   peer_set_ids                                             = each.value.peer_set_ids
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     iosxr_router_bgp.router_bgp
@@ -806,6 +808,7 @@ resource "iosxr_router_bgp_address_family" "vpnv4_unicast" {
   segment_routing_srv6_usid_allocation_wide_local_id_block         = each.value.segment_routing_srv6_usid_allocation_wide_local_id_block
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     iosxr_router_bgp.router_bgp
@@ -958,6 +961,7 @@ resource "iosxr_router_bgp_address_family" "vpnv6_unicast" {
   segment_routing_srv6_usid_allocation_wide_local_id_block         = each.value.segment_routing_srv6_usid_allocation_wide_local_id_block
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     iosxr_router_bgp.router_bgp
@@ -1058,6 +1062,7 @@ resource "iosxr_router_bgp_address_family" "vpnv4_multicast" {
   default_martian_check_disable                            = each.value.default_martian_check_disable
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     iosxr_router_bgp.router_bgp
@@ -1159,6 +1164,7 @@ resource "iosxr_router_bgp_address_family" "vpnv6_multicast" {
   default_martian_check_disable                            = each.value.default_martian_check_disable
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     iosxr_router_bgp.router_bgp
@@ -1261,6 +1267,7 @@ resource "iosxr_router_bgp_address_family" "l2vpn_evpn" {
   default_martian_check_disable                            = each.value.default_martian_check_disable
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     iosxr_router_bgp.router_bgp

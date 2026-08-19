@@ -264,6 +264,7 @@ resource "iosxr_router_bgp_session_group" "router_bgp_session_group" {
   update_in_error_handling_treat_as_withdraw                        = each.value.update_in_error_handling_treat_as_withdraw
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     iosxr_router_bgp_address_family.ipv4_unicast,

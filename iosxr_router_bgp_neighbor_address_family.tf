@@ -199,16 +199,9 @@ resource "iosxr_router_bgp_neighbor_address_family" "router_bgp_neighbor_address
   bestpath_origin_as_allow_invalid                        = each.value.bestpath_origin_as_allow_invalid
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    iosxr_router_bgp_address_family.ipv4_unicast,
-    iosxr_router_bgp_address_family.ipv6_unicast,
-    iosxr_router_bgp_address_family.vpnv4_unicast,
-    iosxr_router_bgp_address_family.vpnv6_unicast,
-    iosxr_router_bgp_address_family.vpnv4_multicast,
-    iosxr_router_bgp_address_family.vpnv6_multicast,
-    iosxr_router_bgp_address_family.l2vpn_evpn,
-    iosxr_router_bgp_neighbor_group.router_bgp_neighbor_group,
-    iosxr_router_bgp_af_group.router_bgp_af_group
+    iosxr_router_bgp_neighbor.router_bgp_neighbor
   ]
 }
