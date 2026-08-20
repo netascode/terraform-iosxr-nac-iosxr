@@ -1713,6 +1713,10 @@ locals {
           ),
           null
         )
+        macsec_psk_keychain_name     = try(be.macsec_psk_keychain, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.macsec_psk_keychain, null)
+        macsec_fallback_psk_keychain = try(be.macsec_fallback_psk_keychain, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.macsec_fallback_psk_keychain, null)
+        macsec_policy                = try(be.macsec_policy, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.macsec_policy, null)
+        macsec_eap_policy            = try(be.macsec_eap_policy, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.macsec_eap_policy, null)
         monitor_sessions = try(length(be.monitor_sessions) == 0, true) ? null : [for session in be.monitor_sessions : {
           session_name      = try(session.name, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.monitor_sessions.name, null)
           ethernet          = try(session.type, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.monitor_sessions.type, "ethernet") == "ethernet" ? true : null
@@ -2001,6 +2005,10 @@ resource "iosxr_interface_bundle_ether" "bundle_ether" {
   bfd_address_family_ipv6_timers_start                      = each.value.bfd_address_family_ipv6_timers_start
   bfd_address_family_ipv6_timers_nbr_unconfig               = each.value.bfd_address_family_ipv6_timers_nbr_unconfig
   mac_address                                               = each.value.mac_address
+  macsec_psk_keychain_name                                  = each.value.macsec_psk_keychain_name
+  macsec_fallback_psk_keychain                              = each.value.macsec_fallback_psk_keychain
+  macsec_policy                                             = each.value.macsec_policy
+  macsec_eap_policy                                         = each.value.macsec_eap_policy
   monitor_sessions                                          = each.value.monitor_sessions
   mpls_mtu                                                  = each.value.mpls_mtu
   lldp                                                      = each.value.lldp
@@ -2261,6 +2269,10 @@ locals {
           arp_gratuitous_ignore                                = try(subint.arp_gratuitous_ignore, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.arp_gratuitous_ignore, null)
           arp_cache_limit                                      = try(subint.arp_cache_limit, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.arp_cache_limit, null)
           proxy_arp                                            = try(subint.proxy_arp, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.proxy_arp, null)
+          macsec_psk_keychain_name                             = try(subint.macsec_psk_keychain, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.macsec_psk_keychain, null)
+          macsec_fallback_psk_keychain                         = try(subint.macsec_fallback_psk_keychain, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.macsec_fallback_psk_keychain, null)
+          macsec_policy                                        = try(subint.macsec_policy, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.macsec_policy, null)
+          macsec_eap_policy                                    = try(subint.macsec_eap_policy, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.macsec_eap_policy, null)
           monitor_sessions = try(length(subint.monitor_sessions) == 0, true) ? null : [for session in subint.monitor_sessions : {
             session_name      = try(session.name, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.monitor_sessions.name, null)
             ethernet          = try(session.type, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.monitor_sessions.type, "ethernet") == "ethernet" ? true : null
@@ -2522,6 +2534,10 @@ resource "iosxr_interface_bundle_ether_subinterface" "bundle_ether_subinterface"
   arp_gratuitous_ignore                                     = each.value.arp_gratuitous_ignore
   arp_cache_limit                                           = each.value.arp_cache_limit
   proxy_arp                                                 = each.value.proxy_arp
+  macsec_psk_keychain_name                                  = each.value.macsec_psk_keychain_name
+  macsec_fallback_psk_keychain                              = each.value.macsec_fallback_psk_keychain
+  macsec_policy                                             = each.value.macsec_policy
+  macsec_eap_policy                                         = each.value.macsec_eap_policy
   monitor_sessions                                          = each.value.monitor_sessions
   mpls_mtu                                                  = each.value.mpls_mtu
   lldp                                                      = each.value.lldp

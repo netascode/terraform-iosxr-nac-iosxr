@@ -52,6 +52,7 @@ locals {
           police_violate_action_transmit                         = try(class.police_violate_action_transmit, local.defaults.iosxr.devices.configuration.policy_maps.classes.police_violate_action_transmit, null)
           priority_level                                         = try(class.priority_level, local.defaults.iosxr.devices.configuration.policy_maps.classes.priority_level, null)
           random_detect_default                                  = try(class.random_detect_default, local.defaults.iosxr.devices.configuration.policy_maps.classes.random_detect_default, null)
+          random_detect_ecn                                      = try(class.random_detect_ecn, local.defaults.iosxr.devices.configuration.policy_maps.classes.random_detect_ecn, null)
           service_policy_name                                    = try(class.service_policy_name, local.defaults.iosxr.devices.configuration.policy_maps.classes.service_policy_name, null)
           set_cos                                                = try(class.set_cos, local.defaults.iosxr.devices.configuration.policy_maps.classes.set_cos, null)
           set_discard_class                                      = try(class.set_discard_class, local.defaults.iosxr.devices.configuration.policy_maps.classes.set_discard_class, null)

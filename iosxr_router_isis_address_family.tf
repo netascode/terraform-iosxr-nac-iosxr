@@ -10,6 +10,9 @@ locals {
         saf_name                                                        = "unicast"
         advertise_link_attributes                                       = try(isis_process.address_family.ipv4_unicast.advertise_link_attributes, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv4_unicast.advertise_link_attributes, null)
         advertise_passive_only                                          = try(isis_process.address_family.ipv4_unicast.advertise_passive_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv4_unicast.advertise_passive_only, null)
+        apply_weight_ecmp_only                                          = contains(["ecmp-only", "ecmp-only-bandwidth"], try(isis_process.address_family.ipv4_unicast.apply_weight, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv4_unicast.apply_weight, "")) ? true : null
+        apply_weight_ecmp_only_bandwidth                                = try(isis_process.address_family.ipv4_unicast.apply_weight, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv4_unicast.apply_weight, null) == "ecmp-only-bandwidth" ? true : null
+        apply_weight_ucmp_only                                          = try(isis_process.address_family.ipv4_unicast.apply_weight, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv4_unicast.apply_weight, null) == "ucmp-only" ? true : null
         default_information_originate                                   = try(isis_process.address_family.ipv4_unicast.default_information_originate, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv4_unicast.default_information_originate, null)
         default_information_originate_route_policy                      = try(isis_process.address_family.ipv4_unicast.default_information_originate_route_policy, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv4_unicast.default_information_originate_route_policy, null)
         fast_reroute_delay_interval                                     = try(isis_process.address_family.ipv4_unicast.fast_reroute_delay_interval, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv4_unicast.fast_reroute_delay_interval, null)
@@ -302,6 +305,9 @@ resource "iosxr_router_isis_address_family" "ipv4_unicast" {
   saf_name                                                           = each.value.saf_name
   advertise_link_attributes                                          = each.value.advertise_link_attributes
   advertise_passive_only                                             = each.value.advertise_passive_only
+  apply_weight_ecmp_only                                             = each.value.apply_weight_ecmp_only
+  apply_weight_ecmp_only_bandwidth                                   = each.value.apply_weight_ecmp_only_bandwidth
+  apply_weight_ucmp_only                                             = each.value.apply_weight_ucmp_only
   default_information_originate                                      = each.value.default_information_originate
   default_information_originate_route_policy                         = each.value.default_information_originate_route_policy
   fast_reroute_delay_interval                                        = each.value.fast_reroute_delay_interval
@@ -444,6 +450,9 @@ locals {
         saf_name                                                        = "unicast"
         advertise_link_attributes                                       = try(isis_process.address_family.ipv6_unicast.advertise_link_attributes, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv6_unicast.advertise_link_attributes, null)
         advertise_passive_only                                          = try(isis_process.address_family.ipv6_unicast.advertise_passive_only, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv6_unicast.advertise_passive_only, null)
+        apply_weight_ecmp_only                                          = contains(["ecmp-only", "ecmp-only-bandwidth"], try(isis_process.address_family.ipv6_unicast.apply_weight, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv6_unicast.apply_weight, "")) ? true : null
+        apply_weight_ecmp_only_bandwidth                                = try(isis_process.address_family.ipv6_unicast.apply_weight, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv6_unicast.apply_weight, null) == "ecmp-only-bandwidth" ? true : null
+        apply_weight_ucmp_only                                          = try(isis_process.address_family.ipv6_unicast.apply_weight, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv6_unicast.apply_weight, null) == "ucmp-only" ? true : null
         default_information_originate                                   = try(isis_process.address_family.ipv6_unicast.default_information_originate, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv6_unicast.default_information_originate, null)
         default_information_originate_route_policy                      = try(isis_process.address_family.ipv6_unicast.default_information_originate_route_policy, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv6_unicast.default_information_originate_route_policy, null)
         fast_reroute_delay_interval                                     = try(isis_process.address_family.ipv6_unicast.fast_reroute_delay_interval, local.defaults.iosxr.devices.configuration.routing.isis_processes.address_family.ipv6_unicast.fast_reroute_delay_interval, null)
@@ -736,6 +745,9 @@ resource "iosxr_router_isis_address_family" "ipv6_unicast" {
   saf_name                                                           = each.value.saf_name
   advertise_link_attributes                                          = each.value.advertise_link_attributes
   advertise_passive_only                                             = each.value.advertise_passive_only
+  apply_weight_ecmp_only                                             = each.value.apply_weight_ecmp_only
+  apply_weight_ecmp_only_bandwidth                                   = each.value.apply_weight_ecmp_only_bandwidth
+  apply_weight_ucmp_only                                             = each.value.apply_weight_ucmp_only
   default_information_originate                                      = each.value.default_information_originate
   default_information_originate_route_policy                         = each.value.default_information_originate_route_policy
   fast_reroute_delay_interval                                        = each.value.fast_reroute_delay_interval
