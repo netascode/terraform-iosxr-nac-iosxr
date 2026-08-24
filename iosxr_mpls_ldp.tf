@@ -273,7 +273,7 @@ resource "iosxr_mpls_ldp_mldp" "mpls_ldp_mldp" {
   depends_on = [
     iosxr_mpls_ldp_address_family.mpls_ldp_address_family,
     iosxr_route_policy.route_policy,
-    # referenced sets must exist before a route-policy is attached (issue #191)
+    # referenced sets must exist before a route-policy is attached
     iosxr_as_path_set.as_path_set,
     iosxr_community_set.community_set,
     iosxr_esi_set.esi_set,

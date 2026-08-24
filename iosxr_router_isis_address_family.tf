@@ -425,7 +425,7 @@ resource "iosxr_router_isis_address_family" "ipv4_unicast" {
   depends_on = [
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    # referenced sets must exist before a route-policy is attached (issue #191)
+    # referenced sets must exist before a route-policy is attached
     iosxr_as_path_set.as_path_set,
     iosxr_community_set.community_set,
     iosxr_esi_set.esi_set,
@@ -868,7 +868,7 @@ resource "iosxr_router_isis_address_family" "ipv6_unicast" {
   depends_on = [
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    # referenced sets must exist before a route-policy is attached (issue #191)
+    # referenced sets must exist before a route-policy is attached
     iosxr_as_path_set.as_path_set,
     iosxr_community_set.community_set,
     iosxr_esi_set.esi_set,
@@ -1143,7 +1143,7 @@ resource "iosxr_router_isis_address_family" "ipv4_multicast" {
   depends_on = [
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    # referenced sets must exist before a route-policy is attached (issue #191)
+    # referenced sets must exist before a route-policy is attached
     iosxr_as_path_set.as_path_set,
     iosxr_community_set.community_set,
     iosxr_esi_set.esi_set,
@@ -1418,7 +1418,7 @@ resource "iosxr_router_isis_address_family" "ipv6_multicast" {
   depends_on = [
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    # referenced sets must exist before a route-policy is attached (issue #191)
+    # referenced sets must exist before a route-policy is attached
     iosxr_as_path_set.as_path_set,
     iosxr_community_set.community_set,
     iosxr_esi_set.esi_set,

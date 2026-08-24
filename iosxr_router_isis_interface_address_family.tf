@@ -256,7 +256,7 @@ resource "iosxr_router_isis_interface_address_family" "router_isis_interface_add
   depends_on = [
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
-    # referenced sets must exist before a route-policy is attached (issue #191)
+    # referenced sets must exist before a route-policy is attached
     iosxr_as_path_set.as_path_set,
     iosxr_community_set.community_set,
     iosxr_esi_set.esi_set,

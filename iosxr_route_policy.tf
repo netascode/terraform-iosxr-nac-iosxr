@@ -17,12 +17,8 @@ resource "iosxr_route_policy" "route_policy" {
   route_policy_name = each.value.route_policy_name
   rpl               = each.value.rpl
 
-  # NOTE (issue #191): route-policy definitions accept forward references to
-  # sets/prefix-lists, so they must NOT depend on those sets here. The
-  # set-existence constraint is only enforced when a policy is ATTACHED, so the
-  # set dependencies live on the attach-point resources instead. Keeping them
-  # here deadlocks set deletion when a referencing policy is updated in the same
-  # apply.
+  # route-policy definitions accept forward references, so they must NOT depend on those sets here.
+  # Existence constraint is only enforced when a policy is ATTACHED, dependencies live on the attach-point resources instead.
   depends_on = [
     iosxr_key_chain.key_chain,
   ]
