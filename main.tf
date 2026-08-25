@@ -127,6 +127,10 @@ resource "iosxr_cli" "cli_0" {
   cli      = each.value.content
 
   depends_on = [
+    iosxr_aaa.aaa,
+    iosxr_aaa_accounting.aaa_accounting,
+    iosxr_aaa_authentication.aaa_authentication,
+    iosxr_aaa_authorization.aaa_authorization,
     iosxr_as_path_set.as_path_set,
     iosxr_banner.banner,
     iosxr_bfd.bfd,
@@ -204,6 +208,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_ptp.ptp,
     iosxr_ptp_profile.ptp_profile,
     iosxr_prefix_set.prefix_set,
+    iosxr_radius_server.radius_server,
     iosxr_radius_source_interface.radius_source_interface,
     iosxr_rd_set.rd_set,
     iosxr_route_policy.route_policy,
@@ -262,6 +267,7 @@ resource "iosxr_cli" "cli_0" {
     iosxr_snmp_server_mib.snmp_server_mib,
     iosxr_ssh.ssh,
     iosxr_tacacs_server.tacacs_server,
+    iosxr_tacacs_source_interface.tacacs_source_interface,
     iosxr_tag_set.tag_set,
     iosxr_tcp.tcp,
     iosxr_tftp_client.tftp_client,
