@@ -89,22 +89,59 @@ locals {
     )
   }
 
+  # Pre-resolve template variables in raw (non-template) configuration blocks so that
+  # yaml_merge can deduplicate list items across model templates and raw config.
+  # templatestring() requires a direct string reference as its first argument, so we
+  # yamlencode into intermediate locals first, then call templatestring on those locals.
+  global_config_yaml = yamlencode(try(local.global.configuration, {}))
+
+  # device_group_configs_yaml carries both the encoded YAML and the dg-scoped variables
+  # so the templatestring pass can apply the correct per-dg variable scope.
+  device_group_configs_yaml = { for device in local.managed_devices :
+    device.name => [
+      for dg in local.device_groups : {
+        yaml    = yamlencode(try(dg.configuration, {}))
+        dg_vars = try(dg.variables, {})
+      }
+      if contains(try(device.device_groups, []), dg.name) || contains(try(dg.devices, []), device.name)
+    ]
+  }
+
+  device_configs_yaml = { for device in local.managed_devices :
+    device.name => yamlencode(try(device.configuration, {}))
+  }
+
+  global_config_resolved = { for device in local.managed_devices :
+    device.name => templatestring(local.global_config_yaml, local.device_variables[device.name])
+  }
+
+  device_group_configs_resolved = { for device in local.managed_devices :
+    device.name => [
+      for entry in local.device_group_configs_yaml[device.name] :
+      templatestring(entry.yaml, merge(local.device_variables[device.name], entry.dg_vars))
+    ]
+  }
+
+  device_config_resolved = { for device in local.managed_devices :
+    device.name => templatestring(local.device_configs_yaml[device.name], local.device_variables[device.name])
+  }
+
   devices_raw_config = { for device in local.managed_devices :
     device.name => try(provider::utils::yaml_merge(concat(
       local.global_file_templates[device.name],
       [local.global_model_templates[device.name]],
-      [yamlencode(try(local.global.configuration, {}))],
+      [local.global_config_resolved[device.name]],
       local.group_file_templates[device.name],
       [local.group_model_templates[device.name]],
-      [for dg in local.device_groups : yamlencode(try(dg.configuration, {})) if contains(try(device.device_groups, []), dg.name) || contains(try(dg.devices, []), device.name)],
+      local.device_group_configs_resolved[device.name],
       local.device_file_templates[device.name],
       [local.device_model_templates[device.name]],
-      [yamlencode(try(device.configuration, {}))]
+      [local.device_config_resolved[device.name]]
     )), "")
   }
 
   devices_config = { for device, config in local.devices_raw_config :
-    device => yamldecode(templatestring(config, local.device_variables[device]))
+    device => try(yamldecode(config), {})
   }
 
   # collect interface groups used on each device
