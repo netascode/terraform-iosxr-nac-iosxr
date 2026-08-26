@@ -93,6 +93,7 @@ locals {
   # yaml_merge can deduplicate list items across model templates and raw config.
   # templatestring() requires a direct string reference as its first argument, so we
   # yamlencode into intermediate locals first, then call templatestring on those locals.
+  # Will be replaced in future with render_device_configs function.
   global_config_yaml = yamlencode(try(local.global.configuration, {}))
 
   # device_group_configs_yaml carries both the encoded YAML and the dg-scoped variables
