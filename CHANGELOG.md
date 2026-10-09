@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add gRPC server configuration (`grpc`): port, VRF, address family, TLS, local connection and request/stream limits
 - BREAKING CHANGE: Remove the deprecated device-level `cli_templates` attribute. Define CLI templates via the unified `templates` structure with `type: cli`, applied by name at global/device-group/device scope
 - BREAKING CHANGE: Consolidate L2VPN configuration under a single `l2vpn` object. Bridge domains are now nested under their parent bridge group (with `name` replacing `bridge_group_name`/`bridge_domain_name`) and pseudowire classes moved under `l2vpn`.
 - `routed_interfaces` (BVI) support added to bridge domains.
