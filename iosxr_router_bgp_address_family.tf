@@ -163,6 +163,18 @@ locals {
         retain_route_target_route_policy                               = try(bgp_process.address_family.ipv4_unicast.retain_route_target_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.retain_route_target_route_policy, null)
         rnh_install_extcomm                                            = try(bgp_process.address_family.ipv4_unicast.rnh_install_extcomm, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.rnh_install_extcomm, null)
         rnh_install_extcomm_only                                       = try(bgp_process.address_family.ipv4_unicast.rnh_install_extcomm_only, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.rnh_install_extcomm_only, null)
+        delay_route_inbound                                            = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.delay_route_inbound, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.delay_route_inbound, null) : null
+        update_out_quick_withdraw_disable                              = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.update_out_quick_withdraw_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.update_out_quick_withdraw_disable, null) : null
+        ecmp_delay_fixed_delay                                         = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.ecmp_delay.fixed, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.ecmp_delay.fixed, null) : null
+        ecmp_delay_as_based_delay                                      = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.ecmp_delay.as_based, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.ecmp_delay.as_based, null) : null
+        ecmp_delay_as_based_as_list                                    = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.ecmp_delay.as_based_list, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.ecmp_delay.as_based_list, null) : null
+        ecmp_delay_platform_oor_based_delay                            = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.ecmp_delay.platform_oor, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.ecmp_delay.platform_oor, null) : null
+        ecmp_delay_platform_oor_based_threshold                        = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.ecmp_delay.platform_oor_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.ecmp_delay.platform_oor_threshold, null) : null
+        fast_reroute_per_link                                          = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.fast_reroute_per_link, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.fast_reroute_per_link, null) : null
+        maximum_paths_ebgp_bestpath_only                               = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.maximum_paths_ebgp_bestpath_only, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.maximum_paths_ebgp_bestpath_only, null) : null
+        redistribute_connected_default_policy_action_in                = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.redistribute_connected_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.redistribute_connected_default_policy_action_in, null) : null
+        redistribute_static_default_policy_action_in                   = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.redistribute_static_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.redistribute_static_default_policy_action_in, null) : null
+        redistribute_rip_default_policy_action_in                      = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv4_unicast.redistribute_rip_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.redistribute_rip_default_policy_action_in, null) : null
         prefix_ecmp_delay                                              = try(bgp_process.address_family.ipv4_unicast.prefix_ecmp_delay, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.prefix_ecmp_delay, null)
         prefix_ecmp_delay_oor_threshold                                = try(bgp_process.address_family.ipv4_unicast.prefix_ecmp_delay_oor_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.prefix_ecmp_delay_oor_threshold, null)
         bgp_origin_as_validation_enable                                = try(bgp_process.address_family.ipv4_unicast.bgp_origin_as_validation_enable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv4_unicast.bgp_origin_as_validation_enable, null)
@@ -242,6 +254,7 @@ locals {
           }
         ]
         redistribute_ospf = try(length(bgp_process.address_family.ipv4_unicast.redistribute_ospf) == 0, true) ? null : [for ospf in bgp_process.address_family.ipv4_unicast.redistribute_ospf : {
+          default_policy_action_in                  = local.device_is_25x[device.name] ? try(ospf.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_ospf.default_policy_action_in, null) : null
           router_tag                                = try(ospf.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_ospf.process, null)
           match_internal                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_ospf.match, null) == "match-internal" ? true : null
           match_external                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_ospf.match, null) == "match-external" ? true : null
@@ -277,16 +290,18 @@ locals {
           }
         ]
         redistribute_eigrp = try(length(bgp_process.address_family.ipv4_unicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in bgp_process.address_family.ipv4_unicast.redistribute_eigrp : {
-          instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.process, null)
-          match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.match, null) == "match-internal" ? true : null
-          match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
-          match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.match, null) == "match-external" ? true : null
-          metric                  = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.metric, null)
-          multipath               = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.multipath, null)
-          route_policy            = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.route_policy, null)
+          default_policy_action_in = local.device_is_25x[device.name] ? try(eigrp.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.default_policy_action_in, null) : null
+          instance_name            = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.process, null)
+          match_internal           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.match, null) == "match-internal" ? true : null
+          match_internal_external  = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
+          match_external           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.match, null) == "match-external" ? true : null
+          metric                   = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.metric, null)
+          multipath                = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.multipath, null)
+          route_policy             = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.route_policy, null)
           }
         ]
         redistribute_isis = try(length(bgp_process.address_family.ipv4_unicast.redistribute_isis) == 0, true) ? null : [for isis in bgp_process.address_family.ipv4_unicast.redistribute_isis : {
+          default_policy_action_in           = local.device_is_25x[device.name] ? try(isis.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_isis.default_policy_action_in, null) : null
           instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_isis.process, null)
           level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_isis.level, null) == "level-1" ? true : null
           level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_isis.level, null) == "level-1-level-2" ? true : null
@@ -370,6 +385,18 @@ resource "iosxr_router_bgp_address_family" "ipv4_unicast" {
   aggregate_addresses                                      = each.value.aggregate_addresses
   networks                                                 = each.value.networks
   redistribute_ospf                                        = each.value.redistribute_ospf
+  delay_route_inbound                                      = each.value.delay_route_inbound
+  update_out_quick_withdraw_disable                        = each.value.update_out_quick_withdraw_disable
+  ecmp_delay_fixed_delay                                   = each.value.ecmp_delay_fixed_delay
+  ecmp_delay_as_based_delay                                = each.value.ecmp_delay_as_based_delay
+  ecmp_delay_as_based_as_list                              = each.value.ecmp_delay_as_based_as_list
+  ecmp_delay_platform_oor_based_delay                      = each.value.ecmp_delay_platform_oor_based_delay
+  ecmp_delay_platform_oor_based_threshold                  = each.value.ecmp_delay_platform_oor_based_threshold
+  fast_reroute_per_link                                    = each.value.fast_reroute_per_link
+  maximum_paths_ebgp_bestpath_only                         = each.value.maximum_paths_ebgp_bestpath_only
+  redistribute_connected_default_policy_action_in          = each.value.redistribute_connected_default_policy_action_in
+  redistribute_static_default_policy_action_in             = each.value.redistribute_static_default_policy_action_in
+  redistribute_rip_default_policy_action_in                = each.value.redistribute_rip_default_policy_action_in
   redistribute_eigrp                                       = each.value.redistribute_eigrp
   redistribute_isis                                        = each.value.redistribute_isis
   table_policy                                             = each.value.table_policy
@@ -422,6 +449,7 @@ resource "iosxr_router_bgp_address_family" "ipv4_unicast" {
   peer_set_ids                                             = each.value.peer_set_ids
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     # referenced sets must exist before a route-policy is attached
@@ -517,6 +545,18 @@ locals {
         retain_route_target_route_policy                               = try(bgp_process.address_family.ipv6_unicast.retain_route_target_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.retain_route_target_route_policy, null)
         rnh_install_extcomm                                            = try(bgp_process.address_family.ipv6_unicast.rnh_install_extcomm, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.rnh_install_extcomm, null)
         rnh_install_extcomm_only                                       = try(bgp_process.address_family.ipv6_unicast.rnh_install_extcomm_only, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.rnh_install_extcomm_only, null)
+        delay_route_inbound                                            = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.delay_route_inbound, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.delay_route_inbound, null) : null
+        update_out_quick_withdraw_disable                              = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.update_out_quick_withdraw_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.update_out_quick_withdraw_disable, null) : null
+        ecmp_delay_fixed_delay                                         = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.ecmp_delay.fixed, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.ecmp_delay.fixed, null) : null
+        ecmp_delay_as_based_delay                                      = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.ecmp_delay.as_based, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.ecmp_delay.as_based, null) : null
+        ecmp_delay_as_based_as_list                                    = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.ecmp_delay.as_based_list, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.ecmp_delay.as_based_list, null) : null
+        ecmp_delay_platform_oor_based_delay                            = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.ecmp_delay.platform_oor, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.ecmp_delay.platform_oor, null) : null
+        ecmp_delay_platform_oor_based_threshold                        = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.ecmp_delay.platform_oor_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.ecmp_delay.platform_oor_threshold, null) : null
+        fast_reroute_per_link                                          = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.fast_reroute_per_link, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.fast_reroute_per_link, null) : null
+        maximum_paths_ebgp_bestpath_only                               = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.maximum_paths_ebgp_bestpath_only, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.maximum_paths_ebgp_bestpath_only, null) : null
+        redistribute_connected_default_policy_action_in                = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.redistribute_connected_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_connected_default_policy_action_in, null) : null
+        redistribute_static_default_policy_action_in                   = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.redistribute_static_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_static_default_policy_action_in, null) : null
+        redistribute_rip_default_policy_action_in                      = local.device_is_25x[device.name] ? try(bgp_process.address_family.ipv6_unicast.redistribute_rip_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_rip_default_policy_action_in, null) : null
         prefix_ecmp_delay                                              = try(bgp_process.address_family.ipv6_unicast.prefix_ecmp_delay, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.prefix_ecmp_delay, null)
         prefix_ecmp_delay_oor_threshold                                = try(bgp_process.address_family.ipv6_unicast.prefix_ecmp_delay_oor_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.prefix_ecmp_delay_oor_threshold, null)
         bgp_origin_as_validation_enable                                = try(bgp_process.address_family.ipv6_unicast.bgp_origin_as_validation_enable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.bgp_origin_as_validation_enable, null)
@@ -596,6 +636,7 @@ locals {
           }
         ]
         redistribute_ospfv3 = try(length(bgp_process.address_family.ipv6_unicast.redistribute_ospfv3) == 0, true) ? null : [for ospfv3 in bgp_process.address_family.ipv6_unicast.redistribute_ospfv3 : {
+          default_policy_action_in                  = local.device_is_25x[device.name] ? try(ospfv3.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_ospfv3.default_policy_action_in, null) : null
           router_tag                                = try(ospfv3.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_ospfv3.process, null)
           match_internal                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_ospfv3.match, null) == "match-internal" ? true : null
           match_external                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_ospfv3.match, null) == "match-external" ? true : null
@@ -631,16 +672,18 @@ locals {
           }
         ]
         redistribute_eigrp = try(length(bgp_process.address_family.ipv6_unicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in bgp_process.address_family.ipv6_unicast.redistribute_eigrp : {
-          instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.process, null)
-          match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
-          match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
-          match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-external" ? true : null
-          metric                  = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.metric, null)
-          multipath               = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.multipath, null)
-          route_policy            = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.route_policy, null)
+          default_policy_action_in = local.device_is_25x[device.name] ? try(eigrp.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_eigrp.default_policy_action_in, null) : null
+          instance_name            = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.process, null)
+          match_internal           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
+          match_internal_external  = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
+          match_external           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-external" ? true : null
+          metric                   = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.metric, null)
+          multipath                = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.multipath, null)
+          route_policy             = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_eigrp.route_policy, null)
           }
         ]
         redistribute_isis = try(length(bgp_process.address_family.ipv6_unicast.redistribute_isis) == 0, true) ? null : [for isis in bgp_process.address_family.ipv6_unicast.redistribute_isis : {
+          default_policy_action_in           = local.device_is_25x[device.name] ? try(isis.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.redistribute_isis.default_policy_action_in, null) : null
           instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_isis.process, null)
           level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_isis.level, null) == "level-1" ? true : null
           level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.ipv6_unicast.redistribute_isis.level, null) == "level-1-level-2" ? true : null
@@ -719,6 +762,18 @@ resource "iosxr_router_bgp_address_family" "ipv6_unicast" {
   aggregate_addresses                                      = each.value.aggregate_addresses
   networks                                                 = each.value.networks
   redistribute_ospf                                        = each.value.redistribute_ospfv3
+  delay_route_inbound                                      = each.value.delay_route_inbound
+  update_out_quick_withdraw_disable                        = each.value.update_out_quick_withdraw_disable
+  ecmp_delay_fixed_delay                                   = each.value.ecmp_delay_fixed_delay
+  ecmp_delay_as_based_delay                                = each.value.ecmp_delay_as_based_delay
+  ecmp_delay_as_based_as_list                              = each.value.ecmp_delay_as_based_as_list
+  ecmp_delay_platform_oor_based_delay                      = each.value.ecmp_delay_platform_oor_based_delay
+  ecmp_delay_platform_oor_based_threshold                  = each.value.ecmp_delay_platform_oor_based_threshold
+  fast_reroute_per_link                                    = each.value.fast_reroute_per_link
+  maximum_paths_ebgp_bestpath_only                         = each.value.maximum_paths_ebgp_bestpath_only
+  redistribute_connected_default_policy_action_in          = each.value.redistribute_connected_default_policy_action_in
+  redistribute_static_default_policy_action_in             = each.value.redistribute_static_default_policy_action_in
+  redistribute_rip_default_policy_action_in                = each.value.redistribute_rip_default_policy_action_in
   redistribute_eigrp                                       = each.value.redistribute_eigrp
   redistribute_isis                                        = each.value.redistribute_isis
   table_policy                                             = each.value.table_policy
@@ -768,6 +823,7 @@ resource "iosxr_router_bgp_address_family" "ipv6_unicast" {
   peer_set_ids                                             = each.value.peer_set_ids
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     # referenced sets must exist before a route-policy is attached
@@ -804,6 +860,8 @@ locals {
         device_name                                                      = device.name
         as_number                                                        = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
         af_name                                                          = "vpnv4-unicast"
+        update_out_quick_withdraw_disable                                = local.device_is_25x[device.name] ? try(bgp_process.address_family.vpnv4_unicast.update_out_quick_withdraw_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.update_out_quick_withdraw_disable, null) : null
+        vrf_all_update_out_quick_withdraw_disable                        = local.device_is_25x[device.name] ? try(bgp_process.address_family.vpnv4_unicast.vrf_all.update_out_quick_withdraw_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.update_out_quick_withdraw_disable, null) : null
         vrf_all_segment_routing_srv6_locator                             = try(bgp_process.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.locator, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.locator, null)
         vrf_all_segment_routing_srv6_usid_allocation_wide_local_id_block = try(bgp_process.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.usid_allocation_wide_local_id_block, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.usid_allocation_wide_local_id_block, null)
         vrf_all_segment_routing_srv6_alloc_mode_per_ce                   = try(bgp_process.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv4_unicast.vrf_all.segment_routing_srv6.alloc_mode, null) == "per-ce" ? true : null
@@ -883,6 +941,8 @@ locals {
 }
 
 resource "iosxr_router_bgp_address_family" "vpnv4_unicast" {
+  update_out_quick_withdraw_disable                                = each.value.update_out_quick_withdraw_disable
+  vrf_all_update_out_quick_withdraw_disable                        = each.value.vrf_all_update_out_quick_withdraw_disable
   for_each                                                         = { for af in local.bgp_address_family_vpnv4_unicast : af.key => af }
   device                                                           = each.value.device_name
   as_number                                                        = each.value.as_number
@@ -945,6 +1005,7 @@ resource "iosxr_router_bgp_address_family" "vpnv4_unicast" {
   segment_routing_srv6_usid_allocation_wide_local_id_block         = each.value.segment_routing_srv6_usid_allocation_wide_local_id_block
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     # referenced sets must exist before a route-policy is attached
@@ -981,6 +1042,8 @@ locals {
         device_name                                                      = device.name
         as_number                                                        = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
         af_name                                                          = "vpnv6-unicast"
+        update_out_quick_withdraw_disable                                = local.device_is_25x[device.name] ? try(bgp_process.address_family.vpnv6_unicast.update_out_quick_withdraw_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.update_out_quick_withdraw_disable, null) : null
+        vrf_all_update_out_quick_withdraw_disable                        = local.device_is_25x[device.name] ? try(bgp_process.address_family.vpnv6_unicast.vrf_all.update_out_quick_withdraw_disable, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.update_out_quick_withdraw_disable, null) : null
         vrf_all_segment_routing_srv6_locator                             = try(bgp_process.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.locator, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.locator, null)
         vrf_all_segment_routing_srv6_usid_allocation_wide_local_id_block = try(bgp_process.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.usid_allocation_wide_local_id_block, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.usid_allocation_wide_local_id_block, null)
         vrf_all_segment_routing_srv6_alloc_mode_per_ce                   = try(bgp_process.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.alloc_mode, local.defaults.iosxr.devices.configuration.routing.bgp.address_family.vpnv6_unicast.vrf_all.segment_routing_srv6.alloc_mode, null) == "per-ce" ? true : null
@@ -1058,6 +1121,8 @@ locals {
 }
 
 resource "iosxr_router_bgp_address_family" "vpnv6_unicast" {
+  update_out_quick_withdraw_disable                                = each.value.update_out_quick_withdraw_disable
+  vrf_all_update_out_quick_withdraw_disable                        = each.value.vrf_all_update_out_quick_withdraw_disable
   for_each                                                         = { for af in local.bgp_address_family_vpnv6_unicast : af.key => af }
   device                                                           = each.value.device_name
   as_number                                                        = each.value.as_number
@@ -1118,6 +1183,7 @@ resource "iosxr_router_bgp_address_family" "vpnv6_unicast" {
   segment_routing_srv6_usid_allocation_wide_local_id_block         = each.value.segment_routing_srv6_usid_allocation_wide_local_id_block
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     # referenced sets must exist before a route-policy is attached
@@ -1239,6 +1305,7 @@ resource "iosxr_router_bgp_address_family" "vpnv4_multicast" {
   default_martian_check_disable                            = each.value.default_martian_check_disable
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     # referenced sets must exist before a route-policy is attached
@@ -1361,6 +1428,7 @@ resource "iosxr_router_bgp_address_family" "vpnv6_multicast" {
   default_martian_check_disable                            = each.value.default_martian_check_disable
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     # referenced sets must exist before a route-policy is attached
@@ -1484,6 +1552,7 @@ resource "iosxr_router_bgp_address_family" "l2vpn_evpn" {
   default_martian_check_disable                            = each.value.default_martian_check_disable
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
     # referenced sets must exist before a route-policy is attached

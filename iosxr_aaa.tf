@@ -19,6 +19,9 @@ resource "iosxr_aaa" "aaa" {
       vrf               = try(client.vrf, local.defaults.iosxr.devices.configuration.aaa.server.radius_dynamic_author.clients.vrf, null)
       server_key_type_6 = try(client.key_type, null) == 6 ? try(client.key, null) : null
       server_key_type_7 = try(client.key_type, null) == 7 ? try(client.key, null) : null
+
+      attribute_message_authenticator_mandate  = local.device_is_25x[each.value.name] ? (try(client.message_authenticator, local.defaults.iosxr.devices.configuration.aaa.server.radius_dynamic_author.clients.message_authenticator, null) == "mandate" ? true : null) : null
+      attribute_message_authenticator_optional = local.device_is_25x[each.value.name] ? (try(client.message_authenticator, local.defaults.iosxr.devices.configuration.aaa.server.radius_dynamic_author.clients.message_authenticator, null) == "optional" ? true : null) : null
     }
   ]
   radius_server_groups = try(length(try(local.device_config[each.value.name].aaa.group_servers.radius, [])) == 0, true) ? null : [
@@ -59,6 +62,9 @@ resource "iosxr_aaa" "aaa" {
           test_username    = try(sp.test_username, local.defaults.iosxr.devices.configuration.aaa.group_servers.radius.server_privates.test_username, null)
           key_type_6       = try(sp.key_type, null) == 6 ? try(sp.key, null) : null
           key_type_7       = try(sp.key_type, null) == 7 ? try(sp.key, null) : null
+
+          attribute_message_authenticator_mandate  = local.device_is_25x[each.value.name] ? (try(sp.message_authenticator, local.defaults.iosxr.devices.configuration.aaa.group_servers.radius.server_privates.message_authenticator, null) == "mandate" ? true : null) : null
+          attribute_message_authenticator_optional = local.device_is_25x[each.value.name] ? (try(sp.message_authenticator, local.defaults.iosxr.devices.configuration.aaa.group_servers.radius.server_privates.message_authenticator, null) == "optional" ? true : null) : null
         }
       ]
       servers = try(length(try(group.servers, [])) == 0, true) ? null : [
@@ -87,6 +93,8 @@ resource "iosxr_aaa" "aaa" {
           single_connection_idle_timeout = try(sp.single_connection_idle_timeout, local.defaults.iosxr.devices.configuration.aaa.group_servers.tacacs.server_privates.single_connection_idle_timeout, null)
           key_type_6                     = try(sp.key_type, null) == 6 ? try(sp.key, null) : null
           key_type_7                     = try(sp.key_type, null) == 7 ? try(sp.key, null) : null
+          tls_trustpoint                 = local.device_is_25x[each.value.name] ? try(sp.tls_trustpoint, local.defaults.iosxr.devices.configuration.aaa.group_servers.tacacs.server_privates.tls_trustpoint, null) : null
+          tls_server_name_indicator      = local.device_is_25x[each.value.name] ? try(sp.tls_server_name_indicator, local.defaults.iosxr.devices.configuration.aaa.group_servers.tacacs.server_privates.tls_server_name_indicator, null) : null
         }
       ]
       servers = try(length(try(group.servers, [])) == 0, true) ? null : [

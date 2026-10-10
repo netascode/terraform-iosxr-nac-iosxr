@@ -1,12 +1,12 @@
 locals {
-  gnmi = flatten([
+  yang = flatten([
     for device in local.devices : [
-      for gnmi_name, gnmi in try(local.device_config[device.name].gnmi, {}) : {
-        key         = format("%s/%s", device.name, gnmi_name)
+      for yang_name, yang in try(local.device_config[device.name].yang, {}) : {
+        key         = format("%s/%s", device.name, yang_name)
         device_name = device.name
-        path        = try(gnmi.path, null)
-        attributes  = try(gnmi.attributes, null)
-        # lists       = try(length(gnmi.lists) == 0, true) ? null : [for list in gnmi.lists : {
+        path        = try(yang.path, null)
+        attributes  = try(yang.attributes, null)
+        # lists       = try(length(yang.lists) == 0, true) ? null : [for list in yang.lists : {
         #   name   = try(list.name, null)
         #   key    = try(list.key, null)
         #   items  = try(list.items, null)
@@ -18,8 +18,8 @@ locals {
   ])
 }
 
-resource "iosxr_gnmi" "gnmi" {
-  for_each   = { for gnmi in local.gnmi : gnmi.key => gnmi }
+resource "iosxr_yang" "yang" {
+  for_each   = { for yang in local.yang : yang.key => yang }
   device     = each.value.device_name
   path       = each.value.path
   attributes = each.value.attributes

@@ -18,6 +18,10 @@ locals {
         server_rekey_time                         = try(local.device_config[device.name].ssh.server.rekey_time, local.defaults.iosxr.devices.configuration.ssh.server.rekey_time, null)
         server_rekey_volume                       = try(local.device_config[device.name].ssh.server.rekey_volume, local.defaults.iosxr.devices.configuration.ssh.server.rekey_volume, null)
         server_netconf_port                       = try(local.device_config[device.name].ssh.server.netconf_port, local.defaults.iosxr.devices.configuration.ssh.server.netconf_port, null)
+        server_netconf_disable_ssh_port           = local.device_is_25x[device.name] ? try(local.device_config[device.name].ssh.server.netconf_disable_ssh_port, local.defaults.iosxr.devices.configuration.ssh.server.netconf_disable_ssh_port, null) : null
+        server_packet_flow_netio_ingress          = local.device_is_25x[device.name] ? try(local.device_config[device.name].ssh.server.packet_flow_netio_ingress, local.defaults.iosxr.devices.configuration.ssh.server.packet_flow_netio_ingress, null) : null
+        server_timeout_channel                    = local.device_is_25x[device.name] ? try(local.device_config[device.name].ssh.server.timeout.channel, local.defaults.iosxr.devices.configuration.ssh.server.timeout.channel, null) : null
+        server_timeout_connection                 = local.device_is_25x[device.name] ? try(local.device_config[device.name].ssh.server.timeout.connection, local.defaults.iosxr.devices.configuration.ssh.server.timeout.connection, null) : null
         server_netconf_xml                        = try(local.device_config[device.name].ssh.server.netconf_xml, local.defaults.iosxr.devices.configuration.ssh.server.netconf_xml, null)
         server_disable_hmac_sha1                  = try(contains(local.device_config[device.name].ssh.server.disable_hmacs, "sha1"), contains(local.defaults.iosxr.devices.configuration.ssh.server.disable_hmacs, "sha1"), false) ? true : null
         server_disable_hmac_sha2_256              = try(contains(local.device_config[device.name].ssh.server.disable_hmacs, "sha2_256"), contains(local.defaults.iosxr.devices.configuration.ssh.server.disable_hmacs, "sha2_256"), false) ? true : null
@@ -90,6 +94,10 @@ resource "iosxr_ssh" "ssh" {
   server_rekey_time                         = each.value.server_rekey_time
   server_rekey_volume                       = each.value.server_rekey_volume
   server_netconf_port                       = each.value.server_netconf_port
+  server_netconf_disable_ssh_port           = each.value.server_netconf_disable_ssh_port
+  server_packet_flow_netio_ingress          = each.value.server_packet_flow_netio_ingress
+  server_timeout_channel                    = each.value.server_timeout_channel
+  server_timeout_connection                 = each.value.server_timeout_connection
   server_netconf_xml                        = each.value.server_netconf_xml
   server_disable_hmac_sha1                  = each.value.server_disable_hmac_sha1
   server_disable_hmac_sha2_256              = each.value.server_disable_hmac_sha2_256

@@ -19,6 +19,7 @@ locals {
         transport_udp                           = try(exporter.transport.udp_destination, local.defaults.iosxr.devices.configuration.flow.exporters.transport.udp_destination, null)
         packet_length                           = try(exporter.packet_length, local.defaults.iosxr.devices.configuration.flow.exporters.packet_length, null)
         dfbit_set                               = try(exporter.dfbit_set, local.defaults.iosxr.devices.configuration.flow.exporters.dfbit_set, null)
+        export_protocol                         = local.device_is_25x[device.name] ? try(exporter.export_protocol, local.defaults.iosxr.devices.configuration.flow.exporters.export_protocol, null) : null
         version_export_format                   = try(exporter.version.format, local.defaults.iosxr.devices.configuration.flow.exporters.version.format, null)
         version_template_data_timeout           = try(exporter.version.template.data_timeout, local.defaults.iosxr.devices.configuration.flow.exporters.version.template.data_timeout, null)
         version_template_options_timeout        = try(exporter.version.template.options_timeout, local.defaults.iosxr.devices.configuration.flow.exporters.version.template.options_timeout, null)
@@ -48,6 +49,7 @@ resource "iosxr_flow_exporter_map" "flow_exporter_map" {
   transport_udp                           = each.value.transport_udp
   packet_length                           = each.value.packet_length
   dfbit_set                               = each.value.dfbit_set
+  export_protocol                         = each.value.export_protocol
   version_export_format                   = each.value.version_export_format
   version_template_data_timeout           = each.value.version_template_data_timeout
   version_template_options_timeout        = each.value.version_template_options_timeout

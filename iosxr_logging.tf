@@ -1,14 +1,19 @@
 resource "iosxr_logging" "logging" {
-  for_each                          = { for device in local.devices : device.name => device if try(local.device_config[device.name].logging, null) != null || try(local.defaults.iosxr.devices.configuration.logging, null) != null }
-  device                            = each.value.name
-  archive_disk0                     = try(local.device_config[each.value.name].logging.archive.device, local.defaults.iosxr.devices.configuration.logging.archive.device, null) == "disk0" ? true : null
-  archive_disk1                     = try(local.device_config[each.value.name].logging.archive.device, local.defaults.iosxr.devices.configuration.logging.archive.device, null) == "disk1" ? true : null
-  archive_harddisk                  = try(local.device_config[each.value.name].logging.archive.device, local.defaults.iosxr.devices.configuration.logging.archive.device, null) == "harddisk" ? true : null
-  archive_filesize                  = try(local.device_config[each.value.name].logging.archive.filesize, local.defaults.iosxr.devices.configuration.logging.archive.filesize, null)
-  archive_frequency_daily           = try(local.device_config[each.value.name].logging.archive.frequency, local.defaults.iosxr.devices.configuration.logging.archive.frequency, null) == "daily" ? true : null
-  archive_frequency_weekly          = try(local.device_config[each.value.name].logging.archive.frequency, local.defaults.iosxr.devices.configuration.logging.archive.frequency, null) == "weekly" ? true : null
-  archive_length                    = try(local.device_config[each.value.name].logging.archive.length, local.defaults.iosxr.devices.configuration.logging.archive.length, null)
-  archive_severity                  = try(local.device_config[each.value.name].logging.archive.severity, local.defaults.iosxr.devices.configuration.logging.archive.severity, null)
+  for_each                 = { for device in local.devices : device.name => device if try(local.device_config[device.name].logging, null) != null || try(local.defaults.iosxr.devices.configuration.logging, null) != null }
+  device                   = each.value.name
+  archive_disk0            = try(local.device_config[each.value.name].logging.archive.device, local.defaults.iosxr.devices.configuration.logging.archive.device, null) == "disk0" ? true : null
+  archive_disk1            = try(local.device_config[each.value.name].logging.archive.device, local.defaults.iosxr.devices.configuration.logging.archive.device, null) == "disk1" ? true : null
+  archive_harddisk         = try(local.device_config[each.value.name].logging.archive.device, local.defaults.iosxr.devices.configuration.logging.archive.device, null) == "harddisk" ? true : null
+  archive_filesize         = try(local.device_config[each.value.name].logging.archive.filesize, local.defaults.iosxr.devices.configuration.logging.archive.filesize, null)
+  archive_frequency_daily  = local.device_is_25x[each.value.name] ? null : (try(local.device_config[each.value.name].logging.archive.frequency, local.defaults.iosxr.devices.configuration.logging.archive.frequency, null) == "daily" ? true : null)
+  archive_frequency_weekly = local.device_is_25x[each.value.name] ? null : (try(local.device_config[each.value.name].logging.archive.frequency, local.defaults.iosxr.devices.configuration.logging.archive.frequency, null) == "weekly" ? true : null)
+  archive_frequency        = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].logging.archive.frequency, local.defaults.iosxr.devices.configuration.logging.archive.frequency, null) : null
+  archive_length           = try(local.device_config[each.value.name].logging.archive.length, local.defaults.iosxr.devices.configuration.logging.archive.length, null)
+  archive_severity = try(lookup(
+    local.version_resolved.logging_archive_severity[each.value.name],
+    try(local.device_config[each.value.name].logging.archive.severity, local.defaults.iosxr.devices.configuration.logging.archive.severity, null),
+    try(local.device_config[each.value.name].logging.archive.severity, local.defaults.iosxr.devices.configuration.logging.archive.severity, null)
+  ), null)
   archive_size                      = try(local.device_config[each.value.name].logging.archive.size, local.defaults.iosxr.devices.configuration.logging.archive.size, null)
   archive_threshold                 = try(local.device_config[each.value.name].logging.archive.threshold, local.defaults.iosxr.devices.configuration.logging.archive.threshold, null)
   buffered_size                     = try(local.device_config[each.value.name].logging.buffered.size, local.defaults.iosxr.devices.configuration.logging.buffered.size, null)
@@ -22,6 +27,12 @@ resource "iosxr_logging" "logging" {
   buffered_discriminator_nomatch3   = try(local.device_config[each.value.name].logging.buffered.discriminator_nomatch3, local.defaults.iosxr.devices.configuration.logging.buffered.discriminator_nomatch3, null)
   console                           = try(local.device_config[each.value.name].logging.console, local.defaults.iosxr.devices.configuration.logging.console, null)
   console_facility                  = try(local.device_config[each.value.name].logging.console_facility, local.defaults.iosxr.devices.configuration.logging.console_facility, null)
+  console_discriminator_match1      = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].logging.console_discriminator_match1, local.defaults.iosxr.devices.configuration.logging.console_discriminator_match1, null) : null
+  console_discriminator_match2      = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].logging.console_discriminator_match2, local.defaults.iosxr.devices.configuration.logging.console_discriminator_match2, null) : null
+  console_discriminator_match3      = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].logging.console_discriminator_match3, local.defaults.iosxr.devices.configuration.logging.console_discriminator_match3, null) : null
+  console_discriminator_nomatch1    = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].logging.console_discriminator_nomatch1, local.defaults.iosxr.devices.configuration.logging.console_discriminator_nomatch1, null) : null
+  console_discriminator_nomatch2    = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].logging.console_discriminator_nomatch2, local.defaults.iosxr.devices.configuration.logging.console_discriminator_nomatch2, null) : null
+  console_discriminator_nomatch3    = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].logging.console_discriminator_nomatch3, local.defaults.iosxr.devices.configuration.logging.console_discriminator_nomatch3, null) : null
   container_all                     = try(local.device_config[each.value.name].logging.container_all, local.defaults.iosxr.devices.configuration.logging.container_all, null)
   container_fetch_timestamp         = try(local.device_config[each.value.name].logging.container_fetch_timestamp, local.defaults.iosxr.devices.configuration.logging.container_fetch_timestamp, null)
   events_buffer_size                = try(local.device_config[each.value.name].logging.events.buffer_size, local.defaults.iosxr.devices.configuration.logging.events.buffer_size, null)
@@ -31,8 +42,9 @@ resource "iosxr_logging" "logging" {
   events_precfg_suppression_timeout = try(local.device_config[each.value.name].logging.events.precfg_suppression_timeout, local.defaults.iosxr.devices.configuration.logging.events.precfg_suppression_timeout, null)
   events_threshold                  = try(local.device_config[each.value.name].logging.events.threshold, local.defaults.iosxr.devices.configuration.logging.events.threshold, null)
   facility_level                    = try(local.device_config[each.value.name].logging.facility_level, local.defaults.iosxr.devices.configuration.logging.facility_level, null)
-  format_bsd                        = try(local.device_config[each.value.name].logging.format, local.defaults.iosxr.devices.configuration.logging.format, null) == "bsd" ? true : null
-  format_rfc5424                    = try(local.device_config[each.value.name].logging.format, local.defaults.iosxr.devices.configuration.logging.format, null) == "rfc5424" ? true : null
+  format_bsd                        = local.device_is_25x[each.value.name] ? null : (try(local.device_config[each.value.name].logging.format, local.defaults.iosxr.devices.configuration.logging.format, null) == "bsd" ? true : null)
+  format_rfc5424                    = local.device_is_25x[each.value.name] ? null : (try(local.device_config[each.value.name].logging.format, local.defaults.iosxr.devices.configuration.logging.format, null) == "rfc5424" ? true : null)
+  format                            = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].logging.format, local.defaults.iosxr.devices.configuration.logging.format, null) : null
   history                           = try(local.device_config[each.value.name].logging.history, local.defaults.iosxr.devices.configuration.logging.history, null)
   history_size                      = try(local.device_config[each.value.name].logging.history_size, local.defaults.iosxr.devices.configuration.logging.history_size, null)
   hostnameprefix                    = try(local.device_config[each.value.name].logging.hostnameprefix, local.defaults.iosxr.devices.configuration.logging.hostnameprefix, null)
@@ -67,12 +79,37 @@ resource "iosxr_logging" "logging" {
   suppress_duplicates            = try(local.device_config[each.value.name].logging.suppress_duplicates, local.defaults.iosxr.devices.configuration.logging.suppress_duplicates, null)
   trap                           = try(local.device_config[each.value.name].logging.trap, local.defaults.iosxr.devices.configuration.logging.trap, null)
   yang                           = try(local.device_config[each.value.name].logging.yang, local.defaults.iosxr.devices.configuration.logging.yang, null)
+  tls_servers = local.device_is_25x[each.value.name] ? (
+    try(length(local.device_config[each.value.name].logging.tls_servers) == 0, true) ? null : [
+      for tls_server in local.device_config[each.value.name].logging.tls_servers : {
+        name = try(tls_server.name, local.defaults.iosxr.devices.configuration.logging.tls_servers.name, null)
+        vrf  = try(tls_server.vrf, local.defaults.iosxr.devices.configuration.logging.tls_servers.vrf, null)
+        address_ipv4 = can(regex(":", try(tls_server.address, local.defaults.iosxr.devices.configuration.logging.tls_servers.address, ""))) ? null : try(
+          tls_server.address, local.defaults.iosxr.devices.configuration.logging.tls_servers.address, null
+        )
+        address_ipv6 = can(regex(":", try(tls_server.address, local.defaults.iosxr.devices.configuration.logging.tls_servers.address, ""))) ? try(
+          tls_server.address, local.defaults.iosxr.devices.configuration.logging.tls_servers.address, null
+        ) : null
+        tls_hostname      = try(tls_server.tls_hostname, local.defaults.iosxr.devices.configuration.logging.tls_servers.tls_hostname, null)
+        trustpoint        = try(tls_server.trustpoint, local.defaults.iosxr.devices.configuration.logging.tls_servers.trustpoint, null)
+        severity          = try(tls_server.severity, local.defaults.iosxr.devices.configuration.logging.tls_servers.severity, null)
+        source_interface  = try(tls_server.source_interface, local.defaults.iosxr.devices.configuration.logging.tls_servers.source_interface, null)
+        tls_min_version   = try(tls_server.tls_min_version, local.defaults.iosxr.devices.configuration.logging.tls_servers.tls_min_version, null)
+        tls_max_version   = try(tls_server.tls_max_version, local.defaults.iosxr.devices.configuration.logging.tls_servers.tls_max_version, null)
+        security_template = try(tls_server.security_template, local.defaults.iosxr.devices.configuration.logging.tls_servers.security_template, null)
+      }
+    ]
+  ) : null
   file = try(length(local.device_config[each.value.name].logging.files) == 0, true) ? null : [
     for file in local.device_config[each.value.name].logging.files : {
-      file_name                                      = try(file.name, local.defaults.iosxr.devices.configuration.logging.files.name, null)
-      path                                           = try(file.path, local.defaults.iosxr.devices.configuration.logging.files.path, null)
-      maxfilesize                                    = try(file.maxfilesize, local.defaults.iosxr.devices.configuration.logging.files.maxfilesize, null)
-      severity                                       = try(file.severity, local.defaults.iosxr.devices.configuration.logging.files.severity, null)
+      file_name   = try(file.name, local.defaults.iosxr.devices.configuration.logging.files.name, null)
+      path        = try(file.path, local.defaults.iosxr.devices.configuration.logging.files.path, null)
+      maxfilesize = try(file.maxfilesize, local.defaults.iosxr.devices.configuration.logging.files.maxfilesize, null)
+      severity = try(lookup(
+        local.version_resolved.logging_file_severity[each.value.name],
+        try(file.severity, local.defaults.iosxr.devices.configuration.logging.files.severity, null),
+        try(file.severity, local.defaults.iosxr.devices.configuration.logging.files.severity, null)
+      ), null)
       local_accounting_send_to_remote_facility_level = try(file.accounting_remote_facility, local.defaults.iosxr.devices.configuration.logging.files.accounting_remote_facility, null)
       discriminator_match1                           = try(file.discriminator_match1, local.defaults.iosxr.devices.configuration.logging.files.discriminator_match1, null)
       discriminator_match2                           = try(file.discriminator_match2, local.defaults.iosxr.devices.configuration.logging.files.discriminator_match2, null)
@@ -87,12 +124,23 @@ resource "iosxr_logging" "logging" {
       match = try(filter_match.match, local.defaults.iosxr.devices.configuration.logging.events.filter_matches.match, null)
     }
   ]
-  source_interfaces = try(length(local.device_config[each.value.name].logging.source_interfaces) == 0, true) ? null : [
-    for iface_name, entries in { for si in local.device_config[each.value.name].logging.source_interfaces : try(si.name, local.defaults.iosxr.devices.configuration.logging.source_interfaces.name) => si... } : {
-      name = iface_name
-      vrfs = [for e in entries : { name = try(e.vrf, local.defaults.iosxr.devices.configuration.logging.source_interfaces.vrf) }]
-    }
-  ]
+  source_interfaces = local.device_is_25x[each.value.name] ? (
+    try(length(local.device_config[each.value.name].logging.source_interfaces) == 0, true) ? null : [
+      for si in local.device_config[each.value.name].logging.source_interfaces : {
+        name = try(si.name, local.defaults.iosxr.devices.configuration.logging.source_interfaces.name, null)
+        vrf  = try(si.vrf, local.defaults.iosxr.devices.configuration.logging.source_interfaces.vrf, null)
+        vrfs = null
+      }
+    ]
+    ) : (
+    try(length(local.device_config[each.value.name].logging.source_interfaces) == 0, true) ? null : [
+      for iface_name, entries in { for si in local.device_config[each.value.name].logging.source_interfaces : try(si.name, local.defaults.iosxr.devices.configuration.logging.source_interfaces.name) => si... } : {
+        name = iface_name
+        vrf  = null
+        vrfs = [for e in entries : { name = try(e.vrf, local.defaults.iosxr.devices.configuration.logging.source_interfaces.vrf, null) }]
+      }
+    ]
+  )
   suppress_rules = try(length(local.device_config[each.value.name].logging.suppress_rules) == 0, true) ? null : [
     for suppress_rule in local.device_config[each.value.name].logging.suppress_rules : {
       rule_name           = try(suppress_rule.name, local.defaults.iosxr.devices.configuration.logging.suppress_rules.name, null)
@@ -130,9 +178,22 @@ locals {
           && can(regex(":", try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, ""))) == false
           && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, ""))) == false
           ]) == 0, true) ? null : [for h in try(local.device_config[device.name].logging.hosts, []) : {
-          name                    = try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, null)
-          severity                = try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null)
-          port                    = try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)
+          name = try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, null)
+          severity = try(lookup(
+            local.version_resolved.logging_vrf_severity[device.name],
+            try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null),
+            try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null)
+          ), null)
+          port = local.device_is_25x[device.name] ? null : (
+            can(tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null))) ?
+            tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)) : null
+          )
+          udp_port = local.device_is_25x[device.name] ? (
+            can(tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null))) ? (
+              tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)) == 514 ?
+              "default" : tostring(tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)))
+            ) : try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)
+          ) : null
           operator                = try(h.operator, local.defaults.iosxr.devices.configuration.logging.hosts.operator, null)
           facility                = try(h.facility, local.defaults.iosxr.devices.configuration.logging.hosts.facility, null)
           hostname_source_address = try(h.source_address, local.defaults.iosxr.devices.configuration.logging.hosts.source_address, null)
@@ -147,9 +208,22 @@ locals {
           && can(regex("^\\d+\\.\\d+\\.\\d+\\.\\d+$", try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, "")))
           ]) == 0, true) ? null : [
           for h in try(local.device_config[device.name].logging.hosts, []) : {
-            ipv4_address        = try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, null)
-            severity            = try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null)
-            port                = try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)
+            ipv4_address = try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, null)
+            severity = try(lookup(
+              local.version_resolved.logging_vrf_severity[device.name],
+              try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null),
+              try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null)
+            ), null)
+            port = local.device_is_25x[device.name] ? null : (
+              can(tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null))) ?
+              tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)) : null
+            )
+            udp_port = local.device_is_25x[device.name] ? (
+              can(tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null))) ? (
+                tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)) == 514 ?
+                "default" : tostring(tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)))
+              ) : try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)
+            ) : null
             operator            = try(h.operator, local.defaults.iosxr.devices.configuration.logging.hosts.operator, null)
             facility            = try(h.facility, local.defaults.iosxr.devices.configuration.logging.hosts.facility, null)
             ipv4_source_address = try(h.source_address, local.defaults.iosxr.devices.configuration.logging.hosts.source_address, null)
@@ -163,9 +237,22 @@ locals {
           && can(regex(":", try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, ""))) == true
           ]) == 0, true) ? null : [
           for h in try(local.device_config[device.name].logging.hosts, []) : {
-            ipv6_address        = try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, null)
-            severity            = try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null)
-            port                = try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)
+            ipv6_address = try(h.address, local.defaults.iosxr.devices.configuration.logging.hosts.address, null)
+            severity = try(lookup(
+              local.version_resolved.logging_vrf_severity[device.name],
+              try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null),
+              try(h.severity, local.defaults.iosxr.devices.configuration.logging.hosts.severity, null)
+            ), null)
+            port = local.device_is_25x[device.name] ? null : (
+              can(tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null))) ?
+              tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)) : null
+            )
+            udp_port = local.device_is_25x[device.name] ? (
+              can(tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null))) ? (
+                tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)) == 514 ?
+                "default" : tostring(tonumber(try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)))
+              ) : try(h.port, local.defaults.iosxr.devices.configuration.logging.hosts.port, null)
+            ) : null
             operator            = try(h.operator, local.defaults.iosxr.devices.configuration.logging.hosts.operator, null)
             facility            = try(h.facility, local.defaults.iosxr.devices.configuration.logging.hosts.facility, null)
             ipv6_source_address = try(h.source_address, local.defaults.iosxr.devices.configuration.logging.hosts.source_address, null)

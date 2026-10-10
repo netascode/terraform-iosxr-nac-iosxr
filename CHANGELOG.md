@@ -1,6 +1,18 @@
 ## Unreleased
 
+- Add multi-version support for IOS-XR 24.4.2, 25.4.2 and 26.2.1. The module reads the IOS-XR version of each device with the `iosxr_device_info` data source
 - BREAKING CHANGE: Remove the deprecated device-level `cli_templates` attribute. Define CLI templates via the unified `templates` structure with `type: cli`, applied by name at global/device-group/device scope
+- Fix: preserve newlines in multi-line CLI templates so IOS-XR submode configuration is applied correctly instead of being collapsed onto a single line
+- BREAKING CHANGE: Rename the `iosxr_gnmi` resource to `iosxr_yang`. The new resource can be used with GNMI and Netconf transport protocols.
+- `snmp_server` support added for `contexts` and `context_mappings`.
+- BREAKING CHANGE: Extract BGP neighbors into standalone `iosxr_router_bgp_neighbor` and `iosxr_router_bgp_vrf_neighbor` modules to resolve a circular dependency.
+- `clock` support added for `timezone`.
+- `http_client` support added.
+- `logging` support added for `events.link_status`.
+- `mpls_ldp` support added for `neighbor_password_encrypted`.
+- `policy_maps` classes support added for `random_detect_ecn`.
+- `router_isis_processes` address family support added for `apply_weight` (ECMP/UCMP).
+- `interfaces` bundle-ether and bundle-ether subinterfaces support added for `macsec`.
 - BREAKING CHANGE: Consolidate L2VPN configuration under a single `l2vpn` object. Bridge domains are now nested under their parent bridge group (with `name` replacing `bridge_group_name`/`bridge_domain_name`) and pseudowire classes moved under `l2vpn`.
 - `routed_interfaces` (BVI) support added to bridge domains.
 - Fix deadlock when removing a routing set and updating the referencing route-policy in the same apply.

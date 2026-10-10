@@ -50,10 +50,27 @@ locals {
         interface_name = try(core_interface.name, local.defaults.iosxr.devices.configuration.evpn.groups.core_interfaces.name, null)
       }]
     }]
-    srv6_locators = try(length(local.device_config[device.name].evpn.srv6.locators) == 0, true) ? null : [for locator in local.device_config[device.name].evpn.srv6.locators : {
+    srv6_locators = local.device_is_25x[device.name] ? null : try(length(local.device_config[device.name].evpn.srv6.locators) == 0, true) ? null : [for locator in local.device_config[device.name].evpn.srv6.locators : {
       locator_name                        = try(locator.name, local.defaults.iosxr.devices.configuration.evpn.srv6.locators.name, null)
       usid_allocation_wide_local_id_block = try(locator.usid_allocation_wide_local_id_block, local.defaults.iosxr.devices.configuration.evpn.srv6.locators.usid_allocation_wide_local_id_block, null)
     }]
+    srv6_locator_name                                = local.device_is_25x[device.name] ? try(local.device_config[device.name].evpn.srv6.locators[0].name, null) : null
+    srv6_locator_usid_allocation_wide_local_id_block = local.device_is_25x[device.name] ? try(local.device_config[device.name].evpn.srv6.locators[0].usid_allocation_wide_local_id_block, null) : null
+    virtual_interfaces = local.device_is_25x[device.name] ? (try(length(local.device_config[device.name].evpn.virtual.interfaces) == 0, true) ? null : [for interface in local.device_config[device.name].evpn.virtual.interfaces : {
+      interface_name = try(interface.name, local.defaults.iosxr.devices.configuration.evpn.virtual.interfaces.name, null)
+      ethernet_segment_bgp_rt = try(
+        provider::utils::normalize_mac(
+          try(interface.ethernet_segment.route_target, local.defaults.iosxr.devices.configuration.evpn.virtual.interfaces.ethernet_segment.route_target),
+          "colon"
+        ),
+        null
+      )
+      ethernet_segment_esi_zero                     = try(interface.ethernet_segment.esi_zero, local.defaults.iosxr.devices.configuration.evpn.virtual.interfaces.ethernet_segment.esi_zero, null)
+      ethernet_segment_service_carving_hrw          = try(interface.ethernet_segment.service_carving_hrw, local.defaults.iosxr.devices.configuration.evpn.virtual.interfaces.ethernet_segment.service_carving_hrw, null)
+      ethernet_segment_convergence_mac_mobility     = try(interface.ethernet_segment.convergence.mac_mobility, local.defaults.iosxr.devices.configuration.evpn.virtual.interfaces.ethernet_segment.convergence.mac_mobility, null)
+      ethernet_segment_convergence_nexthop_tracking = try(interface.ethernet_segment.convergence.nexthop_tracking, local.defaults.iosxr.devices.configuration.evpn.virtual.interfaces.ethernet_segment.convergence.nexthop_tracking, null)
+      ethernet_segment_convergence_reroute          = try(interface.ethernet_segment.convergence.reroute, local.defaults.iosxr.devices.configuration.evpn.virtual.interfaces.ethernet_segment.convergence.reroute, null)
+    }]) : null
     virtual_neighbors = try(length(local.device_config[device.name].evpn.virtual.neighbors) == 0, true) ? null : [for neighbor in local.device_config[device.name].evpn.virtual.neighbors : {
       address = try(neighbor.address, local.defaults.iosxr.devices.configuration.evpn.virtual.neighbors.address, null)
       pw_id   = try(neighbor.pw_id, local.defaults.iosxr.devices.configuration.evpn.virtual.neighbors.pw_id, null)
@@ -144,6 +161,9 @@ resource "iosxr_evpn" "evpn" {
   virtual_access_evi_ethernet_segment_esi_zero              = each.value.virtual_access_evi_ethernet_segment_esi_zero
   groups                                                    = each.value.groups
   srv6_locators                                             = each.value.srv6_locators
+  srv6_locator_name                                         = each.value.srv6_locator_name
+  srv6_locator_usid_allocation_wide_local_id_block          = each.value.srv6_locator_usid_allocation_wide_local_id_block
+  virtual_interfaces                                        = each.value.virtual_interfaces
   virtual_neighbors                                         = each.value.virtual_neighbors
   virtual_vfis                                              = each.value.virtual_vfis
 

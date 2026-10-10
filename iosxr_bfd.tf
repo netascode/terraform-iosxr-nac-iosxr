@@ -30,6 +30,10 @@ resource "iosxr_bfd" "bfd" {
   multipath_destinations = try(length(local.device_config[each.value.name].bfd.multipath_destinations) == 0, true) ? null : [for dest in local.device_config[each.value.name].bfd.multipath_destinations : {
     destination_address = try(dest.address, local.defaults.iosxr.devices.configuration.bfd.multipath_destinations.address, null)
     location_id         = try(dest.location, local.defaults.iosxr.devices.configuration.bfd.multipath_destinations.location, null)
+    vrfs = local.device_is_26x[each.value.name] && try(length(dest.vrfs) > 0, false) ? [for v in dest.vrfs : {
+      vrf_name    = try(v.name, local.defaults.iosxr.devices.configuration.bfd.multipath_destinations.vrfs.name, null)
+      location_id = try(v.location, local.defaults.iosxr.devices.configuration.bfd.multipath_destinations.vrfs.location, null)
+    }] : null
     }
   ]
   interfaces = try(length(local.device_config[each.value.name].bfd.interfaces) == 0, true) ? null : [for interface in local.device_config[each.value.name].bfd.interfaces : {

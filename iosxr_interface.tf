@@ -118,11 +118,14 @@ locals {
         ipv6_nd_redirects                    = try(int.ipv6.nd_redirects, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ipv6.nd_redirects, null)
         ipv6_nd_prefix_default_no_adv        = try(int.ipv6.nd_prefix_default_no_adv, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ipv6.nd_prefix_default_no_adv, null)
         ipv6_nd_prefix_default_no_autoconfig = try(int.ipv6.nd_prefix_default_no_autoconfig, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ipv6.nd_prefix_default_no_autoconfig, null)
+        ipv6_nd_solicited_ra                 = local.device_is_25x[device.name] ? try(int.ipv6.nd_solicited_ra, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ipv6.nd_solicited_ra, null) : null
+        ipv6_nd_unsolicited_ra_disable       = local.device_is_25x[device.name] ? try(int.ipv6.nd_unsolicited_ra_disable, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ipv6.nd_unsolicited_ra_disable, null) : null
         ethernet_cfm_mep_domains = try(length(int.ethernet_cfm.mep_domains) == 0, true) ? null : [for domain in int.ethernet_cfm.mep_domains : {
           domain_name                                        = try(domain.domain, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.domain, null)
           service                                            = try(domain.service, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.service, null)
           mep_id                                             = try(domain.mep_id, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.mep_id, null)
           propagate_remote_status                            = try(domain.propagate_remote_status, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.propagate_remote_status, null)
+          propagate_remote_status_restore_timer              = local.device_is_25x[device.name] ? try(domain.propagate_remote_status_restore_timer, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.propagate_remote_status_restore_timer, null) : null
           cos                                                = try(domain.cos, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.cos, null)
           loss_measurement_counters_aggregate                = try(domain.loss_measurement_counters.aggregate, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.loss_measurement_counters.aggregate, null)
           loss_measurement_counters_priority_cos_range_start = try(domain.loss_measurement_counters.priority_cos_range_from, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ethernet_cfm.mep_domains.loss_measurement_counters.priority_cos_range_from, null)
@@ -344,6 +347,8 @@ locals {
         }]
         ptp                                              = try(int.ptp.enable, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ptp.enable, null)
         ptp_profile                                      = try(int.ptp.profile, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ptp.profile, null)
+        ptp_monitor_sender                               = local.device_is_25x[device.name] ? try(int.ptp.monitor_sender, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ptp.monitor_sender, null) : null
+        ptp_monitor_receiver                             = local.device_is_25x[device.name] ? try(int.ptp.monitor_receiver, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ptp.monitor_receiver, null) : null
         ptp_transport_ipv4                               = try(int.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ptp.transport, null) == "ipv4" ? true : null
         ptp_transport_ethernet                           = try(int.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ptp.transport, null) == "ethernet" ? true : null
         ptp_transport_ipv6                               = try(int.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.ethernets.ptp.transport, null) == "ipv6" ? true : null
@@ -479,11 +484,14 @@ resource "terraform_data" "ethernet_flow_replace" {
 }
 
 resource "iosxr_interface_ethernet" "ethernet" {
-  for_each = { for int in local.interfaces_ethernets : int.key => int if int.managed }
-  device   = each.value.device
-  type     = each.value.type
-  name     = each.value.id
-
+  for_each                                                                           = { for int in local.interfaces_ethernets : int.key => int if int.managed }
+  device                                                                             = each.value.device
+  type                                                                               = each.value.type
+  name                                                                               = each.value.id
+  ipv6_nd_solicited_ra                                                               = each.value.ipv6_nd_solicited_ra
+  ipv6_nd_unsolicited_ra_disable                                                     = each.value.ipv6_nd_unsolicited_ra_disable
+  ptp_monitor_sender                                                                 = each.value.ptp_monitor_sender
+  ptp_monitor_receiver                                                               = each.value.ptp_monitor_receiver
   l2transport                                                                        = each.value.l2transport
   point_to_point                                                                     = each.value.point_to_point
   multipoint                                                                         = each.value.multipoint
@@ -727,11 +735,14 @@ resource "iosxr_interface_ethernet" "ethernet" {
 ##### UNMANAGED ETHERNETS #####
 
 resource "iosxr_interface_ethernet" "ethernet_unmanaged" {
-  for_each = { for int in local.interfaces_ethernets : int.key => int if !int.managed }
-  device   = each.value.device
-  type     = each.value.type
-  name     = each.value.id
-
+  for_each                                                                           = { for int in local.interfaces_ethernets : int.key => int if !int.managed }
+  device                                                                             = each.value.device
+  type                                                                               = each.value.type
+  name                                                                               = each.value.id
+  ipv6_nd_solicited_ra                                                               = each.value.ipv6_nd_solicited_ra
+  ipv6_nd_unsolicited_ra_disable                                                     = each.value.ipv6_nd_unsolicited_ra_disable
+  ptp_monitor_sender                                                                 = each.value.ptp_monitor_sender
+  ptp_monitor_receiver                                                               = each.value.ptp_monitor_receiver
   l2transport                                                                        = each.value.l2transport
   point_to_point                                                                     = each.value.point_to_point
   multipoint                                                                         = each.value.multipoint
@@ -1135,6 +1146,8 @@ locals {
           flow_ipv6_ingress_monitor_samplers                   = try(length([for fm in try(subint.flow_monitors.ipv6, []) : fm if try(fm.direction, "") == "ingress" && can(fm.sampler_map)]) == 0, true) ? null : [for fm in try(subint.flow_monitors.ipv6, []) : { monitor_map_name = try(fm.monitor_map, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.flow_monitors.ipv6.monitor_map, null), sampler_map_name = try(fm.sampler_map, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.flow_monitors.ipv6.sampler_map, null) } if try(fm.direction, "") == "ingress" && can(fm.sampler_map)]
           flow_ipv6_egress_monitors                            = try(length([for fm in try(subint.flow_monitors.ipv6, []) : fm if try(fm.direction, "") == "egress" && !can(fm.sampler_map)]) == 0, true) ? null : [for fm in try(subint.flow_monitors.ipv6, []) : { monitor_map_name = try(fm.monitor_map, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.flow_monitors.ipv6.monitor_map, null) } if try(fm.direction, "") == "egress" && !can(fm.sampler_map)]
           flow_ipv6_egress_monitor_samplers                    = try(length([for fm in try(subint.flow_monitors.ipv6, []) : fm if try(fm.direction, "") == "egress" && can(fm.sampler_map)]) == 0, true) ? null : [for fm in try(subint.flow_monitors.ipv6, []) : { monitor_map_name = try(fm.monitor_map, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.flow_monitors.ipv6.monitor_map, null), sampler_map_name = try(fm.sampler_map, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.flow_monitors.ipv6.sampler_map, null) } if try(fm.direction, "") == "egress" && can(fm.sampler_map)]
+          ipv6_nd_solicited_ra                                 = local.device_is_25x[device.name] ? try(subint.ipv6.nd_solicited_ra, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.nd_solicited_ra, null) : null
+          ipv6_nd_unsolicited_ra_disable                       = local.device_is_25x[device.name] ? try(subint.ipv6.nd_unsolicited_ra_disable, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.nd_unsolicited_ra_disable, null) : null
           arp_timeout                                          = try(subint.arp_timeout, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.arp_timeout, null)
           arp_learning_disable                                 = try(subint.arp_learning, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.arp_learning, null) == "disable" ? true : null
           arp_learning_local                                   = try(subint.arp_learning, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.arp_learning, null) == "local" ? true : null
@@ -1163,6 +1176,8 @@ locals {
           }]
           ptp                                              = try(subint.ptp.enable, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ptp.enable, null)
           ptp_profile                                      = try(subint.ptp.profile, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ptp.profile, null)
+          ptp_monitor_sender                               = local.device_is_25x[device.name] ? try(subint.ptp.monitor_sender, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ptp.monitor_sender, null) : null
+          ptp_monitor_receiver                             = local.device_is_25x[device.name] ? try(subint.ptp.monitor_receiver, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ptp.monitor_receiver, null) : null
           ptp_transport_ipv4                               = try(subint.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ptp.transport, null) == "ipv4" ? true : null
           ptp_transport_ethernet                           = try(subint.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ptp.transport, null) == "ethernet" ? true : null
           ptp_transport_ipv6                               = try(subint.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.ethernets.subinterfaces.ptp.transport, null) == "ipv6" ? true : null
@@ -1299,9 +1314,12 @@ resource "terraform_data" "ethernet_subinterface_flow_replace" {
 }
 
 resource "iosxr_interface_ethernet_subinterface" "ethernet_subinterface" {
-  for_each = { for int in local.interfaces_ethernet_subinterfaces : int.key => int }
-  device   = each.value.device
-
+  for_each                                                  = { for int in local.interfaces_ethernet_subinterfaces : int.key => int }
+  device                                                    = each.value.device
+  ipv6_nd_solicited_ra                                      = each.value.ipv6_nd_solicited_ra
+  ipv6_nd_unsolicited_ra_disable                            = each.value.ipv6_nd_unsolicited_ra_disable
+  ptp_monitor_sender                                        = each.value.ptp_monitor_sender
+  ptp_monitor_receiver                                      = each.value.ptp_monitor_receiver
   type                                                      = each.value.type
   name                                                      = each.value.id
   l2transport                                               = each.value.l2transport
@@ -1617,11 +1635,14 @@ locals {
         ipv6_nd_redirects                    = try(be.ipv6.nd_redirects, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ipv6.nd_redirects, null)
         ipv6_nd_prefix_default_no_adv        = try(be.ipv6.nd_prefix_default_no_adv, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ipv6.nd_prefix_default_no_adv, null)
         ipv6_nd_prefix_default_no_autoconfig = try(be.ipv6.nd_prefix_default_no_autoconfig, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ipv6.nd_prefix_default_no_autoconfig, null)
+        ipv6_nd_solicited_ra                 = local.device_is_25x[device.name] ? try(be.ipv6.nd_solicited_ra, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ipv6.nd_solicited_ra, null) : null
+        ipv6_nd_unsolicited_ra_disable       = local.device_is_25x[device.name] ? try(be.ipv6.nd_unsolicited_ra_disable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ipv6.nd_unsolicited_ra_disable, null) : null
         ethernet_cfm_mep_domains = try(length(be.ethernet_cfm.mep_domains) == 0, true) ? null : [for mep in be.ethernet_cfm.mep_domains : {
           domain_name                                        = try(mep.domain, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.domain, null)
           service                                            = try(mep.service, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.service, null)
           mep_id                                             = try(mep.mep_id, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.mep_id, null)
           propagate_remote_status                            = try(mep.propagate_remote_status, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.propagate_remote_status, null)
+          propagate_remote_status_restore_timer              = local.device_is_25x[device.name] ? try(mep.propagate_remote_status_restore_timer, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.propagate_remote_status_restore_timer, null) : null
           cos                                                = try(mep.cos, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.cos, null)
           loss_measurement_counters_aggregate                = try(mep.loss_measurement_counters.aggregate, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.loss_measurement_counters.aggregate, null)
           loss_measurement_counters_priority_cos_range_start = try(mep.loss_measurement_counters.priority_cos_range_from, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ethernet_cfm.mep_domains.loss_measurement_counters.priority_cos_range_from, null)
@@ -1713,6 +1734,10 @@ locals {
           ),
           null
         )
+        macsec_psk_keychain_name     = try(be.macsec_psk_keychain, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.macsec_psk_keychain, null)
+        macsec_fallback_psk_keychain = try(be.macsec_fallback_psk_keychain, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.macsec_fallback_psk_keychain, null)
+        macsec_policy                = try(be.macsec_policy, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.macsec_policy, null)
+        macsec_eap_policy            = try(be.macsec_eap_policy, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.macsec_eap_policy, null)
         monitor_sessions = try(length(be.monitor_sessions) == 0, true) ? null : [for session in be.monitor_sessions : {
           session_name      = try(session.name, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.monitor_sessions.name, null)
           ethernet          = try(session.type, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.monitor_sessions.type, "ethernet") == "ethernet" ? true : null
@@ -1730,6 +1755,8 @@ locals {
         lldp_receive_disable                             = try(be.lldp_receive_disable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.lldp_receive_disable, null)
         ptp                                              = try(be.ptp.enable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ptp.enable, null)
         ptp_profile                                      = try(be.ptp.profile, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ptp.profile, null)
+        ptp_monitor_sender                               = local.device_is_25x[device.name] ? try(be.ptp.monitor_sender, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ptp.monitor_sender, null) : null
+        ptp_monitor_receiver                             = local.device_is_25x[device.name] ? try(be.ptp.monitor_receiver, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ptp.monitor_receiver, null) : null
         ptp_transport_ipv4                               = try(be.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ptp.transport, null) == "ipv4" ? true : null
         ptp_transport_ethernet                           = try(be.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ptp.transport, null) == "ethernet" ? true : null
         ptp_transport_ipv6                               = try(be.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.ptp.transport, null) == "ipv6" ? true : null
@@ -1865,9 +1892,12 @@ resource "terraform_data" "bundle_ether_flow_replace" {
 }
 
 resource "iosxr_interface_bundle_ether" "bundle_ether" {
-  for_each = { for be in local.interfaces_bundle_ethernets : be.key => be }
-  device   = each.value.device
-
+  for_each                                                  = { for be in local.interfaces_bundle_ethernets : be.key => be }
+  device                                                    = each.value.device
+  ipv6_nd_solicited_ra                                      = each.value.ipv6_nd_solicited_ra
+  ipv6_nd_unsolicited_ra_disable                            = each.value.ipv6_nd_unsolicited_ra_disable
+  ptp_monitor_sender                                        = each.value.ptp_monitor_sender
+  ptp_monitor_receiver                                      = each.value.ptp_monitor_receiver
   name                                                      = each.value.id
   l2transport                                               = each.value.l2transport
   point_to_point                                            = each.value.point_to_point
@@ -2001,6 +2031,10 @@ resource "iosxr_interface_bundle_ether" "bundle_ether" {
   bfd_address_family_ipv6_timers_start                      = each.value.bfd_address_family_ipv6_timers_start
   bfd_address_family_ipv6_timers_nbr_unconfig               = each.value.bfd_address_family_ipv6_timers_nbr_unconfig
   mac_address                                               = each.value.mac_address
+  macsec_psk_keychain_name                                  = each.value.macsec_psk_keychain_name
+  macsec_fallback_psk_keychain                              = each.value.macsec_fallback_psk_keychain
+  macsec_policy                                             = each.value.macsec_policy
+  macsec_eap_policy                                         = each.value.macsec_eap_policy
   monitor_sessions                                          = each.value.monitor_sessions
   mpls_mtu                                                  = each.value.mpls_mtu
   lldp                                                      = each.value.lldp
@@ -2255,12 +2289,18 @@ locals {
           flow_ipv6_ingress_monitor_samplers                   = try(length([for fm in try(subint.flow_monitors.ipv6, []) : fm if try(fm.direction, "") == "ingress" && can(fm.sampler_map)]) == 0, true) ? null : [for fm in try(subint.flow_monitors.ipv6, []) : { monitor_map_name = try(fm.monitor_map, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.flow_monitors.ipv6.monitor_map, null), sampler_map_name = try(fm.sampler_map, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.flow_monitors.ipv6.sampler_map, null) } if try(fm.direction, "") == "ingress" && can(fm.sampler_map)]
           flow_ipv6_egress_monitors                            = try(length([for fm in try(subint.flow_monitors.ipv6, []) : fm if try(fm.direction, "") == "egress" && !can(fm.sampler_map)]) == 0, true) ? null : [for fm in try(subint.flow_monitors.ipv6, []) : { monitor_map_name = try(fm.monitor_map, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.flow_monitors.ipv6.monitor_map, null) } if try(fm.direction, "") == "egress" && !can(fm.sampler_map)]
           flow_ipv6_egress_monitor_samplers                    = try(length([for fm in try(subint.flow_monitors.ipv6, []) : fm if try(fm.direction, "") == "egress" && can(fm.sampler_map)]) == 0, true) ? null : [for fm in try(subint.flow_monitors.ipv6, []) : { monitor_map_name = try(fm.monitor_map, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.flow_monitors.ipv6.monitor_map, null), sampler_map_name = try(fm.sampler_map, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.flow_monitors.ipv6.sampler_map, null) } if try(fm.direction, "") == "egress" && can(fm.sampler_map)]
+          ipv6_nd_solicited_ra                                 = local.device_is_25x[device.name] ? try(subint.ipv6.nd_solicited_ra, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ipv6.nd_solicited_ra, null) : null
+          ipv6_nd_unsolicited_ra_disable                       = local.device_is_25x[device.name] ? try(subint.ipv6.nd_unsolicited_ra_disable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ipv6.nd_unsolicited_ra_disable, null) : null
           arp_timeout                                          = try(subint.arp_timeout, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.arp_timeout, null)
           arp_learning_disable                                 = try(subint.arp_learning, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.arp_learning, null) == "disable" ? true : null
           arp_learning_local                                   = try(subint.arp_learning, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.arp_learning, null) == "local" ? true : null
           arp_gratuitous_ignore                                = try(subint.arp_gratuitous_ignore, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.arp_gratuitous_ignore, null)
           arp_cache_limit                                      = try(subint.arp_cache_limit, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.arp_cache_limit, null)
           proxy_arp                                            = try(subint.proxy_arp, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.proxy_arp, null)
+          macsec_psk_keychain_name                             = try(subint.macsec_psk_keychain, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.macsec_psk_keychain, null)
+          macsec_fallback_psk_keychain                         = try(subint.macsec_fallback_psk_keychain, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.macsec_fallback_psk_keychain, null)
+          macsec_policy                                        = try(subint.macsec_policy, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.macsec_policy, null)
+          macsec_eap_policy                                    = try(subint.macsec_eap_policy, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.macsec_eap_policy, null)
           monitor_sessions = try(length(subint.monitor_sessions) == 0, true) ? null : [for session in subint.monitor_sessions : {
             session_name      = try(session.name, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.monitor_sessions.name, null)
             ethernet          = try(session.type, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.monitor_sessions.type, "ethernet") == "ethernet" ? true : null
@@ -2277,6 +2317,8 @@ locals {
           lldp_receive_disable                             = try(subint.lldp_receive_disable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.lldp_receive_disable, null)
           ptp                                              = try(subint.ptp.enable, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ptp.enable, null)
           ptp_profile                                      = try(subint.ptp.profile, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ptp.profile, null)
+          ptp_monitor_sender                               = local.device_is_25x[device.name] ? try(subint.ptp.monitor_sender, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ptp.monitor_sender, null) : null
+          ptp_monitor_receiver                             = local.device_is_25x[device.name] ? try(subint.ptp.monitor_receiver, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ptp.monitor_receiver, null) : null
           ptp_transport_ipv4                               = try(subint.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ptp.transport, null) == "ipv4" ? true : null
           ptp_transport_ethernet                           = try(subint.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ptp.transport, null) == "ethernet" ? true : null
           ptp_transport_ipv6                               = try(subint.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.bundle_ethernets.subinterfaces.ptp.transport, null) == "ipv6" ? true : null
@@ -2413,9 +2455,12 @@ resource "terraform_data" "bundle_ether_subinterface_flow_replace" {
 }
 
 resource "iosxr_interface_bundle_ether_subinterface" "bundle_ether_subinterface" {
-  for_each = { for subint in local.interfaces_bundle_ethernet_subinterfaces : subint.key => subint }
-  device   = each.value.device
-
+  for_each                                                  = { for subint in local.interfaces_bundle_ethernet_subinterfaces : subint.key => subint }
+  device                                                    = each.value.device
+  ipv6_nd_solicited_ra                                      = each.value.ipv6_nd_solicited_ra
+  ipv6_nd_unsolicited_ra_disable                            = each.value.ipv6_nd_unsolicited_ra_disable
+  ptp_monitor_sender                                        = each.value.ptp_monitor_sender
+  ptp_monitor_receiver                                      = each.value.ptp_monitor_receiver
   name                                                      = each.value.id
   l2transport                                               = each.value.l2transport
   point_to_point                                            = each.value.point_to_point
@@ -2522,6 +2567,10 @@ resource "iosxr_interface_bundle_ether_subinterface" "bundle_ether_subinterface"
   arp_gratuitous_ignore                                     = each.value.arp_gratuitous_ignore
   arp_cache_limit                                           = each.value.arp_cache_limit
   proxy_arp                                                 = each.value.proxy_arp
+  macsec_psk_keychain_name                                  = each.value.macsec_psk_keychain_name
+  macsec_fallback_psk_keychain                              = each.value.macsec_fallback_psk_keychain
+  macsec_policy                                             = each.value.macsec_policy
+  macsec_eap_policy                                         = each.value.macsec_eap_policy
   monitor_sessions                                          = each.value.monitor_sessions
   mpls_mtu                                                  = each.value.mpls_mtu
   lldp                                                      = each.value.lldp
@@ -2723,6 +2772,8 @@ locals {
         ipv6_nd_redirects                    = try(bvi.ipv6.nd_redirects, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_redirects, null)
         ipv6_nd_prefix_default_no_adv        = try(bvi.ipv6.nd_prefix_default_no_adv, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_prefix_default_no_adv, null)
         ipv6_nd_prefix_default_no_autoconfig = try(bvi.ipv6.nd_prefix_default_no_autoconfig, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_prefix_default_no_autoconfig, null)
+        ipv6_nd_solicited_ra                 = local.device_is_25x[device.name] ? try(bvi.ipv6.nd_solicited_ra, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_solicited_ra, null) : null
+        ipv6_nd_unsolicited_ra_disable       = local.device_is_25x[device.name] ? try(bvi.ipv6.nd_unsolicited_ra_disable, local.defaults.iosxr.devices.configuration.interfaces.bvis.ipv6.nd_unsolicited_ra_disable, null) : null
         arp_timeout                          = try(bvi.arp_timeout, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_timeout, null)
         arp_learning_disable                 = try(bvi.arp_learning, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_learning, null) == "disable" ? true : null
         arp_learning_local                   = try(bvi.arp_learning, local.defaults.iosxr.devices.configuration.interfaces.bvis.arp_learning, null) == "local" ? true : null
@@ -2750,6 +2801,8 @@ locals {
         }]
         ptp                                              = try(bvi.ptp.enable, local.defaults.iosxr.devices.configuration.interfaces.bvis.ptp.enable, null)
         ptp_profile                                      = try(bvi.ptp.profile, local.defaults.iosxr.devices.configuration.interfaces.bvis.ptp.profile, null)
+        ptp_monitor_sender                               = local.device_is_25x[device.name] ? try(bvi.ptp.monitor_sender, local.defaults.iosxr.devices.configuration.interfaces.bvis.ptp.monitor_sender, null) : null
+        ptp_monitor_receiver                             = local.device_is_25x[device.name] ? try(bvi.ptp.monitor_receiver, local.defaults.iosxr.devices.configuration.interfaces.bvis.ptp.monitor_receiver, null) : null
         ptp_transport_ipv4                               = try(bvi.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.bvis.ptp.transport, null) == "ipv4" ? true : null
         ptp_transport_ethernet                           = try(bvi.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.bvis.ptp.transport, null) == "ethernet" ? true : null
         ptp_transport_ipv6                               = try(bvi.ptp.transport, local.defaults.iosxr.devices.configuration.interfaces.bvis.ptp.transport, null) == "ipv6" ? true : null
@@ -2871,9 +2924,12 @@ locals {
 }
 
 resource "iosxr_interface_bvi" "bvi" {
-  for_each = { for bvi in local.interfaces_bvis : bvi.key => bvi }
-  device   = each.value.device
-
+  for_each                                                  = { for bvi in local.interfaces_bvis : bvi.key => bvi }
+  device                                                    = each.value.device
+  ipv6_nd_solicited_ra                                      = each.value.ipv6_nd_solicited_ra
+  ipv6_nd_unsolicited_ra_disable                            = each.value.ipv6_nd_unsolicited_ra_disable
+  ptp_monitor_sender                                        = each.value.ptp_monitor_sender
+  ptp_monitor_receiver                                      = each.value.ptp_monitor_receiver
   name                                                      = each.value.id
   point_to_point                                            = each.value.point_to_point
   multipoint                                                = each.value.multipoint

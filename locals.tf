@@ -123,3 +123,61 @@ locals {
     "unknown" = "default"
   }
 }
+
+# ================
+# Multi-version
+# ================
+locals {
+  # Per-device: true if device is running 25.4 or later
+  device_is_25x = {
+    for name, info in data.iosxr_device_info.version :
+    name => info.version == "" ? false : provider::utils::version_compare(info.version, "25.4") >= 0
+  }
+  # Per-device: true if device is running 26.2 or later
+  device_is_26x = {
+    for name, info in data.iosxr_device_info.version :
+    name => info.version == "" ? false : provider::utils::version_compare(info.version, "26.2") >= 0
+  }
+
+  device_version = { for name, info in data.iosxr_device_info.version : name => info.version }
+
+  # Device-side enum values by release; each release lists only what changed in it.
+  version_keyed_maps = {
+    logging_archive_severity = {
+      "24.4" = { warning = "warnings" }
+      "25.4" = { warning = "warning" }
+    }
+    logging_file_severity = {
+      "24.4" = { errors = "error", informational = "info" }
+      "25.4" = { errors = "errors", informational = "informational" }
+    }
+    logging_vrf_severity = {
+      "24.4" = { errors = "error", informational = "info" }
+      "25.4" = { errors = "errors", informational = "informational" }
+    }
+  }
+
+  # Per map: release keys in ascending numeric order ("25.4" before "25.10").
+  # Each key is padded to "<major><minor>|<release>" so a plain sort orders it numerically.
+  release_order = {
+    for map_name, releases in local.version_keyed_maps : map_name => [
+      for k in sort([
+        for r in keys(releases) :
+        format("%04d%04d|%s", tonumber(split(".", r)[0]), tonumber(split(".", r)[1]), r)
+      ]) : split("|", k)[1]
+    ]
+  }
+
+  # Per map and device: merge releases at or below the device version, later wins.
+  # The lowest release always applies, so empty and below-lowest versions use it.
+  version_resolved = {
+    for map_name, releases in local.version_keyed_maps : map_name => {
+      for device, v in local.device_version : device => merge([
+        for release in local.release_order[map_name] : {
+          for value, mapped in releases[release] : value => mapped
+          if release == local.release_order[map_name][0] ? true : (v == "" ? false : provider::utils::version_compare(v, release) >= 0)
+        }
+      ]...)
+    }
+  }
+}

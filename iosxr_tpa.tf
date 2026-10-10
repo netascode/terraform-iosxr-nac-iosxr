@@ -34,7 +34,7 @@ locals {
 }
 
 resource "iosxr_tpa" "tpa" {
-  for_each                    = { for tpa in local.tpa : tpa.key => tpa }
+  for_each                    = { for tpa in local.tpa : tpa.key => tpa if !local.device_is_25x[tpa.device_name] }
   device                      = each.value.device_name
   statistics_update_frequency = each.value.statistics_update_frequency
   statistics_disable          = each.value.statistics_disable

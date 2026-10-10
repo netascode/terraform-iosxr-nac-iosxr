@@ -260,6 +260,18 @@ resource "iosxr_snmp_server" "snmp_server" {
     ]
     }
   ]
+  contexts = try(length(local.device_config[each.value.name].snmp_server.contexts) == 0, true) ? null : [for context in local.device_config[each.value.name].snmp_server.contexts : {
+    name = try(context.name, local.defaults.iosxr.devices.configuration.snmp_server.contexts.name, null)
+    }
+  ]
+  context_mappings = try(length(local.device_config[each.value.name].snmp_server.context_mappings) == 0, true) ? null : [for mapping in local.device_config[each.value.name].snmp_server.context_mappings : {
+    name     = try(mapping.name, local.defaults.iosxr.devices.configuration.snmp_server.context_mappings.name, null)
+    feature  = try(mapping.feature, local.defaults.iosxr.devices.configuration.snmp_server.context_mappings.feature, null)
+    instance = try(mapping.instance, local.defaults.iosxr.devices.configuration.snmp_server.context_mappings.instance, null)
+    vrf      = try(mapping.vrf, local.defaults.iosxr.devices.configuration.snmp_server.context_mappings.vrf, null)
+    topology = try(mapping.topology, local.defaults.iosxr.devices.configuration.snmp_server.context_mappings.topology, null)
+    }
+  ]
 }
 
 ##### SNMP Server VRFs #####

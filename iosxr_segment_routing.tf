@@ -32,13 +32,22 @@ locals {
       mapping_prefix_sid_address_family = try(length(local.device_config[device.name].segment_routing.mapping_server) == 0, true) ? null : [
         for af in local.device_config[device.name].segment_routing.mapping_server : {
           af_name = try(af.address_family, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.address_family, null)
-          prefix_addresses = try(length(af.prefix_sid_maps) == 0, true) ? null : [
+          prefix_addresses = local.device_is_25x[device.name] ? null : try(length(af.prefix_sid_maps) == 0, true) ? null : [
             for entry in af.prefix_sid_maps : {
               address   = try(entry.prefix, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.prefix_sid_maps.prefix, null)
               length    = try(entry.length, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.prefix_sid_maps.length, null)
               sid_index = try(entry.sid_index, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.prefix_sid_maps.sid_index, null)
               range     = try(entry.range, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.prefix_sid_maps.range, null)
               attached  = try(entry.attached, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.prefix_sid_maps.attached, null)
+            }
+          ]
+          addresses = !local.device_is_25x[device.name] ? null : try(length(af.prefix_sid_maps) == 0, true) ? null : [
+            for entry in af.prefix_sid_maps : {
+              ip_address            = try(entry.prefix, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.prefix_sid_maps.prefix, null)
+              prefix                = try(entry.length, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.prefix_sid_maps.length, null)
+              start_sid_index_range = try(entry.sid_index, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.prefix_sid_maps.sid_index, null)
+              range                 = try(entry.range, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.prefix_sid_maps.range, null)
+              attached              = try(entry.attached, local.defaults.iosxr.devices.configuration.segment_routing.mapping_server.prefix_sid_maps.attached, null)
             }
           ]
         }
@@ -74,7 +83,9 @@ locals {
         can(tonumber(try(local.defaults.iosxr.devices.configuration.segment_routing.srv6.encapsulation.hop_limit, ""))) ? tonumber(local.defaults.iosxr.devices.configuration.segment_routing.srv6.encapsulation.hop_limit) : try(local.defaults.iosxr.devices.configuration.segment_routing.srv6.encapsulation.hop_limit, null) != null ? 0 : null,
         null
       )
-      encapsulation_source_address = try(local.device_config[device.name].segment_routing.srv6.encapsulation.source_address, local.defaults.iosxr.devices.configuration.segment_routing.srv6.encapsulation.source_address, null)
+      encapsulation_source_address         = local.device_is_26x[device.name] ? null : try(local.device_config[device.name].segment_routing.srv6.encapsulation.source_address, local.defaults.iosxr.devices.configuration.segment_routing.srv6.encapsulation.source_address, null)
+      encapsulation_source_address_address = local.device_is_26x[device.name] ? try(local.device_config[device.name].segment_routing.srv6.encapsulation.source_address, local.defaults.iosxr.devices.configuration.segment_routing.srv6.encapsulation.source_address, null) : null
+      encapsulation_source_address_option  = local.device_is_26x[device.name] && try(local.device_config[device.name].segment_routing.srv6.encapsulation.source_address, local.defaults.iosxr.devices.configuration.segment_routing.srv6.encapsulation.source_address, null) != null ? "explicit-address" : null
       encapsulation_traffic_class_option = try(
         can(tonumber(try(local.device_config[device.name].segment_routing.srv6.encapsulation.traffic_class, ""))) ? "value" : try(local.device_config[device.name].segment_routing.srv6.encapsulation.traffic_class, null),
         can(tonumber(try(local.defaults.iosxr.devices.configuration.segment_routing.srv6.encapsulation.traffic_class, ""))) ? "value" : try(local.defaults.iosxr.devices.configuration.segment_routing.srv6.encapsulation.traffic_class, null),
@@ -110,18 +121,20 @@ locals {
 }
 
 resource "iosxr_segment_routing_v6" "segment_routing_v6" {
-  for_each                           = { for srv6 in local.segment_routing_v6 : srv6.device_name => srv6 }
-  device                             = each.value.device_name
-  enable                             = each.value.enable
-  encapsulation_hop_limit_option     = each.value.encapsulation_hop_limit_option
-  encapsulation_hop_limit_value      = each.value.encapsulation_hop_limit_value
-  encapsulation_source_address       = each.value.encapsulation_source_address
-  encapsulation_traffic_class_option = each.value.encapsulation_traffic_class_option
-  encapsulation_traffic_class_value  = each.value.encapsulation_traffic_class_value
-  formats                            = each.value.formats
-  locators                           = each.value.locators
-  logging_locator_status             = each.value.logging_locator_status
-  sid_holdtime                       = each.value.sid_holdtime
+  for_each                             = { for srv6 in local.segment_routing_v6 : srv6.device_name => srv6 }
+  device                               = each.value.device_name
+  enable                               = each.value.enable
+  encapsulation_hop_limit_option       = each.value.encapsulation_hop_limit_option
+  encapsulation_hop_limit_value        = each.value.encapsulation_hop_limit_value
+  encapsulation_source_address         = each.value.encapsulation_source_address
+  encapsulation_source_address_address = each.value.encapsulation_source_address_address
+  encapsulation_source_address_option  = each.value.encapsulation_source_address_option
+  encapsulation_traffic_class_option   = each.value.encapsulation_traffic_class_option
+  encapsulation_traffic_class_value    = each.value.encapsulation_traffic_class_value
+  formats                              = each.value.formats
+  locators                             = each.value.locators
+  logging_locator_status               = each.value.logging_locator_status
+  sid_holdtime                         = each.value.sid_holdtime
 
   lifecycle {
     replace_triggered_by = [terraform_data.segment_routing_v6_replace[each.key]]

@@ -252,6 +252,8 @@ locals {
           clock_class_to_map_from = try(mapping.class_from, local.defaults.iosxr.devices.configuration.ptp.profiles.interop.ingress_conversion.clock_class_mappings.class_from, null)
           clock_class_to_map_to   = try(mapping.class_to, local.defaults.iosxr.devices.configuration.ptp.profiles.interop.ingress_conversion.clock_class_mappings.class_to, null)
         }]
+        monitor_sender   = local.device_is_25x[device.name] ? try(profile.monitor_sender, local.defaults.iosxr.devices.configuration.ptp.profiles.monitor_sender, null) : null
+        monitor_receiver = local.device_is_25x[device.name] ? try(profile.monitor_receiver, local.defaults.iosxr.devices.configuration.ptp.profiles.monitor_receiver, null) : null
       }
     ] if try(local.device_config[device.name].ptp.profiles, null) != null
   ])
@@ -325,6 +327,8 @@ resource "iosxr_ptp_profile" "ptp_profile" {
   interop_ingress_conversion_offset_scaled_log_variance           = each.value.interop_ingress_conversion_offset_scaled_log_variance
   interop_ingress_conversion_clock_class_default                  = each.value.interop_ingress_conversion_clock_class_default
   interop_ingress_conversion_clock_class_mappings                 = each.value.interop_ingress_conversion_clock_class_mappings
+  monitor_sender                                                  = each.value.monitor_sender
+  monitor_receiver                                                = each.value.monitor_receiver
 
   depends_on = [
     iosxr_ptp.ptp

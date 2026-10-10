@@ -35,6 +35,7 @@ locals {
         attribute_acct_session_id_prepend_nas_port_id             = try(local.device_config[device.name].radius_server.attribute.acct_session_id_prepend_nas_port_id, local.defaults.iosxr.devices.configuration.radius_server.attribute.acct_session_id_prepend_nas_port_id, null)
         attribute_acct_multi_session_id_include_parent_session_id = try(local.device_config[device.name].radius_server.attribute.acct_multi_session_id_include_parent_session_id, local.defaults.iosxr.devices.configuration.radius_server.attribute.acct_multi_session_id_include_parent_session_id, null)
         attribute_filter_id_11_default_direction                  = try(local.device_config[device.name].radius_server.attribute.filter_id_11_default_direction, local.defaults.iosxr.devices.configuration.radius_server.attribute.filter_id_11_default_direction, null)
+        attribute_message_authenticator                           = local.device_is_25x[device.name] ? try(local.device_config[device.name].radius_server.attribute.message_authenticator, local.defaults.iosxr.devices.configuration.radius_server.attribute.message_authenticator, null) : null
         hosts = try(length(local.device_config[device.name].radius_server.hosts) == 0, true) ? null : [
           for idx, host in local.device_config[device.name].radius_server.hosts : {
             order                    = idx
@@ -51,13 +52,20 @@ locals {
             retransmit               = try(host.retransmit, local.defaults.iosxr.devices.configuration.radius_server.hosts.retransmit, null)
             test_username            = try(host.test_username, local.defaults.iosxr.devices.configuration.radius_server.hosts.test_username, null)
             timeout                  = try(host.timeout, local.defaults.iosxr.devices.configuration.radius_server.hosts.timeout, null)
+
+            attribute_message_authenticator_mandate  = local.device_is_25x[device.name] ? (try(host.message_authenticator, local.defaults.iosxr.devices.configuration.radius_server.hosts.message_authenticator, null) == "mandate" ? true : null) : null
+            attribute_message_authenticator_optional = local.device_is_25x[device.name] ? (try(host.message_authenticator, local.defaults.iosxr.devices.configuration.radius_server.hosts.message_authenticator, null) == "optional" ? true : null) : null
           }
         ]
         attribute_lists = try(length(local.device_config[device.name].radius_server.attribute.lists) == 0, true) ? null : [
           for attr_list in local.device_config[device.name].radius_server.attribute.lists : {
             name              = try(attr_list.name, local.defaults.iosxr.devices.configuration.radius_server.attribute.lists.name, null)
             radius_attributes = try(attr_list.attributes, local.defaults.iosxr.devices.configuration.radius_server.attribute.lists.attributes, null)
-            attribute_vendor_ids = try(length(attr_list.attribute_vendor_ids) == 0, true) ? null : [
+            # 26.x stores vendor id 9 as vendor-cisco, so it is sent there instead of vendor-ids
+            attribute_vendor_ids = length([
+              for vendor in try(attr_list.attribute_vendor_ids, []) : vendor
+              if !(local.device_is_26x[device.name] && try(vendor.id, null) == 9)
+              ]) == 0 ? null : [
               for vendor in attr_list.attribute_vendor_ids : {
                 id = try(vendor.id, local.defaults.iosxr.devices.configuration.radius_server.attribute.lists.attribute_vendor_ids.id, null)
                 vendor_types = try(length(vendor.vendor_types) == 0, true) ? null : [
@@ -65,8 +73,21 @@ locals {
                     vendor_type_id = try(vtype.id, local.defaults.iosxr.devices.configuration.radius_server.attribute.lists.attribute_vendor_ids.vendor_types.id, null)
                   }
                 ]
-              }
+              } if !(local.device_is_26x[device.name] && try(vendor.id, null) == 9)
             ]
+            # The device stores every id 9 vendor type as all-attributes, so send that to avoid drift
+            attribute_vendor_cisco_vendor_types = !local.device_is_26x[device.name] || length(flatten([
+              for vendor in try(attr_list.attribute_vendor_ids, []) : try(vendor.vendor_types, []) if try(vendor.id, null) == 9
+              ])) == 0 ? null : flatten([
+              for vendor in attr_list.attribute_vendor_ids : [
+                for vtype in vendor.vendor_types : {
+                  vendor_type_id = vtype.id
+                  all_attributes = true
+                  all_avpairs    = null
+                  avpairs        = null
+                }
+              ] if try(vendor.id, null) == 9 && try(length(vendor.vendor_types) > 0, false)
+            ])
           }
         ]
       }
@@ -98,8 +119,20 @@ resource "iosxr_radius_server" "radius_server" {
   attribute_acct_session_id_prepend_nas_port_id                 = each.value.attribute_acct_session_id_prepend_nas_port_id
   attribute_acct_multi_session_id_include_parent_session_id     = each.value.attribute_acct_multi_session_id_include_parent_session_id
   attribute_filter_id_11_default_direction                      = each.value.attribute_filter_id_11_default_direction
+  attribute_message_authenticator                               = each.value.attribute_message_authenticator
   hosts                                                         = each.value.hosts
   attribute_lists                                               = each.value.attribute_lists
+
+  lifecycle {
+    precondition {
+      condition = !local.device_is_26x[each.value.device_name] || alltrue([
+        for l in try(local.device_config[each.value.device_name].radius_server.attribute.lists, []) : alltrue([
+          for v in try(l.attribute_vendor_ids, []) : try(v.id, null) != 9 || length(try(v.vendor_types, [])) > 0
+        ])
+      ])
+      error_message = "radius_server attribute list: vendor id 9 requires at least one vendor_type on IOS-XR 26.2 and later."
+    }
+  }
 }
 
 ##### Radius Source Interface #####

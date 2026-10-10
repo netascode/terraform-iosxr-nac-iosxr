@@ -47,6 +47,7 @@ resource "iosxr_mpls_ldp" "mpls_ldp" {
   neighbor_dual_stack_transport_connection_prefer_ipv4     = try(local.device_config[each.value.name].mpls_ldp.neighbor_dual_stack_transport_connection_prefer_ipv4, local.defaults.iosxr.devices.configuration.mpls_ldp.neighbor_dual_stack_transport_connection_prefer_ipv4, null)
   neighbor_dual_stack_transport_connection_max_wait        = try(local.device_config[each.value.name].mpls_ldp.neighbor_dual_stack_transport_connection_max_wait, local.defaults.iosxr.devices.configuration.mpls_ldp.neighbor_dual_stack_transport_connection_max_wait, null)
   neighbor_dual_stack_tlv_compliance                       = try(local.device_config[each.value.name].mpls_ldp.neighbor_dual_stack_tlv_compliance, local.defaults.iosxr.devices.configuration.mpls_ldp.neighbor_dual_stack_tlv_compliance, null)
+  neighbor_password_encrypted                              = try(local.device_config[each.value.name].mpls_ldp.neighbor_password, local.defaults.iosxr.devices.configuration.mpls_ldp.neighbor_password, null)
   neighbors = try(length(local.device_config[each.value.name].mpls_ldp.neighbors) == 0, true) ? null : [for neighbor in local.device_config[each.value.name].mpls_ldp.neighbors : {
     neighbor_address   = try(neighbor.address, local.defaults.iosxr.devices.configuration.mpls_ldp.neighbors.address, null)
     label_space_id     = try(neighbor.label_space_id, local.defaults.iosxr.devices.configuration.mpls_ldp.neighbors.label_space_id, null)

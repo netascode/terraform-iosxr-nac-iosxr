@@ -9,6 +9,11 @@ locals {
           as_number                                                = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
           vrf_name                                                 = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.name, null)
           af_name                                                  = "ipv4-unicast"
+          update_out_quick_withdraw                                = local.device_is_25x[device.name] ? try(vrf.address_family.ipv4_unicast.update_out_quick_withdraw, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.update_out_quick_withdraw, null) : null
+          maximum_paths_ebgp_bestpath_only                         = local.device_is_25x[device.name] ? try(vrf.address_family.ipv4_unicast.maximum_paths_ebgp_bestpath_only, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.maximum_paths_ebgp_bestpath_only, null) : null
+          redistribute_connected_default_policy_action_in          = local.device_is_25x[device.name] ? try(vrf.address_family.ipv4_unicast.redistribute_connected_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_connected_default_policy_action_in, null) : null
+          redistribute_static_default_policy_action_in             = local.device_is_25x[device.name] ? try(vrf.address_family.ipv4_unicast.redistribute_static_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_static_default_policy_action_in, null) : null
+          redistribute_rip_default_policy_action_in                = local.device_is_25x[device.name] ? try(vrf.address_family.ipv4_unicast.redistribute_rip_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_rip_default_policy_action_in, null) : null
           distance_bgp_external_route                              = try(vrf.address_family.ipv4_unicast.distance_bgp_external_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.distance_bgp_external_route, null)
           distance_bgp_internal_route                              = try(vrf.address_family.ipv4_unicast.distance_bgp_internal_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.distance_bgp_internal_route, null)
           distance_bgp_local_route                                 = try(vrf.address_family.ipv4_unicast.distance_bgp_local_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.distance_bgp_local_route, null)
@@ -99,6 +104,7 @@ locals {
             }
           ]
           redistribute_ospf = try(length(vrf.address_family.ipv4_unicast.redistribute_ospf) == 0, true) ? null : [for ospf in vrf.address_family.ipv4_unicast.redistribute_ospf : {
+            default_policy_action_in                  = local.device_is_25x[device.name] ? try(ospf.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_ospf.default_policy_action_in, null) : null
             router_tag                                = try(ospf.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_ospf.process, null)
             match_internal                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_ospf.match, null) == "match-internal" ? true : null
             match_external                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_ospf.match, null) == "match-external" ? true : null
@@ -137,16 +143,18 @@ locals {
             }
           ]
           redistribute_eigrp = try(length(vrf.address_family.ipv4_unicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in vrf.address_family.ipv4_unicast.redistribute_eigrp : {
-            instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.process, null)
-            match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
-            match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
-            match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.match, null) == "match-external" ? true : null
-            metric                  = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.metric, null)
-            multipath               = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.multipath, null)
-            route_policy            = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.route_policy, null)
+            default_policy_action_in = local.device_is_25x[device.name] ? try(eigrp.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_eigrp.default_policy_action_in, null) : null
+            instance_name            = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.process, null)
+            match_internal           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
+            match_internal_external  = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
+            match_external           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.match, null) == "match-external" ? true : null
+            metric                   = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.metric, null)
+            multipath                = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.multipath, null)
+            route_policy             = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_eigrp.route_policy, null)
             }
           ]
           redistribute_isis = try(length(vrf.address_family.ipv4_unicast.redistribute_isis) == 0, true) ? null : [for isis in vrf.address_family.ipv4_unicast.redistribute_isis : {
+            default_policy_action_in           = local.device_is_25x[device.name] ? try(isis.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_isis.default_policy_action_in, null) : null
             instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_isis.process, null)
             level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_isis.level, null) == "level-1" ? true : null
             level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_unicast.redistribute_isis.level, null) == "level-1-level-2" ? true : null
@@ -247,6 +255,11 @@ resource "iosxr_router_bgp_vrf_address_family" "ipv4_unicast" {
   aggregate_addresses                                      = each.value.aggregate_addresses
   networks                                                 = each.value.networks
   redistribute_ospf                                        = each.value.redistribute_ospf
+  update_out_quick_withdraw                                = each.value.update_out_quick_withdraw
+  maximum_paths_ebgp_bestpath_only                         = each.value.maximum_paths_ebgp_bestpath_only
+  redistribute_connected_default_policy_action_in          = each.value.redistribute_connected_default_policy_action_in
+  redistribute_static_default_policy_action_in             = each.value.redistribute_static_default_policy_action_in
+  redistribute_rip_default_policy_action_in                = each.value.redistribute_rip_default_policy_action_in
   redistribute_eigrp                                       = each.value.redistribute_eigrp
   redistribute_isis                                        = each.value.redistribute_isis
 
@@ -306,6 +319,11 @@ locals {
           as_number                                                = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
           vrf_name                                                 = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.name, null)
           af_name                                                  = "ipv6-unicast"
+          update_out_quick_withdraw                                = local.device_is_25x[device.name] ? try(vrf.address_family.ipv6_unicast.update_out_quick_withdraw, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.update_out_quick_withdraw, null) : null
+          maximum_paths_ebgp_bestpath_only                         = local.device_is_25x[device.name] ? try(vrf.address_family.ipv6_unicast.maximum_paths_ebgp_bestpath_only, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.maximum_paths_ebgp_bestpath_only, null) : null
+          redistribute_connected_default_policy_action_in          = local.device_is_25x[device.name] ? try(vrf.address_family.ipv6_unicast.redistribute_connected_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_connected_default_policy_action_in, null) : null
+          redistribute_static_default_policy_action_in             = local.device_is_25x[device.name] ? try(vrf.address_family.ipv6_unicast.redistribute_static_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_static_default_policy_action_in, null) : null
+          redistribute_rip_default_policy_action_in                = local.device_is_25x[device.name] ? try(vrf.address_family.ipv6_unicast.redistribute_rip_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_rip_default_policy_action_in, null) : null
           distance_bgp_external_route                              = try(vrf.address_family.ipv6_unicast.distance_bgp_external_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.distance_bgp_external_route, null)
           distance_bgp_internal_route                              = try(vrf.address_family.ipv6_unicast.distance_bgp_internal_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.distance_bgp_internal_route, null)
           distance_bgp_local_route                                 = try(vrf.address_family.ipv6_unicast.distance_bgp_local_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.distance_bgp_local_route, null)
@@ -396,6 +414,7 @@ locals {
             }
           ]
           redistribute_ospfv3 = try(length(vrf.address_family.ipv6_unicast.redistribute_ospfv3) == 0, true) ? null : [for ospfv3 in vrf.address_family.ipv6_unicast.redistribute_ospfv3 : {
+            default_policy_action_in                  = local.device_is_25x[device.name] ? try(ospfv3.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_ospfv3.default_policy_action_in, null) : null
             router_tag                                = try(ospfv3.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_ospfv3.process, null)
             match_internal                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_ospfv3.match, null) == "match-internal" ? true : null
             match_external                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_ospfv3.match, null) == "match-external" ? true : null
@@ -434,16 +453,18 @@ locals {
             }
           ]
           redistribute_eigrp = try(length(vrf.address_family.ipv6_unicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in vrf.address_family.ipv6_unicast.redistribute_eigrp : {
-            instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.process, null)
-            match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
-            match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
-            match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-external" ? true : null
-            metric                  = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.metric, null)
-            multipath               = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.multipath, null)
-            route_policy            = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.route_policy, null)
+            default_policy_action_in = local.device_is_25x[device.name] ? try(eigrp.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_eigrp.default_policy_action_in, null) : null
+            instance_name            = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.process, null)
+            match_internal           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
+            match_internal_external  = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
+            match_external           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.match, null) == "match-external" ? true : null
+            metric                   = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.metric, null)
+            multipath                = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.multipath, null)
+            route_policy             = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_eigrp.route_policy, null)
             }
           ]
           redistribute_isis = try(length(vrf.address_family.ipv6_unicast.redistribute_isis) == 0, true) ? null : [for isis in vrf.address_family.ipv6_unicast.redistribute_isis : {
+            default_policy_action_in           = local.device_is_25x[device.name] ? try(isis.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_isis.default_policy_action_in, null) : null
             instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_isis.process, null)
             level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_isis.level, null) == "level-1" ? true : null
             level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_unicast.redistribute_isis.level, null) == "level-1-level-2" ? true : null
@@ -543,6 +564,11 @@ resource "iosxr_router_bgp_vrf_address_family" "ipv6_unicast" {
   aggregate_addresses                                      = each.value.aggregate_addresses
   networks                                                 = each.value.networks
   redistribute_ospf                                        = each.value.redistribute_ospfv3
+  update_out_quick_withdraw                                = each.value.update_out_quick_withdraw
+  maximum_paths_ebgp_bestpath_only                         = each.value.maximum_paths_ebgp_bestpath_only
+  redistribute_connected_default_policy_action_in          = each.value.redistribute_connected_default_policy_action_in
+  redistribute_static_default_policy_action_in             = each.value.redistribute_static_default_policy_action_in
+  redistribute_rip_default_policy_action_in                = each.value.redistribute_rip_default_policy_action_in
   redistribute_eigrp                                       = each.value.redistribute_eigrp
   redistribute_isis                                        = each.value.redistribute_isis
 
@@ -597,48 +623,52 @@ locals {
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for vrf in try(bgp_process.vrfs, []) :
         try(vrf.address_family.ipv4_multicast, null) != null ? [{
-          key                                           = format("%s/%s/%s/ipv4-multicast", device.name, bgp_process.as_number, vrf.name)
-          device_name                                   = device.name
-          as_number                                     = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
-          vrf_name                                      = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.name, null)
-          af_name                                       = "ipv4-multicast"
-          distance_bgp_external_route                   = try(vrf.address_family.ipv4_multicast.distance_bgp_external_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.distance_bgp_external_route, null)
-          distance_bgp_internal_route                   = try(vrf.address_family.ipv4_multicast.distance_bgp_internal_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.distance_bgp_internal_route, null)
-          distance_bgp_local_route                      = try(vrf.address_family.ipv4_multicast.distance_bgp_local_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.distance_bgp_local_route, null)
-          maximum_paths_ebgp_multipath                  = try(vrf.address_family.ipv4_multicast.maximum_paths_ebgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ebgp_multipath, null)
-          maximum_paths_ebgp_selective                  = try(vrf.address_family.ipv4_multicast.maximum_paths_ebgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ebgp_selective, null)
-          maximum_paths_ebgp_route_policy               = try(vrf.address_family.ipv4_multicast.maximum_paths_ebgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ebgp_route_policy, null)
-          maximum_paths_ibgp_multipath                  = try(vrf.address_family.ipv4_multicast.maximum_paths_ibgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ibgp_multipath, null)
-          maximum_paths_ibgp_unequal_cost               = try(vrf.address_family.ipv4_multicast.maximum_paths_ibgp_unequal_cost, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ibgp_unequal_cost, null)
-          maximum_paths_ibgp_unequal_cost_deterministic = try(vrf.address_family.ipv4_multicast.maximum_paths_ibgp_unequal_cost_deterministic, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ibgp_unequal_cost_deterministic, null)
-          maximum_paths_ibgp_selective                  = try(vrf.address_family.ipv4_multicast.maximum_paths_ibgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ibgp_selective, null)
-          maximum_paths_ibgp_route_policy               = try(vrf.address_family.ipv4_multicast.maximum_paths_ibgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ibgp_route_policy, null)
-          maximum_paths_eibgp_multipath                 = try(vrf.address_family.ipv4_multicast.maximum_paths_eibgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_eibgp_multipath, null)
-          maximum_paths_eibgp_equal_cost                = try(vrf.address_family.ipv4_multicast.maximum_paths_eibgp_equal_cost, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_eibgp_equal_cost, null)
-          maximum_paths_eibgp_selective                 = try(vrf.address_family.ipv4_multicast.maximum_paths_eibgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_eibgp_selective, null)
-          maximum_paths_eibgp_route_policy              = try(vrf.address_family.ipv4_multicast.maximum_paths_eibgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_eibgp_route_policy, null)
-          redistribute_connected                        = try(vrf.address_family.ipv4_multicast.redistribute_connected, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_connected, null)
-          redistribute_connected_metric                 = try(vrf.address_family.ipv4_multicast.redistribute_connected_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_connected_metric, null)
-          redistribute_connected_multipath              = try(vrf.address_family.ipv4_multicast.redistribute_connected_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_connected_multipath, null)
-          redistribute_connected_route_policy           = try(vrf.address_family.ipv4_multicast.redistribute_connected_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_connected_route_policy, null)
-          redistribute_static                           = try(vrf.address_family.ipv4_multicast.redistribute_static, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_static, null)
-          redistribute_static_metric                    = try(vrf.address_family.ipv4_multicast.redistribute_static_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_static_metric, null)
-          redistribute_static_multipath                 = try(vrf.address_family.ipv4_multicast.redistribute_static_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_static_multipath, null)
-          redistribute_static_route_policy              = try(vrf.address_family.ipv4_multicast.redistribute_static_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_static_route_policy, null)
-          redistribute_rip                              = try(vrf.address_family.ipv4_multicast.redistribute_rip, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_rip, null)
-          redistribute_rip_metric                       = try(vrf.address_family.ipv4_multicast.redistribute_rip_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_rip_metric, null)
-          redistribute_rip_multipath                    = try(vrf.address_family.ipv4_multicast.redistribute_rip_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_rip_multipath, null)
-          redistribute_rip_route_policy                 = try(vrf.address_family.ipv4_multicast.redistribute_rip_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_rip_route_policy, null)
-          table_policy                                  = try(vrf.address_family.ipv4_multicast.table_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.table_policy, null)
-          bgp_dampening_decay_half_life                 = try(vrf.address_family.ipv4_multicast.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.bgp_dampening_decay_half_life, null)
-          bgp_dampening_reuse_threshold                 = try(vrf.address_family.ipv4_multicast.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.bgp_dampening_reuse_threshold, null)
-          bgp_dampening_suppress_threshold              = try(vrf.address_family.ipv4_multicast.bgp_dampening_suppress_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.bgp_dampening_suppress_threshold, null)
-          bgp_dampening_max_suppress_time               = try(vrf.address_family.ipv4_multicast.bgp_dampening_max_suppress_time, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.bgp_dampening_max_suppress_time, null)
-          bgp_dampening_route_policy                    = try(vrf.address_family.ipv4_multicast.bgp_dampening_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.bgp_dampening_route_policy, null)
-          weight_reset_on_import                        = try(vrf.address_family.ipv4_multicast.weight_reset_on_import, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.weight_reset_on_import, null)
-          nexthop_route_policy                          = try(vrf.address_family.ipv4_multicast.nexthop_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.nexthop_route_policy, null)
-          as_path_loopcheck_out_disable                 = try(vrf.address_family.ipv4_multicast.as_path_loopcheck_out_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.as_path_loopcheck_out_disable, null)
-          mvpn_single_forwarder_selection               = try(vrf.address_family.ipv4_multicast.mvpn_single_forwarder_selection, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.mvpn_single_forwarder_selection, null)
+          key                                             = format("%s/%s/%s/ipv4-multicast", device.name, bgp_process.as_number, vrf.name)
+          device_name                                     = device.name
+          as_number                                       = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
+          vrf_name                                        = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.name, null)
+          af_name                                         = "ipv4-multicast"
+          maximum_paths_ebgp_bestpath_only                = local.device_is_25x[device.name] ? try(vrf.address_family.ipv4_multicast.maximum_paths_ebgp_bestpath_only, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ebgp_bestpath_only, null) : null
+          redistribute_connected_default_policy_action_in = local.device_is_25x[device.name] ? try(vrf.address_family.ipv4_multicast.redistribute_connected_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_connected_default_policy_action_in, null) : null
+          redistribute_static_default_policy_action_in    = local.device_is_25x[device.name] ? try(vrf.address_family.ipv4_multicast.redistribute_static_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_static_default_policy_action_in, null) : null
+          redistribute_rip_default_policy_action_in       = local.device_is_25x[device.name] ? try(vrf.address_family.ipv4_multicast.redistribute_rip_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_rip_default_policy_action_in, null) : null
+          distance_bgp_external_route                     = try(vrf.address_family.ipv4_multicast.distance_bgp_external_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.distance_bgp_external_route, null)
+          distance_bgp_internal_route                     = try(vrf.address_family.ipv4_multicast.distance_bgp_internal_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.distance_bgp_internal_route, null)
+          distance_bgp_local_route                        = try(vrf.address_family.ipv4_multicast.distance_bgp_local_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.distance_bgp_local_route, null)
+          maximum_paths_ebgp_multipath                    = try(vrf.address_family.ipv4_multicast.maximum_paths_ebgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ebgp_multipath, null)
+          maximum_paths_ebgp_selective                    = try(vrf.address_family.ipv4_multicast.maximum_paths_ebgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ebgp_selective, null)
+          maximum_paths_ebgp_route_policy                 = try(vrf.address_family.ipv4_multicast.maximum_paths_ebgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ebgp_route_policy, null)
+          maximum_paths_ibgp_multipath                    = try(vrf.address_family.ipv4_multicast.maximum_paths_ibgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ibgp_multipath, null)
+          maximum_paths_ibgp_unequal_cost                 = try(vrf.address_family.ipv4_multicast.maximum_paths_ibgp_unequal_cost, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ibgp_unequal_cost, null)
+          maximum_paths_ibgp_unequal_cost_deterministic   = try(vrf.address_family.ipv4_multicast.maximum_paths_ibgp_unequal_cost_deterministic, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ibgp_unequal_cost_deterministic, null)
+          maximum_paths_ibgp_selective                    = try(vrf.address_family.ipv4_multicast.maximum_paths_ibgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ibgp_selective, null)
+          maximum_paths_ibgp_route_policy                 = try(vrf.address_family.ipv4_multicast.maximum_paths_ibgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_ibgp_route_policy, null)
+          maximum_paths_eibgp_multipath                   = try(vrf.address_family.ipv4_multicast.maximum_paths_eibgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_eibgp_multipath, null)
+          maximum_paths_eibgp_equal_cost                  = try(vrf.address_family.ipv4_multicast.maximum_paths_eibgp_equal_cost, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_eibgp_equal_cost, null)
+          maximum_paths_eibgp_selective                   = try(vrf.address_family.ipv4_multicast.maximum_paths_eibgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_eibgp_selective, null)
+          maximum_paths_eibgp_route_policy                = try(vrf.address_family.ipv4_multicast.maximum_paths_eibgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.maximum_paths_eibgp_route_policy, null)
+          redistribute_connected                          = try(vrf.address_family.ipv4_multicast.redistribute_connected, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_connected, null)
+          redistribute_connected_metric                   = try(vrf.address_family.ipv4_multicast.redistribute_connected_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_connected_metric, null)
+          redistribute_connected_multipath                = try(vrf.address_family.ipv4_multicast.redistribute_connected_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_connected_multipath, null)
+          redistribute_connected_route_policy             = try(vrf.address_family.ipv4_multicast.redistribute_connected_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_connected_route_policy, null)
+          redistribute_static                             = try(vrf.address_family.ipv4_multicast.redistribute_static, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_static, null)
+          redistribute_static_metric                      = try(vrf.address_family.ipv4_multicast.redistribute_static_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_static_metric, null)
+          redistribute_static_multipath                   = try(vrf.address_family.ipv4_multicast.redistribute_static_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_static_multipath, null)
+          redistribute_static_route_policy                = try(vrf.address_family.ipv4_multicast.redistribute_static_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_static_route_policy, null)
+          redistribute_rip                                = try(vrf.address_family.ipv4_multicast.redistribute_rip, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_rip, null)
+          redistribute_rip_metric                         = try(vrf.address_family.ipv4_multicast.redistribute_rip_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_rip_metric, null)
+          redistribute_rip_multipath                      = try(vrf.address_family.ipv4_multicast.redistribute_rip_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_rip_multipath, null)
+          redistribute_rip_route_policy                   = try(vrf.address_family.ipv4_multicast.redistribute_rip_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_rip_route_policy, null)
+          table_policy                                    = try(vrf.address_family.ipv4_multicast.table_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.table_policy, null)
+          bgp_dampening_decay_half_life                   = try(vrf.address_family.ipv4_multicast.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.bgp_dampening_decay_half_life, null)
+          bgp_dampening_reuse_threshold                   = try(vrf.address_family.ipv4_multicast.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.bgp_dampening_reuse_threshold, null)
+          bgp_dampening_suppress_threshold                = try(vrf.address_family.ipv4_multicast.bgp_dampening_suppress_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.bgp_dampening_suppress_threshold, null)
+          bgp_dampening_max_suppress_time                 = try(vrf.address_family.ipv4_multicast.bgp_dampening_max_suppress_time, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.bgp_dampening_max_suppress_time, null)
+          bgp_dampening_route_policy                      = try(vrf.address_family.ipv4_multicast.bgp_dampening_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.bgp_dampening_route_policy, null)
+          weight_reset_on_import                          = try(vrf.address_family.ipv4_multicast.weight_reset_on_import, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.weight_reset_on_import, null)
+          nexthop_route_policy                            = try(vrf.address_family.ipv4_multicast.nexthop_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.nexthop_route_policy, null)
+          as_path_loopcheck_out_disable                   = try(vrf.address_family.ipv4_multicast.as_path_loopcheck_out_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.as_path_loopcheck_out_disable, null)
+          mvpn_single_forwarder_selection                 = try(vrf.address_family.ipv4_multicast.mvpn_single_forwarder_selection, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.mvpn_single_forwarder_selection, null)
           aggregate_addresses = try(length(vrf.address_family.ipv4_multicast.aggregate_addresses) == 0, true) ? null : [for agg in vrf.address_family.ipv4_multicast.aggregate_addresses : {
             address       = try(agg.address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.aggregate_addresses.address, null)
             prefix        = try(agg.length, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.aggregate_addresses.length, null)
@@ -659,6 +689,7 @@ locals {
             }
           ]
           redistribute_ospf = try(length(vrf.address_family.ipv4_multicast.redistribute_ospf) == 0, true) ? null : [for ospf in vrf.address_family.ipv4_multicast.redistribute_ospf : {
+            default_policy_action_in                  = local.device_is_25x[device.name] ? try(ospf.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_ospf.default_policy_action_in, null) : null
             router_tag                                = try(ospf.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_ospf.process, null)
             match_internal                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_ospf.match, null) == "match-internal" ? true : null
             match_external                            = try(ospf.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_ospf.match, null) == "match-external" ? true : null
@@ -697,16 +728,18 @@ locals {
             }
           ]
           redistribute_eigrp = try(length(vrf.address_family.ipv4_multicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in vrf.address_family.ipv4_multicast.redistribute_eigrp : {
-            instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.process, null)
-            match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
-            match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
-            match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.match, null) == "match-external" ? true : null
-            metric                  = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.metric, null)
-            multipath               = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.multipath, null)
-            route_policy            = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.route_policy, null)
+            default_policy_action_in = local.device_is_25x[device.name] ? try(eigrp.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_eigrp.default_policy_action_in, null) : null
+            instance_name            = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.process, null)
+            match_internal           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
+            match_internal_external  = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
+            match_external           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.match, null) == "match-external" ? true : null
+            metric                   = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.metric, null)
+            multipath                = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.multipath, null)
+            route_policy             = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_eigrp.route_policy, null)
             }
           ]
           redistribute_isis = try(length(vrf.address_family.ipv4_multicast.redistribute_isis) == 0, true) ? null : [for isis in vrf.address_family.ipv4_multicast.redistribute_isis : {
+            default_policy_action_in           = local.device_is_25x[device.name] ? try(isis.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_isis.default_policy_action_in, null) : null
             instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_isis.process, null)
             level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_isis.level, null) == "level-1" ? true : null
             level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv4_multicast.redistribute_isis.level, null) == "level-1-level-2" ? true : null
@@ -728,53 +761,57 @@ locals {
 }
 
 resource "iosxr_router_bgp_vrf_address_family" "ipv4_multicast" {
-  for_each                                      = { for af in local.router_bgp_vrf_address_family_ipv4_multicast : af.key => af }
-  device                                        = each.value.device_name
-  as_number                                     = each.value.as_number
-  vrf_name                                      = each.value.vrf_name
-  af_name                                       = each.value.af_name
-  distance_bgp_external_route                   = each.value.distance_bgp_external_route
-  distance_bgp_internal_route                   = each.value.distance_bgp_internal_route
-  distance_bgp_local_route                      = each.value.distance_bgp_local_route
-  maximum_paths_ebgp_multipath                  = each.value.maximum_paths_ebgp_multipath
-  maximum_paths_ebgp_selective                  = each.value.maximum_paths_ebgp_selective
-  maximum_paths_ebgp_route_policy               = each.value.maximum_paths_ebgp_route_policy
-  maximum_paths_ibgp_multipath                  = each.value.maximum_paths_ibgp_multipath
-  maximum_paths_ibgp_unequal_cost               = each.value.maximum_paths_ibgp_unequal_cost
-  maximum_paths_ibgp_unequal_cost_deterministic = each.value.maximum_paths_ibgp_unequal_cost_deterministic
-  maximum_paths_ibgp_selective                  = each.value.maximum_paths_ibgp_selective
-  maximum_paths_ibgp_route_policy               = each.value.maximum_paths_ibgp_route_policy
-  maximum_paths_eibgp_multipath                 = each.value.maximum_paths_eibgp_multipath
-  maximum_paths_eibgp_equal_cost                = each.value.maximum_paths_eibgp_equal_cost
-  maximum_paths_eibgp_selective                 = each.value.maximum_paths_eibgp_selective
-  maximum_paths_eibgp_route_policy              = each.value.maximum_paths_eibgp_route_policy
-  redistribute_connected                        = each.value.redistribute_connected
-  redistribute_connected_metric                 = each.value.redistribute_connected_metric
-  redistribute_connected_multipath              = each.value.redistribute_connected_multipath
-  redistribute_connected_route_policy           = each.value.redistribute_connected_route_policy
-  redistribute_static                           = each.value.redistribute_static
-  redistribute_static_metric                    = each.value.redistribute_static_metric
-  redistribute_static_multipath                 = each.value.redistribute_static_multipath
-  redistribute_static_route_policy              = each.value.redistribute_static_route_policy
-  redistribute_rip                              = each.value.redistribute_rip
-  redistribute_rip_metric                       = each.value.redistribute_rip_metric
-  redistribute_rip_multipath                    = each.value.redistribute_rip_multipath
-  redistribute_rip_route_policy                 = each.value.redistribute_rip_route_policy
-  table_policy                                  = each.value.table_policy
-  bgp_dampening_decay_half_life                 = each.value.bgp_dampening_decay_half_life
-  bgp_dampening_reuse_threshold                 = each.value.bgp_dampening_reuse_threshold
-  bgp_dampening_suppress_threshold              = each.value.bgp_dampening_suppress_threshold
-  bgp_dampening_max_suppress_time               = each.value.bgp_dampening_max_suppress_time
-  bgp_dampening_route_policy                    = each.value.bgp_dampening_route_policy
-  weight_reset_on_import                        = each.value.weight_reset_on_import
-  nexthop_route_policy                          = each.value.nexthop_route_policy
-  as_path_loopcheck_out_disable                 = each.value.as_path_loopcheck_out_disable
-  mvpn_single_forwarder_selection               = each.value.mvpn_single_forwarder_selection
-  aggregate_addresses                           = each.value.aggregate_addresses
-  networks                                      = each.value.networks
-  redistribute_ospf                             = each.value.redistribute_ospf
-  redistribute_eigrp                            = each.value.redistribute_eigrp
-  redistribute_isis                             = each.value.redistribute_isis
+  for_each                                        = { for af in local.router_bgp_vrf_address_family_ipv4_multicast : af.key => af }
+  device                                          = each.value.device_name
+  as_number                                       = each.value.as_number
+  vrf_name                                        = each.value.vrf_name
+  af_name                                         = each.value.af_name
+  distance_bgp_external_route                     = each.value.distance_bgp_external_route
+  distance_bgp_internal_route                     = each.value.distance_bgp_internal_route
+  distance_bgp_local_route                        = each.value.distance_bgp_local_route
+  maximum_paths_ebgp_multipath                    = each.value.maximum_paths_ebgp_multipath
+  maximum_paths_ebgp_selective                    = each.value.maximum_paths_ebgp_selective
+  maximum_paths_ebgp_route_policy                 = each.value.maximum_paths_ebgp_route_policy
+  maximum_paths_ibgp_multipath                    = each.value.maximum_paths_ibgp_multipath
+  maximum_paths_ibgp_unequal_cost                 = each.value.maximum_paths_ibgp_unequal_cost
+  maximum_paths_ibgp_unequal_cost_deterministic   = each.value.maximum_paths_ibgp_unequal_cost_deterministic
+  maximum_paths_ibgp_selective                    = each.value.maximum_paths_ibgp_selective
+  maximum_paths_ibgp_route_policy                 = each.value.maximum_paths_ibgp_route_policy
+  maximum_paths_eibgp_multipath                   = each.value.maximum_paths_eibgp_multipath
+  maximum_paths_eibgp_equal_cost                  = each.value.maximum_paths_eibgp_equal_cost
+  maximum_paths_eibgp_selective                   = each.value.maximum_paths_eibgp_selective
+  maximum_paths_eibgp_route_policy                = each.value.maximum_paths_eibgp_route_policy
+  redistribute_connected                          = each.value.redistribute_connected
+  redistribute_connected_metric                   = each.value.redistribute_connected_metric
+  redistribute_connected_multipath                = each.value.redistribute_connected_multipath
+  redistribute_connected_route_policy             = each.value.redistribute_connected_route_policy
+  redistribute_static                             = each.value.redistribute_static
+  redistribute_static_metric                      = each.value.redistribute_static_metric
+  redistribute_static_multipath                   = each.value.redistribute_static_multipath
+  redistribute_static_route_policy                = each.value.redistribute_static_route_policy
+  redistribute_rip                                = each.value.redistribute_rip
+  redistribute_rip_metric                         = each.value.redistribute_rip_metric
+  redistribute_rip_multipath                      = each.value.redistribute_rip_multipath
+  redistribute_rip_route_policy                   = each.value.redistribute_rip_route_policy
+  table_policy                                    = each.value.table_policy
+  bgp_dampening_decay_half_life                   = each.value.bgp_dampening_decay_half_life
+  bgp_dampening_reuse_threshold                   = each.value.bgp_dampening_reuse_threshold
+  bgp_dampening_suppress_threshold                = each.value.bgp_dampening_suppress_threshold
+  bgp_dampening_max_suppress_time                 = each.value.bgp_dampening_max_suppress_time
+  bgp_dampening_route_policy                      = each.value.bgp_dampening_route_policy
+  weight_reset_on_import                          = each.value.weight_reset_on_import
+  nexthop_route_policy                            = each.value.nexthop_route_policy
+  as_path_loopcheck_out_disable                   = each.value.as_path_loopcheck_out_disable
+  mvpn_single_forwarder_selection                 = each.value.mvpn_single_forwarder_selection
+  aggregate_addresses                             = each.value.aggregate_addresses
+  networks                                        = each.value.networks
+  redistribute_ospf                               = each.value.redistribute_ospf
+  maximum_paths_ebgp_bestpath_only                = each.value.maximum_paths_ebgp_bestpath_only
+  redistribute_connected_default_policy_action_in = each.value.redistribute_connected_default_policy_action_in
+  redistribute_static_default_policy_action_in    = each.value.redistribute_static_default_policy_action_in
+  redistribute_rip_default_policy_action_in       = each.value.redistribute_rip_default_policy_action_in
+  redistribute_eigrp                              = each.value.redistribute_eigrp
+  redistribute_isis                               = each.value.redistribute_isis
 
   # lifecycle {
   #   replace_triggered_by = [
@@ -828,48 +865,52 @@ locals {
       for bgp_process in try(local.device_config[device.name].routing.bgp, []) : [
         for vrf in try(bgp_process.vrfs, []) :
         try(vrf.address_family.ipv6_multicast, null) != null ? [{
-          key                                           = format("%s/%s/%s/ipv6-multicast", device.name, bgp_process.as_number, vrf.name)
-          device_name                                   = device.name
-          as_number                                     = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
-          vrf_name                                      = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.name, null)
-          af_name                                       = "ipv6-multicast"
-          distance_bgp_external_route                   = try(vrf.address_family.ipv6_multicast.distance_bgp_external_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.distance_bgp_external_route, null)
-          distance_bgp_internal_route                   = try(vrf.address_family.ipv6_multicast.distance_bgp_internal_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.distance_bgp_internal_route, null)
-          distance_bgp_local_route                      = try(vrf.address_family.ipv6_multicast.distance_bgp_local_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.distance_bgp_local_route, null)
-          maximum_paths_ebgp_multipath                  = try(vrf.address_family.ipv6_multicast.maximum_paths_ebgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ebgp_multipath, null)
-          maximum_paths_ebgp_selective                  = try(vrf.address_family.ipv6_multicast.maximum_paths_ebgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ebgp_selective, null)
-          maximum_paths_ebgp_route_policy               = try(vrf.address_family.ipv6_multicast.maximum_paths_ebgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ebgp_route_policy, null)
-          maximum_paths_ibgp_multipath                  = try(vrf.address_family.ipv6_multicast.maximum_paths_ibgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ibgp_multipath, null)
-          maximum_paths_ibgp_unequal_cost               = try(vrf.address_family.ipv6_multicast.maximum_paths_ibgp_unequal_cost, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ibgp_unequal_cost, null)
-          maximum_paths_ibgp_unequal_cost_deterministic = try(vrf.address_family.ipv6_multicast.maximum_paths_ibgp_unequal_cost_deterministic, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ibgp_unequal_cost_deterministic, null)
-          maximum_paths_ibgp_selective                  = try(vrf.address_family.ipv6_multicast.maximum_paths_ibgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ibgp_selective, null)
-          maximum_paths_ibgp_route_policy               = try(vrf.address_family.ipv6_multicast.maximum_paths_ibgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ibgp_route_policy, null)
-          maximum_paths_eibgp_multipath                 = try(vrf.address_family.ipv6_multicast.maximum_paths_eibgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_eibgp_multipath, null)
-          maximum_paths_eibgp_equal_cost                = try(vrf.address_family.ipv6_multicast.maximum_paths_eibgp_equal_cost, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_eibgp_equal_cost, null)
-          maximum_paths_eibgp_selective                 = try(vrf.address_family.ipv6_multicast.maximum_paths_eibgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_eibgp_selective, null)
-          maximum_paths_eibgp_route_policy              = try(vrf.address_family.ipv6_multicast.maximum_paths_eibgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_eibgp_route_policy, null)
-          redistribute_connected                        = try(vrf.address_family.ipv6_multicast.redistribute_connected, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_connected, null)
-          redistribute_connected_metric                 = try(vrf.address_family.ipv6_multicast.redistribute_connected_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_connected_metric, null)
-          redistribute_connected_multipath              = try(vrf.address_family.ipv6_multicast.redistribute_connected_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_connected_multipath, null)
-          redistribute_connected_route_policy           = try(vrf.address_family.ipv6_multicast.redistribute_connected_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_connected_route_policy, null)
-          redistribute_static                           = try(vrf.address_family.ipv6_multicast.redistribute_static, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_static, null)
-          redistribute_static_metric                    = try(vrf.address_family.ipv6_multicast.redistribute_static_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_static_metric, null)
-          redistribute_static_multipath                 = try(vrf.address_family.ipv6_multicast.redistribute_static_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_static_multipath, null)
-          redistribute_static_route_policy              = try(vrf.address_family.ipv6_multicast.redistribute_static_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_static_route_policy, null)
-          redistribute_rip                              = try(vrf.address_family.ipv6_multicast.redistribute_rip, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_rip, null)
-          redistribute_rip_metric                       = try(vrf.address_family.ipv6_multicast.redistribute_rip_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_rip_metric, null)
-          redistribute_rip_multipath                    = try(vrf.address_family.ipv6_multicast.redistribute_rip_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_rip_multipath, null)
-          redistribute_rip_route_policy                 = try(vrf.address_family.ipv6_multicast.redistribute_rip_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_rip_route_policy, null)
-          table_policy                                  = try(vrf.address_family.ipv6_multicast.table_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.table_policy, null)
-          bgp_dampening_decay_half_life                 = try(vrf.address_family.ipv6_multicast.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.bgp_dampening_decay_half_life, null)
-          bgp_dampening_reuse_threshold                 = try(vrf.address_family.ipv6_multicast.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.bgp_dampening_reuse_threshold, null)
-          bgp_dampening_suppress_threshold              = try(vrf.address_family.ipv6_multicast.bgp_dampening_suppress_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.bgp_dampening_suppress_threshold, null)
-          bgp_dampening_max_suppress_time               = try(vrf.address_family.ipv6_multicast.bgp_dampening_max_suppress_time, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.bgp_dampening_max_suppress_time, null)
-          bgp_dampening_route_policy                    = try(vrf.address_family.ipv6_multicast.bgp_dampening_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.bgp_dampening_route_policy, null)
-          weight_reset_on_import                        = try(vrf.address_family.ipv6_multicast.weight_reset_on_import, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.weight_reset_on_import, null)
-          nexthop_route_policy                          = try(vrf.address_family.ipv6_multicast.nexthop_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.nexthop_route_policy, null)
-          as_path_loopcheck_out_disable                 = try(vrf.address_family.ipv6_multicast.as_path_loopcheck_out_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.as_path_loopcheck_out_disable, null)
-          mvpn_single_forwarder_selection               = try(vrf.address_family.ipv6_multicast.mvpn_single_forwarder_selection, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.mvpn_single_forwarder_selection, null)
+          key                                             = format("%s/%s/%s/ipv6-multicast", device.name, bgp_process.as_number, vrf.name)
+          device_name                                     = device.name
+          as_number                                       = try(bgp_process.as_number, local.defaults.iosxr.devices.configuration.routing.bgp.as_number, null)
+          vrf_name                                        = try(vrf.name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.name, null)
+          af_name                                         = "ipv6-multicast"
+          maximum_paths_ebgp_bestpath_only                = local.device_is_25x[device.name] ? try(vrf.address_family.ipv6_multicast.maximum_paths_ebgp_bestpath_only, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ebgp_bestpath_only, null) : null
+          redistribute_connected_default_policy_action_in = local.device_is_25x[device.name] ? try(vrf.address_family.ipv6_multicast.redistribute_connected_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_connected_default_policy_action_in, null) : null
+          redistribute_static_default_policy_action_in    = local.device_is_25x[device.name] ? try(vrf.address_family.ipv6_multicast.redistribute_static_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_static_default_policy_action_in, null) : null
+          redistribute_rip_default_policy_action_in       = local.device_is_25x[device.name] ? try(vrf.address_family.ipv6_multicast.redistribute_rip_default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_rip_default_policy_action_in, null) : null
+          distance_bgp_external_route                     = try(vrf.address_family.ipv6_multicast.distance_bgp_external_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.distance_bgp_external_route, null)
+          distance_bgp_internal_route                     = try(vrf.address_family.ipv6_multicast.distance_bgp_internal_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.distance_bgp_internal_route, null)
+          distance_bgp_local_route                        = try(vrf.address_family.ipv6_multicast.distance_bgp_local_route, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.distance_bgp_local_route, null)
+          maximum_paths_ebgp_multipath                    = try(vrf.address_family.ipv6_multicast.maximum_paths_ebgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ebgp_multipath, null)
+          maximum_paths_ebgp_selective                    = try(vrf.address_family.ipv6_multicast.maximum_paths_ebgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ebgp_selective, null)
+          maximum_paths_ebgp_route_policy                 = try(vrf.address_family.ipv6_multicast.maximum_paths_ebgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ebgp_route_policy, null)
+          maximum_paths_ibgp_multipath                    = try(vrf.address_family.ipv6_multicast.maximum_paths_ibgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ibgp_multipath, null)
+          maximum_paths_ibgp_unequal_cost                 = try(vrf.address_family.ipv6_multicast.maximum_paths_ibgp_unequal_cost, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ibgp_unequal_cost, null)
+          maximum_paths_ibgp_unequal_cost_deterministic   = try(vrf.address_family.ipv6_multicast.maximum_paths_ibgp_unequal_cost_deterministic, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ibgp_unequal_cost_deterministic, null)
+          maximum_paths_ibgp_selective                    = try(vrf.address_family.ipv6_multicast.maximum_paths_ibgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ibgp_selective, null)
+          maximum_paths_ibgp_route_policy                 = try(vrf.address_family.ipv6_multicast.maximum_paths_ibgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_ibgp_route_policy, null)
+          maximum_paths_eibgp_multipath                   = try(vrf.address_family.ipv6_multicast.maximum_paths_eibgp_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_eibgp_multipath, null)
+          maximum_paths_eibgp_equal_cost                  = try(vrf.address_family.ipv6_multicast.maximum_paths_eibgp_equal_cost, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_eibgp_equal_cost, null)
+          maximum_paths_eibgp_selective                   = try(vrf.address_family.ipv6_multicast.maximum_paths_eibgp_selective, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_eibgp_selective, null)
+          maximum_paths_eibgp_route_policy                = try(vrf.address_family.ipv6_multicast.maximum_paths_eibgp_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.maximum_paths_eibgp_route_policy, null)
+          redistribute_connected                          = try(vrf.address_family.ipv6_multicast.redistribute_connected, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_connected, null)
+          redistribute_connected_metric                   = try(vrf.address_family.ipv6_multicast.redistribute_connected_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_connected_metric, null)
+          redistribute_connected_multipath                = try(vrf.address_family.ipv6_multicast.redistribute_connected_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_connected_multipath, null)
+          redistribute_connected_route_policy             = try(vrf.address_family.ipv6_multicast.redistribute_connected_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_connected_route_policy, null)
+          redistribute_static                             = try(vrf.address_family.ipv6_multicast.redistribute_static, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_static, null)
+          redistribute_static_metric                      = try(vrf.address_family.ipv6_multicast.redistribute_static_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_static_metric, null)
+          redistribute_static_multipath                   = try(vrf.address_family.ipv6_multicast.redistribute_static_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_static_multipath, null)
+          redistribute_static_route_policy                = try(vrf.address_family.ipv6_multicast.redistribute_static_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_static_route_policy, null)
+          redistribute_rip                                = try(vrf.address_family.ipv6_multicast.redistribute_rip, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_rip, null)
+          redistribute_rip_metric                         = try(vrf.address_family.ipv6_multicast.redistribute_rip_metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_rip_metric, null)
+          redistribute_rip_multipath                      = try(vrf.address_family.ipv6_multicast.redistribute_rip_multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_rip_multipath, null)
+          redistribute_rip_route_policy                   = try(vrf.address_family.ipv6_multicast.redistribute_rip_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_rip_route_policy, null)
+          table_policy                                    = try(vrf.address_family.ipv6_multicast.table_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.table_policy, null)
+          bgp_dampening_decay_half_life                   = try(vrf.address_family.ipv6_multicast.bgp_dampening_decay_half_life, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.bgp_dampening_decay_half_life, null)
+          bgp_dampening_reuse_threshold                   = try(vrf.address_family.ipv6_multicast.bgp_dampening_reuse_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.bgp_dampening_reuse_threshold, null)
+          bgp_dampening_suppress_threshold                = try(vrf.address_family.ipv6_multicast.bgp_dampening_suppress_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.bgp_dampening_suppress_threshold, null)
+          bgp_dampening_max_suppress_time                 = try(vrf.address_family.ipv6_multicast.bgp_dampening_max_suppress_time, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.bgp_dampening_max_suppress_time, null)
+          bgp_dampening_route_policy                      = try(vrf.address_family.ipv6_multicast.bgp_dampening_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.bgp_dampening_route_policy, null)
+          weight_reset_on_import                          = try(vrf.address_family.ipv6_multicast.weight_reset_on_import, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.weight_reset_on_import, null)
+          nexthop_route_policy                            = try(vrf.address_family.ipv6_multicast.nexthop_route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.nexthop_route_policy, null)
+          as_path_loopcheck_out_disable                   = try(vrf.address_family.ipv6_multicast.as_path_loopcheck_out_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.as_path_loopcheck_out_disable, null)
+          mvpn_single_forwarder_selection                 = try(vrf.address_family.ipv6_multicast.mvpn_single_forwarder_selection, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.mvpn_single_forwarder_selection, null)
           aggregate_addresses = try(length(vrf.address_family.ipv6_multicast.aggregate_addresses) == 0, true) ? null : [for agg in vrf.address_family.ipv6_multicast.aggregate_addresses : {
             address       = try(agg.address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.aggregate_addresses.address, null)
             prefix        = try(agg.length, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.aggregate_addresses.length, null)
@@ -890,6 +931,7 @@ locals {
             }
           ]
           redistribute_ospfv3 = try(length(vrf.address_family.ipv6_multicast.redistribute_ospfv3) == 0, true) ? null : [for ospfv3 in vrf.address_family.ipv6_multicast.redistribute_ospfv3 : {
+            default_policy_action_in                  = local.device_is_25x[device.name] ? try(ospfv3.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_ospfv3.default_policy_action_in, null) : null
             router_tag                                = try(ospfv3.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_ospfv3.process, null)
             match_internal                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_ospfv3.match, null) == "match-internal" ? true : null
             match_external                            = try(ospfv3.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_ospfv3.match, null) == "match-external" ? true : null
@@ -928,16 +970,18 @@ locals {
             }
           ]
           redistribute_eigrp = try(length(vrf.address_family.ipv6_multicast.redistribute_eigrp) == 0, true) ? null : [for eigrp in vrf.address_family.ipv6_multicast.redistribute_eigrp : {
-            instance_name           = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.process, null)
-            match_internal          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
-            match_internal_external = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
-            match_external          = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.match, null) == "match-external" ? true : null
-            metric                  = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.metric, null)
-            multipath               = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.multipath, null)
-            route_policy            = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.route_policy, null)
+            default_policy_action_in = local.device_is_25x[device.name] ? try(eigrp.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_eigrp.default_policy_action_in, null) : null
+            instance_name            = try(eigrp.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.process, null)
+            match_internal           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.match, null) == "match-internal" ? true : null
+            match_internal_external  = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.match, null) == "match-internal-external" ? true : null
+            match_external           = try(eigrp.match, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.match, null) == "match-external" ? true : null
+            metric                   = try(eigrp.metric, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.metric, null)
+            multipath                = try(eigrp.multipath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.multipath, null)
+            route_policy             = try(eigrp.route_policy, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_eigrp.route_policy, null)
             }
           ]
           redistribute_isis = try(length(vrf.address_family.ipv6_multicast.redistribute_isis) == 0, true) ? null : [for isis in vrf.address_family.ipv6_multicast.redistribute_isis : {
+            default_policy_action_in           = local.device_is_25x[device.name] ? try(isis.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.redistribute_isis.default_policy_action_in, null) : null
             instance_name                      = try(isis.process, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_isis.process, null)
             level_1                            = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_isis.level, null) == "level-1" ? true : null
             level_1_level_2                    = try(isis.level, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.address_family.ipv6_multicast.redistribute_isis.level, null) == "level-1-level-2" ? true : null
@@ -959,53 +1003,57 @@ locals {
 }
 
 resource "iosxr_router_bgp_vrf_address_family" "ipv6_multicast" {
-  for_each                                      = { for af in local.router_bgp_vrf_address_family_ipv6_multicast : af.key => af }
-  device                                        = each.value.device_name
-  as_number                                     = each.value.as_number
-  vrf_name                                      = each.value.vrf_name
-  af_name                                       = each.value.af_name
-  distance_bgp_external_route                   = each.value.distance_bgp_external_route
-  distance_bgp_internal_route                   = each.value.distance_bgp_internal_route
-  distance_bgp_local_route                      = each.value.distance_bgp_local_route
-  maximum_paths_ebgp_multipath                  = each.value.maximum_paths_ebgp_multipath
-  maximum_paths_ebgp_selective                  = each.value.maximum_paths_ebgp_selective
-  maximum_paths_ebgp_route_policy               = each.value.maximum_paths_ebgp_route_policy
-  maximum_paths_ibgp_multipath                  = each.value.maximum_paths_ibgp_multipath
-  maximum_paths_ibgp_unequal_cost               = each.value.maximum_paths_ibgp_unequal_cost
-  maximum_paths_ibgp_unequal_cost_deterministic = each.value.maximum_paths_ibgp_unequal_cost_deterministic
-  maximum_paths_ibgp_selective                  = each.value.maximum_paths_ibgp_selective
-  maximum_paths_ibgp_route_policy               = each.value.maximum_paths_ibgp_route_policy
-  maximum_paths_eibgp_multipath                 = each.value.maximum_paths_eibgp_multipath
-  maximum_paths_eibgp_equal_cost                = each.value.maximum_paths_eibgp_equal_cost
-  maximum_paths_eibgp_selective                 = each.value.maximum_paths_eibgp_selective
-  maximum_paths_eibgp_route_policy              = each.value.maximum_paths_eibgp_route_policy
-  redistribute_connected                        = each.value.redistribute_connected
-  redistribute_connected_metric                 = each.value.redistribute_connected_metric
-  redistribute_connected_multipath              = each.value.redistribute_connected_multipath
-  redistribute_connected_route_policy           = each.value.redistribute_connected_route_policy
-  redistribute_static                           = each.value.redistribute_static
-  redistribute_static_metric                    = each.value.redistribute_static_metric
-  redistribute_static_multipath                 = each.value.redistribute_static_multipath
-  redistribute_static_route_policy              = each.value.redistribute_static_route_policy
-  redistribute_rip                              = each.value.redistribute_rip
-  redistribute_rip_metric                       = each.value.redistribute_rip_metric
-  redistribute_rip_multipath                    = each.value.redistribute_rip_multipath
-  redistribute_rip_route_policy                 = each.value.redistribute_rip_route_policy
-  table_policy                                  = each.value.table_policy
-  bgp_dampening_decay_half_life                 = each.value.bgp_dampening_decay_half_life
-  bgp_dampening_reuse_threshold                 = each.value.bgp_dampening_reuse_threshold
-  bgp_dampening_suppress_threshold              = each.value.bgp_dampening_suppress_threshold
-  bgp_dampening_max_suppress_time               = each.value.bgp_dampening_max_suppress_time
-  bgp_dampening_route_policy                    = each.value.bgp_dampening_route_policy
-  weight_reset_on_import                        = each.value.weight_reset_on_import
-  nexthop_route_policy                          = each.value.nexthop_route_policy
-  as_path_loopcheck_out_disable                 = each.value.as_path_loopcheck_out_disable
-  mvpn_single_forwarder_selection               = each.value.mvpn_single_forwarder_selection
-  aggregate_addresses                           = each.value.aggregate_addresses
-  networks                                      = each.value.networks
-  redistribute_ospf                             = each.value.redistribute_ospfv3
-  redistribute_eigrp                            = each.value.redistribute_eigrp
-  redistribute_isis                             = each.value.redistribute_isis
+  for_each                                        = { for af in local.router_bgp_vrf_address_family_ipv6_multicast : af.key => af }
+  device                                          = each.value.device_name
+  as_number                                       = each.value.as_number
+  vrf_name                                        = each.value.vrf_name
+  af_name                                         = each.value.af_name
+  distance_bgp_external_route                     = each.value.distance_bgp_external_route
+  distance_bgp_internal_route                     = each.value.distance_bgp_internal_route
+  distance_bgp_local_route                        = each.value.distance_bgp_local_route
+  maximum_paths_ebgp_multipath                    = each.value.maximum_paths_ebgp_multipath
+  maximum_paths_ebgp_selective                    = each.value.maximum_paths_ebgp_selective
+  maximum_paths_ebgp_route_policy                 = each.value.maximum_paths_ebgp_route_policy
+  maximum_paths_ibgp_multipath                    = each.value.maximum_paths_ibgp_multipath
+  maximum_paths_ibgp_unequal_cost                 = each.value.maximum_paths_ibgp_unequal_cost
+  maximum_paths_ibgp_unequal_cost_deterministic   = each.value.maximum_paths_ibgp_unequal_cost_deterministic
+  maximum_paths_ibgp_selective                    = each.value.maximum_paths_ibgp_selective
+  maximum_paths_ibgp_route_policy                 = each.value.maximum_paths_ibgp_route_policy
+  maximum_paths_eibgp_multipath                   = each.value.maximum_paths_eibgp_multipath
+  maximum_paths_eibgp_equal_cost                  = each.value.maximum_paths_eibgp_equal_cost
+  maximum_paths_eibgp_selective                   = each.value.maximum_paths_eibgp_selective
+  maximum_paths_eibgp_route_policy                = each.value.maximum_paths_eibgp_route_policy
+  redistribute_connected                          = each.value.redistribute_connected
+  redistribute_connected_metric                   = each.value.redistribute_connected_metric
+  redistribute_connected_multipath                = each.value.redistribute_connected_multipath
+  redistribute_connected_route_policy             = each.value.redistribute_connected_route_policy
+  redistribute_static                             = each.value.redistribute_static
+  redistribute_static_metric                      = each.value.redistribute_static_metric
+  redistribute_static_multipath                   = each.value.redistribute_static_multipath
+  redistribute_static_route_policy                = each.value.redistribute_static_route_policy
+  redistribute_rip                                = each.value.redistribute_rip
+  redistribute_rip_metric                         = each.value.redistribute_rip_metric
+  redistribute_rip_multipath                      = each.value.redistribute_rip_multipath
+  redistribute_rip_route_policy                   = each.value.redistribute_rip_route_policy
+  table_policy                                    = each.value.table_policy
+  bgp_dampening_decay_half_life                   = each.value.bgp_dampening_decay_half_life
+  bgp_dampening_reuse_threshold                   = each.value.bgp_dampening_reuse_threshold
+  bgp_dampening_suppress_threshold                = each.value.bgp_dampening_suppress_threshold
+  bgp_dampening_max_suppress_time                 = each.value.bgp_dampening_max_suppress_time
+  bgp_dampening_route_policy                      = each.value.bgp_dampening_route_policy
+  weight_reset_on_import                          = each.value.weight_reset_on_import
+  nexthop_route_policy                            = each.value.nexthop_route_policy
+  as_path_loopcheck_out_disable                   = each.value.as_path_loopcheck_out_disable
+  mvpn_single_forwarder_selection                 = each.value.mvpn_single_forwarder_selection
+  aggregate_addresses                             = each.value.aggregate_addresses
+  networks                                        = each.value.networks
+  redistribute_ospf                               = each.value.redistribute_ospfv3
+  maximum_paths_ebgp_bestpath_only                = each.value.maximum_paths_ebgp_bestpath_only
+  redistribute_connected_default_policy_action_in = each.value.redistribute_connected_default_policy_action_in
+  redistribute_static_default_policy_action_in    = each.value.redistribute_static_default_policy_action_in
+  redistribute_rip_default_policy_action_in       = each.value.redistribute_rip_default_policy_action_in
+  redistribute_eigrp                              = each.value.redistribute_eigrp
+  redistribute_isis                               = each.value.redistribute_isis
 
   # lifecycle {
   #   replace_triggered_by = [

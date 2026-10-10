@@ -11,4 +11,8 @@ resource "iosxr_mpls_oam" "mpls_oam" {
   oam_dpm_pps                                           = try(local.device_config[each.value.name].mpls_oam.dpm.pps, local.defaults.iosxr.devices.configuration.mpls_oam.dpm.pps, null)
   oam_dpm_interval                                      = try(local.device_config[each.value.name].mpls_oam.dpm.interval, local.defaults.iosxr.devices.configuration.mpls_oam.dpm.interval, null)
   oam_dpm_downstream_ecmp_faults                        = try(local.device_config[each.value.name].mpls_oam.dpm.downstream_ecmp_faults, local.defaults.iosxr.devices.configuration.mpls_oam.dpm.downstream_ecmp_faults, null)
+  oam_echo_revision_five                                = local.device_is_25x[each.value.name] ? (try(local.device_config[each.value.name].mpls_oam.echo.revision, local.defaults.iosxr.devices.configuration.mpls_oam.echo.revision, null) == 5 ? true : null) : null
+  oam_dpm_shutdown                                      = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].mpls_oam.dpm.shutdown, local.defaults.iosxr.devices.configuration.mpls_oam.dpm.shutdown, null) : null
+  oam_address_family_ipv4_reply_ip_header_source        = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].mpls_oam.address_family_ipv4.reply_ip_header_source, local.defaults.iosxr.devices.configuration.mpls_oam.address_family_ipv4.reply_ip_header_source, null) : null
+  oam_address_family_ipv6_reply_ip_header_source        = local.device_is_25x[each.value.name] ? try(local.device_config[each.value.name].mpls_oam.address_family_ipv6.reply_ip_header_source, local.defaults.iosxr.devices.configuration.mpls_oam.address_family_ipv6.reply_ip_header_source, null) : null
 }

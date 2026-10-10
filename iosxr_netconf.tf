@@ -37,7 +37,7 @@ locals {
         rate_limit               = try(local.device_config[device.name].netconf.yang_agent.rate_limit, local.defaults.iosxr.devices.configuration.netconf.yang_agent.rate_limit, null)
         session_limit            = try(local.device_config[device.name].netconf.yang_agent.session_limit, local.defaults.iosxr.devices.configuration.netconf.yang_agent.session_limit, null)
         session_idle_timeout     = try(local.device_config[device.name].netconf.yang_agent.session_idle_timeout, local.defaults.iosxr.devices.configuration.netconf.yang_agent.session_idle_timeout, null)
-        session_absolute_timeout = try(local.device_config[device.name].netconf.yang_agent.session_absolute_timeout, local.defaults.iosxr.devices.configuration.netconf.yang_agent.session_absolute_timeout, null)
+        session_absolute_timeout = local.device_is_25x[device.name] ? null : try(local.device_config[device.name].netconf.yang_agent.session_absolute_timeout, local.defaults.iosxr.devices.configuration.netconf.yang_agent.session_absolute_timeout, null)
         netconf_v1 = try(
           local.device_config[device.name].netconf.yang_agent.netconf_v1 == "v1-only" ? "1.0-only" : local.device_config[device.name].netconf.yang_agent.netconf_v1,
           local.defaults.iosxr.devices.configuration.netconf.yang_agent.netconf_v1 == "v1-only" ? "1.0-only" : local.defaults.iosxr.devices.configuration.netconf.yang_agent.netconf_v1,

@@ -75,28 +75,36 @@ locals {
               site_of_origin = try(af.site_of_origin, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.site_of_origin, null) != null ? provider::utils::normalize_bgp_rd(
                 try(af.site_of_origin, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.site_of_origin)
               ) : null
-              as_override                                             = try(af.as_override, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.as_override, null)
-              as_override_inheritance_disable                         = try(af.as_override_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.as_override_inheritance_disable, null)
-              aigp                                                    = try(af.aigp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp, null)
-              aigp_disable                                            = try(af.aigp_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_disable, null)
-              aigp_send_med                                           = try(af.aigp_send_med, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_med, null)
-              aigp_send_med_disable                                   = try(af.aigp_send_med_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_med_disable, null)
-              aigp_send_cost_community_disable                        = try(af.aigp_send_cost_community_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_disable, null)
-              aigp_send_cost_community_id                             = try(af.aigp_send_cost_community_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_id, null)
-              aigp_send_cost_community_id_poi_igp_cost                = try(af.aigp_send_cost_community_id_poi_igp_cost, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_id_poi_igp_cost, null)
-              aigp_send_cost_community_id_poi_igp_cost_transitive     = try(af.aigp_send_cost_community_id_poi_igp_cost_transitive, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_id_poi_igp_cost_transitive, null)
-              aigp_send_cost_community_id_poi_pre_bestpath            = try(af.aigp_send_cost_community_id_poi_pre_bestpath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_id_poi_pre_bestpath, null)
-              aigp_send_cost_community_id_poi_pre_bestpath_transitive = try(af.aigp_send_cost_community_id_poi_pre_bestpath_transitive, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_id_poi_pre_bestpath_transitive, null)
-              send_multicast_attributes                               = try(af.send_multicast_attributes, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_multicast_attributes, null)
-              send_multicast_attributes_disable                       = try(af.send_multicast_attributes_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_multicast_attributes_disable, null)
-              accept_own                                              = try(af.accept_own, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.accept_own, null)
-              accept_own_inheritance_disable                          = try(af.accept_own_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.accept_own_inheritance_disable, null)
-              slow_peer_dynamic                                       = try(af.slow_peer_dynamic, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.slow_peer_dynamic, null)
-              slow_peer_dynamic_threshold                             = try(af.slow_peer_dynamic_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.slow_peer_dynamic_threshold, null)
-              slow_peer_dynamic_disable                               = try(af.slow_peer_dynamic_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.slow_peer_dynamic_disable, null)
-              slow_peer_static                                        = try(af.slow_peer_static, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.slow_peer_static, null)
-              origin_as_validation_disable                            = try(af.origin_as_validation_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.origin_as_validation_disable, null)
-              bestpath_origin_as_allow_invalid                        = try(af.bestpath_origin_as_allow_invalid, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.bestpath_origin_as_allow_invalid, null)
+              as_override                                                        = try(af.as_override, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.as_override, null)
+              as_override_inheritance_disable                                    = try(af.as_override_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.as_override_inheritance_disable, null)
+              aigp                                                               = try(af.aigp, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp, null)
+              aigp_disable                                                       = try(af.aigp_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_disable, null)
+              aigp_send_med                                                      = try(af.aigp_send_med, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_med, null)
+              aigp_send_med_disable                                              = try(af.aigp_send_med_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_med_disable, null)
+              aigp_send_cost_community_disable                                   = try(af.aigp_send_cost_community_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_disable, null)
+              aigp_send_cost_community_id                                        = try(af.aigp_send_cost_community_id, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_id, null)
+              aigp_send_cost_community_id_poi_igp_cost                           = try(af.aigp_send_cost_community_id_poi_igp_cost, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_id_poi_igp_cost, null)
+              aigp_send_cost_community_id_poi_igp_cost_transitive                = try(af.aigp_send_cost_community_id_poi_igp_cost_transitive, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_id_poi_igp_cost_transitive, null)
+              aigp_send_cost_community_id_poi_pre_bestpath                       = try(af.aigp_send_cost_community_id_poi_pre_bestpath, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_id_poi_pre_bestpath, null)
+              aigp_send_cost_community_id_poi_pre_bestpath_transitive            = try(af.aigp_send_cost_community_id_poi_pre_bestpath_transitive, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.aigp_send_cost_community_id_poi_pre_bestpath_transitive, null)
+              send_multicast_attributes                                          = try(af.send_multicast_attributes, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_multicast_attributes, null)
+              send_multicast_attributes_disable                                  = try(af.send_multicast_attributes_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.send_multicast_attributes_disable, null)
+              accept_own                                                         = try(af.accept_own, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.accept_own, null)
+              accept_own_inheritance_disable                                     = try(af.accept_own_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.accept_own_inheritance_disable, null)
+              slow_peer_dynamic                                                  = try(af.slow_peer_dynamic, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.slow_peer_dynamic, null)
+              slow_peer_dynamic_threshold                                        = try(af.slow_peer_dynamic_threshold, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.slow_peer_dynamic_threshold, null)
+              slow_peer_dynamic_disable                                          = try(af.slow_peer_dynamic_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.slow_peer_dynamic_disable, null)
+              slow_peer_static                                                   = try(af.slow_peer_static, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.slow_peer_static, null)
+              origin_as_validation_disable                                       = try(af.origin_as_validation_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.origin_as_validation_disable, null)
+              bestpath_origin_as_allow_invalid                                   = try(af.bestpath_origin_as_allow_invalid, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.bestpath_origin_as_allow_invalid, null)
+              default_policy_action_in                                           = local.device_is_25x[device.name] ? try(af.default_policy_action_in, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.default_policy_action_in, null) : null
+              default_policy_action_out                                          = local.device_is_25x[device.name] ? try(af.default_policy_action_out, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.default_policy_action_out, null) : null
+              bandwidth_grp_outbound_name                                        = local.device_is_25x[device.name] ? try(af.bandwidth_grp_outbound_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.bandwidth_grp_outbound_name, null) : null
+              bandwidth_grp_outbound_inheritance_disable                         = local.device_is_25x[device.name] ? try(af.bandwidth_grp_outbound_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.bandwidth_grp_outbound_inheritance_disable, null) : null
+              bandwidth_grp_inbound_name                                         = local.device_is_25x[device.name] ? try(af.bandwidth_grp_inbound_name, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.bandwidth_grp_inbound_name, null) : null
+              bandwidth_grp_inbound_inheritance_disable                          = local.device_is_25x[device.name] ? try(af.bandwidth_grp_inbound_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.bandwidth_grp_inbound_inheritance_disable, null) : null
+              fast_reroute_per_link_multipath_backup_address                     = local.device_is_25x[device.name] ? try(af.fast_reroute_per_link_multipath_backup_address, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.fast_reroute_per_link_multipath_backup_address, null) : null
+              fast_reroute_per_link_multipath_backup_address_inheritance_disable = local.device_is_25x[device.name] ? try(af.fast_reroute_per_link_multipath_backup_address_inheritance_disable, local.defaults.iosxr.devices.configuration.routing.bgp.vrfs.neighbors.address_family.fast_reroute_per_link_multipath_backup_address_inheritance_disable, null) : null
             }
           ]
         ]
@@ -106,101 +114,109 @@ locals {
 }
 
 resource "iosxr_router_bgp_vrf_neighbor_address_family" "router_bgp_vrf_neighbor_address_family" {
-  for_each                                                = { for af in local.router_bgp_vrf_neighbor_address_family : af.key => af }
-  device                                                  = each.value.device_name
-  as_number                                               = each.value.as_number
-  vrf_name                                                = each.value.vrf_name
-  address                                                 = each.value.address
-  af_name                                                 = each.value.af_name
-  encapsulation_type                                      = each.value.encapsulation_type
-  weight                                                  = each.value.weight
-  multipath                                               = each.value.multipath
-  use_af_group                                            = each.value.use_af_group
-  capability_orf_prefix                                   = each.value.capability_orf_prefix
-  additional_paths_send                                   = each.value.additional_paths_send
-  additional_paths_send_disable                           = each.value.additional_paths_send_disable
-  additional_paths_receive                                = each.value.additional_paths_receive
-  additional_paths_receive_disable                        = each.value.additional_paths_receive_disable
-  default_originate                                       = each.value.default_originate
-  default_originate_route_policy                          = each.value.default_originate_route_policy
-  default_originate_inheritance_disable                   = each.value.default_originate_inheritance_disable
-  maximum_prefix_limit                                    = each.value.maximum_prefix_limit
-  maximum_prefix_threshold                                = each.value.maximum_prefix_threshold
-  maximum_prefix_restart                                  = each.value.maximum_prefix_restart
-  maximum_prefix_discard_extra_paths                      = each.value.maximum_prefix_discard_extra_paths
-  maximum_prefix_warning_only                             = each.value.maximum_prefix_warning_only
-  next_hop_self                                           = each.value.next_hop_self
-  next_hop_self_inheritance_disable                       = each.value.next_hop_self_inheritance_disable
-  next_hop_unchanged                                      = each.value.next_hop_unchanged
-  next_hop_unchanged_multipath                            = each.value.next_hop_unchanged_multipath
-  next_hop_unchanged_inheritance_disable                  = each.value.next_hop_unchanged_inheritance_disable
-  route_policy_in                                         = each.value.route_policy_in
-  route_policy_out                                        = each.value.route_policy_out
-  orf_route_policy                                        = each.value.orf_route_policy
-  cluster_id_allow_equal                                  = each.value.cluster_id_allow_equal
-  cluster_id_allow_equal_disable                          = each.value.cluster_id_allow_equal_disable
-  replace_private_as                                      = each.value.replace_private_as
-  replace_private_as_internal                             = each.value.replace_private_as_internal
-  remove_private_as_inbound                               = each.value.remove_private_as_inbound
-  remove_private_as_inbound_inheritance_disable           = each.value.remove_private_as_inbound_inheritance_disable
-  remove_private_as_inbound_entire_aspath                 = each.value.remove_private_as_inbound_entire_aspath
-  remove_private_as                                       = each.value.remove_private_as
-  remove_private_as_entire_aspath                         = each.value.remove_private_as_entire_aspath
-  remove_private_as_internal                              = each.value.remove_private_as_internal
-  route_reflector_client                                  = each.value.route_reflector_client
-  route_reflector_client_inheritance_disable              = each.value.route_reflector_client_inheritance_disable
-  send_community_ebgp                                     = each.value.send_community_ebgp
-  send_community_ebgp_inheritance_disable                 = each.value.send_community_ebgp_inheritance_disable
-  send_community_gshut_ebgp                               = each.value.send_community_gshut_ebgp
-  send_community_gshut_ebgp_inheritance_disable           = each.value.send_community_gshut_ebgp_inheritance_disable
-  send_extended_community_ebgp                            = each.value.send_extended_community_ebgp
-  send_extended_community_ebgp_inheritance_disable        = each.value.send_extended_community_ebgp_inheritance_disable
-  soft_reconfiguration_inbound                            = each.value.soft_reconfiguration_inbound
-  soft_reconfiguration_inbound_always                     = each.value.soft_reconfiguration_inbound_always
-  update_out_originator_loopcheck                         = each.value.update_out_originator_loopcheck
-  update_out_originator_loopcheck_disable                 = each.value.update_out_originator_loopcheck_disable
-  advertise_vpnv4_unicast                                 = each.value.advertise_vpnv4_unicast
-  advertise_vpnv4_unicast_re_originated                   = each.value.advertise_vpnv4_unicast_re_originated
-  advertise_vpnv4_unicast_re_originated_stitching_rt      = each.value.advertise_vpnv4_unicast_re_originated_stitching_rt
-  advertise_vpnv6_unicast                                 = each.value.advertise_vpnv6_unicast
-  advertise_vpnv6_unicast_re_originated                   = each.value.advertise_vpnv6_unicast_re_originated
-  advertise_vpnv6_unicast_re_originated_stitching_rt      = each.value.advertise_vpnv6_unicast_re_originated_stitching_rt
-  advertise_l2vpn_evpn_re_originated                      = each.value.advertise_l2vpn_evpn_re_originated
-  advertise_l2vpn_evpn_re_originated_stitching_rt         = each.value.advertise_l2vpn_evpn_re_originated_stitching_rt
-  segment_routing_srv6_prefix_sid_type4                   = each.value.segment_routing_srv6_prefix_sid_type4
-  import_stitching_rt                                     = each.value.import_stitching_rt
-  import_stitching_rt_re_originate                        = each.value.import_stitching_rt_re_originate
-  import_stitching_rt_re_originate_stitching_rt           = each.value.import_stitching_rt_re_originate_stitching_rt
-  import_re_originate                                     = each.value.import_re_originate
-  allowas_in                                              = each.value.allowas_in
-  site_of_origin_two_byte_as_number                       = try(each.value.site_of_origin.format == "two_byte_as" ? tostring(each.value.site_of_origin.as_number) : null, null)
-  site_of_origin_two_byte_as_index                        = try(each.value.site_of_origin.format == "two_byte_as" ? each.value.site_of_origin.assigned_number : null, null)
-  site_of_origin_four_byte_as_number                      = try(each.value.site_of_origin.format == "four_byte_as" ? tostring(each.value.site_of_origin.as_number) : null, null)
-  site_of_origin_four_byte_as_index                       = try(each.value.site_of_origin.format == "four_byte_as" ? each.value.site_of_origin.assigned_number : null, null)
-  site_of_origin_ipv4_address                             = try(each.value.site_of_origin.format == "ipv4_address" ? each.value.site_of_origin.ipv4_address : null, null)
-  site_of_origin_ipv4_address_index                       = try(each.value.site_of_origin.format == "ipv4_address" ? each.value.site_of_origin.assigned_number : null, null)
-  as_override                                             = each.value.as_override
-  as_override_inheritance_disable                         = each.value.as_override_inheritance_disable
-  aigp                                                    = each.value.aigp
-  aigp_disable                                            = each.value.aigp_disable
-  aigp_send_med                                           = each.value.aigp_send_med
-  aigp_send_med_disable                                   = each.value.aigp_send_med_disable
-  aigp_send_cost_community_disable                        = each.value.aigp_send_cost_community_disable
-  aigp_send_cost_community_id                             = each.value.aigp_send_cost_community_id
-  aigp_send_cost_community_id_poi_igp_cost                = each.value.aigp_send_cost_community_id_poi_igp_cost
-  aigp_send_cost_community_id_poi_igp_cost_transitive     = each.value.aigp_send_cost_community_id_poi_igp_cost_transitive
-  aigp_send_cost_community_id_poi_pre_bestpath            = each.value.aigp_send_cost_community_id_poi_pre_bestpath
-  aigp_send_cost_community_id_poi_pre_bestpath_transitive = each.value.aigp_send_cost_community_id_poi_pre_bestpath_transitive
-  send_multicast_attributes                               = each.value.send_multicast_attributes
-  send_multicast_attributes_disable                       = each.value.send_multicast_attributes_disable
-  accept_own                                              = each.value.accept_own
-  accept_own_inheritance_disable                          = each.value.accept_own_inheritance_disable
-  slow_peer_dynamic                                       = each.value.slow_peer_dynamic
-  slow_peer_dynamic_threshold                             = each.value.slow_peer_dynamic_threshold
-  slow_peer_dynamic_disable                               = each.value.slow_peer_dynamic_disable
-  slow_peer_static                                        = each.value.slow_peer_static
-  origin_as_validation_disable                            = each.value.origin_as_validation_disable
-  bestpath_origin_as_allow_invalid                        = each.value.bestpath_origin_as_allow_invalid
+  for_each                                                           = { for af in local.router_bgp_vrf_neighbor_address_family : af.key => af }
+  device                                                             = each.value.device_name
+  as_number                                                          = each.value.as_number
+  vrf_name                                                           = each.value.vrf_name
+  address                                                            = each.value.address
+  af_name                                                            = each.value.af_name
+  encapsulation_type                                                 = each.value.encapsulation_type
+  weight                                                             = each.value.weight
+  multipath                                                          = each.value.multipath
+  use_af_group                                                       = each.value.use_af_group
+  capability_orf_prefix                                              = each.value.capability_orf_prefix
+  additional_paths_send                                              = each.value.additional_paths_send
+  additional_paths_send_disable                                      = each.value.additional_paths_send_disable
+  additional_paths_receive                                           = each.value.additional_paths_receive
+  additional_paths_receive_disable                                   = each.value.additional_paths_receive_disable
+  default_originate                                                  = each.value.default_originate
+  default_originate_route_policy                                     = each.value.default_originate_route_policy
+  default_originate_inheritance_disable                              = each.value.default_originate_inheritance_disable
+  maximum_prefix_limit                                               = each.value.maximum_prefix_limit
+  maximum_prefix_threshold                                           = each.value.maximum_prefix_threshold
+  maximum_prefix_restart                                             = each.value.maximum_prefix_restart
+  maximum_prefix_discard_extra_paths                                 = each.value.maximum_prefix_discard_extra_paths
+  maximum_prefix_warning_only                                        = each.value.maximum_prefix_warning_only
+  next_hop_self                                                      = each.value.next_hop_self
+  next_hop_self_inheritance_disable                                  = each.value.next_hop_self_inheritance_disable
+  next_hop_unchanged                                                 = each.value.next_hop_unchanged
+  next_hop_unchanged_multipath                                       = each.value.next_hop_unchanged_multipath
+  next_hop_unchanged_inheritance_disable                             = each.value.next_hop_unchanged_inheritance_disable
+  route_policy_in                                                    = each.value.route_policy_in
+  route_policy_out                                                   = each.value.route_policy_out
+  orf_route_policy                                                   = each.value.orf_route_policy
+  cluster_id_allow_equal                                             = each.value.cluster_id_allow_equal
+  cluster_id_allow_equal_disable                                     = each.value.cluster_id_allow_equal_disable
+  replace_private_as                                                 = each.value.replace_private_as
+  replace_private_as_internal                                        = each.value.replace_private_as_internal
+  remove_private_as_inbound                                          = each.value.remove_private_as_inbound
+  remove_private_as_inbound_inheritance_disable                      = each.value.remove_private_as_inbound_inheritance_disable
+  remove_private_as_inbound_entire_aspath                            = each.value.remove_private_as_inbound_entire_aspath
+  remove_private_as                                                  = each.value.remove_private_as
+  remove_private_as_entire_aspath                                    = each.value.remove_private_as_entire_aspath
+  remove_private_as_internal                                         = each.value.remove_private_as_internal
+  route_reflector_client                                             = each.value.route_reflector_client
+  route_reflector_client_inheritance_disable                         = each.value.route_reflector_client_inheritance_disable
+  send_community_ebgp                                                = each.value.send_community_ebgp
+  send_community_ebgp_inheritance_disable                            = each.value.send_community_ebgp_inheritance_disable
+  send_community_gshut_ebgp                                          = each.value.send_community_gshut_ebgp
+  send_community_gshut_ebgp_inheritance_disable                      = each.value.send_community_gshut_ebgp_inheritance_disable
+  send_extended_community_ebgp                                       = each.value.send_extended_community_ebgp
+  send_extended_community_ebgp_inheritance_disable                   = each.value.send_extended_community_ebgp_inheritance_disable
+  soft_reconfiguration_inbound                                       = each.value.soft_reconfiguration_inbound
+  soft_reconfiguration_inbound_always                                = each.value.soft_reconfiguration_inbound_always
+  update_out_originator_loopcheck                                    = each.value.update_out_originator_loopcheck
+  update_out_originator_loopcheck_disable                            = each.value.update_out_originator_loopcheck_disable
+  advertise_vpnv4_unicast                                            = each.value.advertise_vpnv4_unicast
+  advertise_vpnv4_unicast_re_originated                              = each.value.advertise_vpnv4_unicast_re_originated
+  advertise_vpnv4_unicast_re_originated_stitching_rt                 = each.value.advertise_vpnv4_unicast_re_originated_stitching_rt
+  advertise_vpnv6_unicast                                            = each.value.advertise_vpnv6_unicast
+  advertise_vpnv6_unicast_re_originated                              = each.value.advertise_vpnv6_unicast_re_originated
+  advertise_vpnv6_unicast_re_originated_stitching_rt                 = each.value.advertise_vpnv6_unicast_re_originated_stitching_rt
+  advertise_l2vpn_evpn_re_originated                                 = each.value.advertise_l2vpn_evpn_re_originated
+  advertise_l2vpn_evpn_re_originated_stitching_rt                    = each.value.advertise_l2vpn_evpn_re_originated_stitching_rt
+  segment_routing_srv6_prefix_sid_type4                              = each.value.segment_routing_srv6_prefix_sid_type4
+  import_stitching_rt                                                = each.value.import_stitching_rt
+  import_stitching_rt_re_originate                                   = each.value.import_stitching_rt_re_originate
+  import_stitching_rt_re_originate_stitching_rt                      = each.value.import_stitching_rt_re_originate_stitching_rt
+  import_re_originate                                                = each.value.import_re_originate
+  allowas_in                                                         = each.value.allowas_in
+  site_of_origin_two_byte_as_number                                  = try(each.value.site_of_origin.format == "two_byte_as" ? tostring(each.value.site_of_origin.as_number) : null, null)
+  site_of_origin_two_byte_as_index                                   = try(each.value.site_of_origin.format == "two_byte_as" ? each.value.site_of_origin.assigned_number : null, null)
+  site_of_origin_four_byte_as_number                                 = try(each.value.site_of_origin.format == "four_byte_as" ? tostring(each.value.site_of_origin.as_number) : null, null)
+  site_of_origin_four_byte_as_index                                  = try(each.value.site_of_origin.format == "four_byte_as" ? each.value.site_of_origin.assigned_number : null, null)
+  site_of_origin_ipv4_address                                        = try(each.value.site_of_origin.format == "ipv4_address" ? each.value.site_of_origin.ipv4_address : null, null)
+  site_of_origin_ipv4_address_index                                  = try(each.value.site_of_origin.format == "ipv4_address" ? each.value.site_of_origin.assigned_number : null, null)
+  as_override                                                        = each.value.as_override
+  as_override_inheritance_disable                                    = each.value.as_override_inheritance_disable
+  aigp                                                               = each.value.aigp
+  aigp_disable                                                       = each.value.aigp_disable
+  aigp_send_med                                                      = each.value.aigp_send_med
+  aigp_send_med_disable                                              = each.value.aigp_send_med_disable
+  aigp_send_cost_community_disable                                   = each.value.aigp_send_cost_community_disable
+  aigp_send_cost_community_id                                        = each.value.aigp_send_cost_community_id
+  aigp_send_cost_community_id_poi_igp_cost                           = each.value.aigp_send_cost_community_id_poi_igp_cost
+  aigp_send_cost_community_id_poi_igp_cost_transitive                = each.value.aigp_send_cost_community_id_poi_igp_cost_transitive
+  aigp_send_cost_community_id_poi_pre_bestpath                       = each.value.aigp_send_cost_community_id_poi_pre_bestpath
+  aigp_send_cost_community_id_poi_pre_bestpath_transitive            = each.value.aigp_send_cost_community_id_poi_pre_bestpath_transitive
+  send_multicast_attributes                                          = each.value.send_multicast_attributes
+  send_multicast_attributes_disable                                  = each.value.send_multicast_attributes_disable
+  accept_own                                                         = each.value.accept_own
+  accept_own_inheritance_disable                                     = each.value.accept_own_inheritance_disable
+  slow_peer_dynamic                                                  = each.value.slow_peer_dynamic
+  slow_peer_dynamic_threshold                                        = each.value.slow_peer_dynamic_threshold
+  slow_peer_dynamic_disable                                          = each.value.slow_peer_dynamic_disable
+  slow_peer_static                                                   = each.value.slow_peer_static
+  origin_as_validation_disable                                       = each.value.origin_as_validation_disable
+  bestpath_origin_as_allow_invalid                                   = each.value.bestpath_origin_as_allow_invalid
+  default_policy_action_in                                           = each.value.default_policy_action_in
+  default_policy_action_out                                          = each.value.default_policy_action_out
+  bandwidth_grp_outbound_name                                        = each.value.bandwidth_grp_outbound_name
+  bandwidth_grp_outbound_inheritance_disable                         = each.value.bandwidth_grp_outbound_inheritance_disable
+  bandwidth_grp_inbound_name                                         = each.value.bandwidth_grp_inbound_name
+  bandwidth_grp_inbound_inheritance_disable                          = each.value.bandwidth_grp_inbound_inheritance_disable
+  fast_reroute_per_link_multipath_backup_address                     = each.value.fast_reroute_per_link_multipath_backup_address
+  fast_reroute_per_link_multipath_backup_address_inheritance_disable = each.value.fast_reroute_per_link_multipath_backup_address_inheritance_disable
 
   # lifecycle {
   #   replace_triggered_by = [
@@ -210,8 +226,10 @@ resource "iosxr_router_bgp_vrf_neighbor_address_family" "router_bgp_vrf_neighbor
   # }
 
   depends_on = [
+    iosxr_bmp_server.bmp_server,
     iosxr_key_chain.key_chain,
     iosxr_route_policy.route_policy,
+    iosxr_router_bgp_vrf_neighbor.router_bgp_vrf_neighbor,
     # referenced sets must exist before a route-policy is attached
     iosxr_as_path_set.as_path_set,
     iosxr_community_set.community_set,

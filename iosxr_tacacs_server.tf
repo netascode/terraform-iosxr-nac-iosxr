@@ -29,6 +29,8 @@ resource "iosxr_tacacs_server" "tacacs_server" {
       key_type_7                     = try(host.key_type, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.key_type, null) == 7 ? try(host.key, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.key, null) : null
       single_connection              = try(host.single_connection, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.single_connection, null)
       single_connection_idle_timeout = try(host.single_connection_idle_timeout, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.single_connection_idle_timeout, null)
+      tls_trustpoint                 = local.device_is_25x[each.value.name] ? try(host.tls.trustpoint, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.tls.trustpoint, null) : null
+      tls_server_name_indicator      = local.device_is_25x[each.value.name] ? try(host.tls.server_name_indicator, local.defaults.iosxr.devices.configuration.tacacs_server.hosts_defaults.tls.server_name_indicator, null) : null
     }
   ]
 }
